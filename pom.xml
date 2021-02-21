@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.power</groupId>
-	<artifactId>dictionary-spring-api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>dictionary-spring-api</name>
-	<description>Dictionary Spring API</description>
+	<artifactId>oworms-api</artifactId>
+	<version>1.0.0</version>
+	<name>oworms-api</name>
+	<description>Oh Worms? API</description>
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
