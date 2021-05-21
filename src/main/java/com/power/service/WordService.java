@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
@@ -27,10 +28,20 @@ public class WordService {
     }
 
     @Transactional
-    public void create(final WordDTO wordDTO) {
-        final Word word = mapper.map(wordDTO);
+    public void create(final WordDTO wordDTO, String id) {
+        wordDTO.trim();
+
+        if (wordExists(wordDTO)) {
+            throw new EntityExistsException("That word already exists.");
+        }
+
+        final Word word = mapper.map(wordDTO, id);
 
         repository.save(word);
+    }
+
+    private boolean wordExists(WordDTO wordDTO) {
+        return repository.findByTheWordIgnoreCase(wordDTO.getTheWord()).isPresent();
     }
 
     public List<WordDTO> retrieveAll() {
@@ -40,7 +51,7 @@ public class WordService {
     }
 
     public WordDTO retrieve(final String theWord) {
-        final Word word = repository.findByTheWord(theWord).orElseThrow(EntityNotFoundException::new);
+        final Word word = repository.findByTheWordIgnoreCase(theWord).orElseThrow(EntityNotFoundException::new);
 
         word.setTimesViewed(word.getTimesViewed() + 1);
         repository.save(word);

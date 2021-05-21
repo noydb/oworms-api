@@ -1,6 +1,7 @@
 package com.power.controller;
 
 import com.power.dto.WordDTO;
+import com.power.service.SettingsService;
 import com.power.service.WordService;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -25,27 +27,39 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class WordController {
 
     private final WordService service;
+    private final SettingsService settingsService;
 
-    public WordController(final WordService service) {
+    public WordController(final WordService service,
+                          final SettingsService settingsService) {
         this.service = service;
+        this.settingsService = settingsService;
     }
 
     @PostMapping(
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Void> create(@RequestBody WordDTO wordDTO) {
-        if (null == wordDTO) {
+    public ResponseEntity<Void> create(final @Valid @RequestBody WordDTO wordDTO,
+                                       final @RequestParam(value = "u", required = false) String u) {
+        if (null == wordDTO || null == u) {
             return ResponseEntity.badRequest().build();
         }
 
-        service.create(wordDTO);
+        if (!hasRights(u)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
 
-        Link link = linkTo(methodOn(WordController.class).create(wordDTO))
+        service.create(wordDTO, u);
+
+        Link link = linkTo(methodOn(WordController.class).create(wordDTO, u))
                 .slash(wordDTO.getId())
                 .withRel("retrieve");
 
         return ResponseEntity.created(link.toUri()).build();
+    }
+
+    private boolean hasRights(String u) {
+        return settingsService.getBPIDs().contains(u) || settingsService.getKeeganIDs().contains(u);
     }
 
     @GetMapping(
