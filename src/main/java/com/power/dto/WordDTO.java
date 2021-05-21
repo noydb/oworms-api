@@ -18,4 +18,8 @@ public class WordDTO {
     private String pronunciation;
     private String origin;
     private String partOfSpeech;
+    private Boolean haveLearnt;
+
+    private String createdBy;
+    private int timesViewed;
 }

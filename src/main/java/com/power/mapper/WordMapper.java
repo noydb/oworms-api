@@ -19,10 +19,15 @@ public class WordMapper {
                 .pronunciation(wordDTO.getPronunciation())
                 .origin(wordDTO.getOrigin())
                 .partOfSpeech(wordDTO.getPartOfSpeech())
+                .haveLearnt(wordDTO.getHaveLearnt())
                 .build();
     }
 
     public WordDTO map(Word word) {
+        if (word.getTimesViewed() == null) {
+            System.out.println("word = " + word);
+        }
+
         return WordDTO
                 .builder()
                 .id(word.getId())
@@ -31,6 +36,9 @@ public class WordMapper {
                 .pronunciation(word.getPronunciation())
                 .origin(word.getOrigin())
                 .partOfSpeech(word.getPartOfSpeech())
+                .haveLearnt(word.getHaveLearnt())
+                .createdBy(word.getCreatedBy())
+                .timesViewed(word.getTimesViewed())
                 .build();
     }
 

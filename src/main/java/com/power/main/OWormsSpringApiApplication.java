@@ -10,10 +10,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories("com.power")
 @ComponentScan("com.power")
 @EntityScan("com.power")
-public class DictionarySpringApiApplication {
+public class OWormsSpringApiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DictionarySpringApiApplication.class, args);
+		SpringApplication.run(OWormsSpringApiApplication.class, args);
 	}
 
 }

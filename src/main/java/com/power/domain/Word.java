@@ -22,7 +22,6 @@ import javax.persistence.Table;
 public class Word {
 
     @Id
-    @Column
     @GeneratedValue
     private Long id;
 
@@ -40,4 +39,13 @@ public class Word {
 
     @Column
     private String partOfSpeech;
+
+    @Column
+    private Boolean haveLearnt;
+
+    @Column
+    private String createdBy;
+
+    @Column
+    private Integer timesViewed;
 }
