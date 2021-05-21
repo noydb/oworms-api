@@ -2,6 +2,7 @@ package com.power.mapper;
 
 import com.power.domain.Word;
 import com.power.dto.WordDTO;
+import com.power.service.SettingsService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -11,7 +12,18 @@ import static java.util.stream.Collectors.toList;
 @Component
 public class WordMapper {
 
-    public Word map(WordDTO wordDTO) {
+    private final SettingsService settingsService;
+
+    public WordMapper(SettingsService settingsService) {
+        this.settingsService = settingsService;
+    }
+
+    public Word map(WordDTO wordDTO, String id) {
+        String createdBy = wordDTO.getCreatedBy();
+        if (createdBy == null) {
+            createdBy = settingsService.getBPIDs().contains(id) ? "bp" : "keegan";
+        }
+
         return Word
                 .builder()
                 .theWord(wordDTO.getTheWord())
@@ -20,14 +32,11 @@ public class WordMapper {
                 .origin(wordDTO.getOrigin())
                 .partOfSpeech(wordDTO.getPartOfSpeech())
                 .haveLearnt(wordDTO.getHaveLearnt())
+                .createdBy(createdBy)
                 .build();
     }
 
     public WordDTO map(Word word) {
-        if (word.getTimesViewed() == null) {
-            System.out.println("word = " + word);
-        }
-
         return WordDTO
                 .builder()
                 .id(word.getId())
