@@ -1,7 +1,7 @@
 package com.power.controller;
 
 import com.power.dto.WordDTO;
-import com.power.service.SettingsService;
+import com.power.service.SecurityService;
 import com.power.service.WordService;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
@@ -27,12 +27,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class WordController {
 
     private final WordService service;
-    private final SettingsService settingsService;
+    private final SecurityService ss;
 
     public WordController(final WordService service,
-                          final SettingsService settingsService) {
+                          final SecurityService ss) {
         this.service = service;
-        this.settingsService = settingsService;
+        this.ss = ss;
     }
 
     @PostMapping(
@@ -45,7 +45,7 @@ public class WordController {
             return ResponseEntity.badRequest().build();
         }
 
-        if (!hasRights(u)) {
+        if (ss.unknownUser(u)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
@@ -56,10 +56,6 @@ public class WordController {
                 .withRel("retrieve");
 
         return ResponseEntity.created(link.toUri()).build();
-    }
-
-    private boolean hasRights(String u) {
-        return settingsService.getBPIDs().contains(u) || settingsService.getKeeganIDs().contains(u);
     }
 
     @GetMapping(
@@ -78,7 +74,8 @@ public class WordController {
     }
 
     @PostMapping(
-            value = "/read"
+            value = "/read",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public ResponseEntity<Void> readCSV(@RequestParam("excel_file") MultipartFile excelFile) {
         boolean success = service.readCSV(excelFile);

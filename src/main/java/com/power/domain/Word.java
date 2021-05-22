@@ -38,7 +38,7 @@ public class Word {
     private String origin;
 
     @Column
-    private String partOfSpeech;
+    private PartOfSpeech partOfSpeech;
 
     @Column
     private Boolean haveLearnt;

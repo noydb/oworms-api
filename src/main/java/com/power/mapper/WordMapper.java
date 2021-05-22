@@ -1,7 +1,9 @@
 package com.power.mapper;
 
+import com.power.domain.PartOfSpeech;
 import com.power.domain.Word;
 import com.power.dto.WordDTO;
+import com.power.service.SecurityService;
 import com.power.service.SettingsService;
 import org.springframework.stereotype.Component;
 
@@ -12,17 +14,19 @@ import static java.util.stream.Collectors.toList;
 @Component
 public class WordMapper {
 
-    private final SettingsService settingsService;
+    private final SecurityService securityService;
 
-    public WordMapper(SettingsService settingsService) {
-        this.settingsService = settingsService;
+    public WordMapper(final SecurityService securityService) {
+        this.securityService = securityService;
     }
 
     public Word map(WordDTO wordDTO, String id) {
         String createdBy = wordDTO.getCreatedBy();
         if (createdBy == null) {
-            createdBy = settingsService.getBPIDs().contains(id) ? "bp" : "keegan";
+            createdBy = securityService.getFormalUsername(id);
         }
+
+        PartOfSpeech partOfSpeech = PartOfSpeech.valueOf(wordDTO.getPartOfSpeech());
 
         return Word
                 .builder()
@@ -30,7 +34,7 @@ public class WordMapper {
                 .definition(wordDTO.getDefinition())
                 .pronunciation(wordDTO.getPronunciation())
                 .origin(wordDTO.getOrigin())
-                .partOfSpeech(wordDTO.getPartOfSpeech())
+                .partOfSpeech(partOfSpeech)
                 .haveLearnt(wordDTO.getHaveLearnt())
                 .createdBy(createdBy)
                 .build();
@@ -44,7 +48,7 @@ public class WordMapper {
                 .definition(word.getDefinition())
                 .pronunciation(word.getPronunciation())
                 .origin(word.getOrigin())
-                .partOfSpeech(word.getPartOfSpeech())
+                .partOfSpeech(word.getPartOfSpeech().getLabel())
                 .haveLearnt(word.getHaveLearnt())
                 .createdBy(word.getCreatedBy())
                 .timesViewed(word.getTimesViewed())

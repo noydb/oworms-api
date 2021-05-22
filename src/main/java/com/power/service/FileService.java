@@ -1,5 +1,6 @@
 package com.power.service;
 
+import com.power.domain.PartOfSpeech;
 import com.power.domain.Word;
 import com.power.repository.WordRepository;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -80,7 +81,7 @@ public class FileService {
         }
 
         final String partOfSpeech = FileService.PARTS_OF_SPEECH.get(sheetIndex);
-        word.setPartOfSpeech(partOfSpeech);
+        word.setPartOfSpeech(PartOfSpeech.getPartOfSpeech(partOfSpeech));
 
         word.setCreatedBy("bp");
         word.setHaveLearnt(false);
