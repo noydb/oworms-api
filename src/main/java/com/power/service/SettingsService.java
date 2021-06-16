@@ -27,8 +27,8 @@ public class SettingsService {
         StatisticsDTO.StatisticsDTOBuilder builder = StatisticsDTO.builder();
 
         List<Word> words = repository.findAll();
-        int totalWords = words.size();
 
+        int totalWords = words.size();
         builder.totalWords(totalWords);
 
         int totalViewsOnWords = words

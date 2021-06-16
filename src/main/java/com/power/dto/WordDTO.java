@@ -31,7 +31,7 @@ public class WordDTO implements Trim {
     private String origin;
 
     @NotEmpty
-    private String partOfSpeech;
+    private PartOfSpeechDTO partOfSpeech;
 
     @NotNull
     private Boolean haveLearnt;
@@ -56,10 +56,6 @@ public class WordDTO implements Trim {
 
         if (null != origin) {
             setOrigin(origin.trim());
-        }
-
-        if (null != partOfSpeech) {
-            setPartOfSpeech(partOfSpeech.trim());
         }
 
         if (null != createdBy) {

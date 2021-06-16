@@ -2,9 +2,9 @@ package com.power.mapper;
 
 import com.power.domain.PartOfSpeech;
 import com.power.domain.Word;
+import com.power.dto.PartOfSpeechDTO;
 import com.power.dto.WordDTO;
 import com.power.service.SecurityService;
-import com.power.service.SettingsService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class WordMapper {
             createdBy = securityService.getFormalUsername(id);
         }
 
-        PartOfSpeech partOfSpeech = PartOfSpeech.valueOf(wordDTO.getPartOfSpeech());
+        PartOfSpeech partOfSpeech = PartOfSpeech.valueOf(wordDTO.getPartOfSpeech().getLabel());
 
         return Word
                 .builder()
@@ -48,7 +48,7 @@ public class WordMapper {
                 .definition(word.getDefinition())
                 .pronunciation(word.getPronunciation())
                 .origin(word.getOrigin())
-                .partOfSpeech(word.getPartOfSpeech().getLabel())
+                .partOfSpeech(PartOfSpeechDTO.getPartOfSpeech(word.getPartOfSpeech().getLabel()))
                 .haveLearnt(word.getHaveLearnt())
                 .createdBy(word.getCreatedBy())
                 .timesViewed(word.getTimesViewed())
