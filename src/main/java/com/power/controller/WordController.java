@@ -61,8 +61,14 @@ public class WordController {
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<List<WordDTO>> retrieveAll() {
-        return ResponseEntity.ok(service.retrieveAll());
+    public ResponseEntity<List<WordDTO>> retrieveAll(@RequestParam(value = "w", required = false) String theWord,
+                                                     @RequestParam(value = "def", required = false) String definition,
+                                                     @RequestParam(value = "pos", required = false) String partOfSpeech,
+                                                     @RequestParam(value = "creator", required = false) String creator,
+                                                     @RequestParam(value = "learnt", required = false) String haveLearnt) {
+        return ResponseEntity.ok(
+                service.retrieveAll(theWord, definition, partOfSpeech, creator, haveLearnt)
+        );
     }
 
     @GetMapping(
