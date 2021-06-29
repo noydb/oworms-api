@@ -22,16 +22,13 @@ public class WordService {
     private final WordRepository repository;
     private final WordMapper mapper;
     private final FileService fileService;
-    private final SecurityService ss;
 
     public WordService(final WordRepository repository,
                        final WordMapper mapper,
-                       final FileService fileService,
-                       final SecurityService ss) {
+                       final FileService fileService) {
         this.repository = repository;
         this.mapper = mapper;
         this.fileService = fileService;
-        this.ss = ss;
     }
 
     @Transactional
@@ -81,7 +78,7 @@ public class WordService {
                 .filter(word -> isAMatch(word.getTheWord(), theWord))
                 .filter(word -> isAMatch(word.getDefinition(), definition))
                 .filter(word -> isAMatch(word.getPartOfSpeech(), pos))
-                .filter(word -> isTheCreator(word.getCreatedBy(), creator))
+                .filter(word -> isAMatch(word.getCreatedBy(), creator))
                 .filter(word -> haveLearntMatch(word.getHaveLearnt(), haveLearnt))
                 .collect(toList());
 
@@ -112,22 +109,6 @@ public class WordService {
         }
     }
 
-    private boolean isTheCreator(String createdBy, String creatorFilter) {
-        boolean isBP = ss.isBP(creatorFilter);
-        boolean isKMW = ss.isBP(creatorFilter);
-
-        if (!isBP && !isKMW) {
-            // ignore filter. unknown user.
-            return true;
-        }
-
-        if (isBP) {
-            return ss.isBP(createdBy);
-        }
-
-        return ss.isKeegan(createdBy);
-    }
-
     private boolean haveLearntMatch(Boolean haveLearnt, String hlFilter) {
         boolean invalidFilter = hlFilter == null || !WordUtil.isEqual(hlFilter, "y") || !WordUtil.isEqual(hlFilter, "n");
 
@@ -140,5 +121,27 @@ public class WordService {
         }
 
         return !haveLearnt;
+    }
+
+    public WordDTO update(String theWord, WordDTO updatedWord) {
+        Word word = repository.findByTheWordIgnoreCase(theWord)
+                .orElseThrow(() -> new EntityNotFoundException("that word don't exist friend."));
+
+        boolean alreadyExists = repository.findByTheWordIgnoreCaseAndIdNot(updatedWord.getTheWord(), word.getId()).isPresent();
+        if (alreadyExists) {
+            throw new EntityExistsException("That word already exists.");
+        }
+
+        word.setTheWord(updatedWord.getTheWord());
+        word.setDefinition(updatedWord.getDefinition());
+        word.setPronunciation(updatedWord.getPronunciation());
+        word.setOrigin(updatedWord.getOrigin());
+        word.setPartOfSpeech(PartOfSpeech.getPartOfSpeech(updatedWord.getPartOfSpeech().getLabel()));
+        word.setHaveLearnt(updatedWord.getHaveLearnt());
+        // can't change createdBy and timesViewed
+
+        word = repository.save(word);
+
+        return mapper.map(word);
     }
 }
