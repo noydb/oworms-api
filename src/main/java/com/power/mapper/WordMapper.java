@@ -4,7 +4,6 @@ import com.power.domain.PartOfSpeech;
 import com.power.domain.Word;
 import com.power.dto.PartOfSpeechDTO;
 import com.power.dto.WordDTO;
-import com.power.service.SecurityService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,16 +13,10 @@ import static java.util.stream.Collectors.toList;
 @Component
 public class WordMapper {
 
-    private final SecurityService securityService;
-
-    public WordMapper(final SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
     public Word map(WordDTO wordDTO, String id) {
         String createdBy = wordDTO.getCreatedBy();
         if (createdBy == null) {
-            createdBy = securityService.getFormalUsername(id);
+            createdBy = id;
         }
 
         PartOfSpeech partOfSpeech = PartOfSpeech.valueOf(wordDTO.getPartOfSpeech().getLabel());

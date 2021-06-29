@@ -1,7 +1,6 @@
 package com.power.controller;
 
 import com.power.dto.WordDTO;
-import com.power.service.SecurityService;
 import com.power.service.WordService;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
@@ -10,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,12 +27,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class WordController {
 
     private final WordService service;
-    private final SecurityService ss;
 
-    public WordController(final WordService service,
-                          final SecurityService ss) {
+    public WordController(final WordService service) {
         this.service = service;
-        this.ss = ss;
     }
 
     @PostMapping(
@@ -43,10 +40,6 @@ public class WordController {
                                        final @RequestParam(value = "u", required = false) String u) {
         if (null == wordDTO || null == u) {
             return ResponseEntity.badRequest().build();
-        }
-
-        if (ss.unknownUser(u)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         service.create(wordDTO, u);
@@ -77,6 +70,17 @@ public class WordController {
     )
     public ResponseEntity<WordDTO> retrieve(@PathVariable("word") String theWord) {
         return ResponseEntity.ok(service.retrieve(theWord));
+    }
+
+    @PutMapping(
+            value = "{word}",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<WordDTO> update(@PathVariable("word") String theWord, @RequestBody WordDTO updatedWord) {
+        WordDTO updatedWordDTO = service.update(theWord, updatedWord);
+
+        return ResponseEntity.ok().body(updatedWordDTO);
     }
 
     @PostMapping(
