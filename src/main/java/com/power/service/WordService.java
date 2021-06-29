@@ -48,10 +48,14 @@ public class WordService {
         return repository.findByTheWordIgnoreCase(wordDTO.getTheWord()).isPresent();
     }
 
-    public List<WordDTO> retrieveAll(String theWord, String definition, String pos, String creator, String haveLearnt) {
+    public List<WordDTO> retrieveAll(String theWord,
+                                     String definition,
+                                     List<String> partsOfSpeech,
+                                     String creator,
+                                     String haveLearnt) {
         final List<Word> words = repository.findAll();
 
-        return filter(words, theWord, definition, pos, creator, haveLearnt);
+        return filter(words, theWord, definition, partsOfSpeech, creator, haveLearnt);
     }
 
     public WordDTO retrieve(final String theWord) {
@@ -70,14 +74,14 @@ public class WordService {
     private List<WordDTO> filter(List<Word> words,
                                  String theWord,
                                  String definition,
-                                 String pos,
+                                 List<String> partsOfSpeech,
                                  String creator,
                                  String haveLearnt) {
         List<Word> filteredWords = words
                 .parallelStream()
                 .filter(word -> isAMatch(word.getTheWord(), theWord))
                 .filter(word -> isAMatch(word.getDefinition(), definition))
-                .filter(word -> isAMatch(word.getPartOfSpeech(), pos))
+                .filter(word -> partOfSpeechMatch(word.getPartOfSpeech(), partsOfSpeech))
                 .filter(word -> isAMatch(word.getCreatedBy(), creator))
                 .filter(word -> haveLearntMatch(word.getHaveLearnt(), haveLearnt))
                 .collect(toList());
@@ -91,6 +95,16 @@ public class WordService {
         }
 
         return WordUtil.isEqual(theWord, filterWord);
+    }
+
+    private boolean partOfSpeechMatch(PartOfSpeech partOfSpeech, List<String> partsOfSpeech) {
+        if (null == partsOfSpeech || partsOfSpeech.isEmpty()) {
+            return true;
+        }
+
+        return partsOfSpeech
+                .stream()
+                .anyMatch((posFilter) -> isAMatch(partOfSpeech, posFilter));
     }
 
     private boolean isAMatch(PartOfSpeech partOfSpeech, String posFilter) {
