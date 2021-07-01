@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.power</groupId>
 	<artifactId>oworms-api</artifactId>
-	<version>1.0.0</version>
+	<version>0.4.0</version>
 	<name>oworms-api</name>
 	<description>Oh Worms? API</description>
 	<properties>
