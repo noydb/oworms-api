@@ -32,13 +32,16 @@ public class Word {
     private String definition;
 
     @Column
+    private PartOfSpeech partOfSpeech;
+
+    @Column
     private String pronunciation;
 
     @Column
     private String origin;
 
     @Column
-    private PartOfSpeech partOfSpeech;
+    private String exampleUsage;
 
     @Column
     private Boolean haveLearnt;
@@ -48,4 +51,5 @@ public class Word {
 
     @Column
     private Integer timesViewed;
+
 }

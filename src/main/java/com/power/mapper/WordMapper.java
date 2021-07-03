@@ -25,11 +25,13 @@ public class WordMapper {
                 .builder()
                 .theWord(wordDTO.getTheWord())
                 .definition(wordDTO.getDefinition())
+                .partOfSpeech(partOfSpeech)
                 .pronunciation(wordDTO.getPronunciation())
                 .origin(wordDTO.getOrigin())
-                .partOfSpeech(partOfSpeech)
+                .exampleUsage(wordDTO.getExampleUsage())
                 .haveLearnt(wordDTO.getHaveLearnt())
                 .createdBy(createdBy)
+                .timesViewed(wordDTO.getTimesViewed())
                 .build();
     }
 
@@ -39,9 +41,10 @@ public class WordMapper {
                 .id(word.getId())
                 .theWord(word.getTheWord())
                 .definition(word.getDefinition())
+                .partOfSpeech(PartOfSpeechDTO.getPartOfSpeech(word.getPartOfSpeech().getLabel()))
                 .pronunciation(word.getPronunciation())
                 .origin(word.getOrigin())
-                .partOfSpeech(PartOfSpeechDTO.getPartOfSpeech(word.getPartOfSpeech().getLabel()))
+                .exampleUsage(word.getExampleUsage())
                 .haveLearnt(word.getHaveLearnt())
                 .createdBy(word.getCreatedBy())
                 .timesViewed(word.getTimesViewed())

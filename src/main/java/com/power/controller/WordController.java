@@ -2,7 +2,6 @@ package com.power.controller;
 
 import com.power.dto.WordDTO;
 import com.power.service.WordService;
-import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping(value = "/o/worms")
@@ -44,11 +41,7 @@ public class WordController {
 
         service.create(wordDTO, u);
 
-        Link link = linkTo(methodOn(WordController.class).create(wordDTO, u))
-                .slash(wordDTO.getId())
-                .withRel("retrieve");
-
-        return ResponseEntity.created(link.toUri()).build();
+        return ResponseEntity.created(URI.create("")).build();
     }
 
     @GetMapping(
@@ -81,6 +74,14 @@ public class WordController {
         WordDTO updatedWordDTO = service.update(theWord, updatedWord);
 
         return ResponseEntity.ok().body(updatedWordDTO);
+    }
+
+    @GetMapping(
+            value = "/random",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<WordDTO> retrieve() {
+        return ResponseEntity.ok(service.retrieveRandom());
     }
 
     @PostMapping(
