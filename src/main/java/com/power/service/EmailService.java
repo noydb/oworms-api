@@ -35,7 +35,7 @@ public class EmailService {
         newWordEmail.setDefinition(wordDTO.getDefinition());
         newWordEmail.setPartOfSpeech(wordDTO.getPartOfSpeech());
 
-        newWordEmail.setRecipients(new String[]{"keeganmeyerwatts@gmail.com"});
+        newWordEmail.setRecipients(new String[]{});
 
         String retrievalLink = properties.getRetrievalLink().replace("{theWord}", wordDTO.getTheWord());
         newWordEmail.setRetrievalLink(retrievalLink);
@@ -48,13 +48,15 @@ public class EmailService {
             return;
         }
 
+        String[] recipients = properties.getRecipients().split(",");
+
         MimeMessagePreparator messagePrep = (MimeMessage mimeMessage) -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
             messageHelper.setFrom("bot@oworms.com");
-            messageHelper.setTo("bmp22@protonmail.com");
+            messageHelper.setTo(recipients[0]);
             messageHelper.setSubject(NewWordEmailDTO.SUBJECT);
-            messageHelper.setBcc(newWordEmail.getRecipients());
+            messageHelper.setBcc(recipients);
 
             String messageContent = mailContentBuilder.build(newWordEmail, NewWordEmailDTO.TEMPLATE);
 

@@ -38,6 +38,7 @@ public class WordController {
     public ResponseEntity<WordDTO> create(final @Valid @RequestBody WordDTO wordDTO,
                                           final @RequestParam(value = "u", required = false) String u) {
         if (null == wordDTO || null == u) {
+            // throw custom error.
             return ResponseEntity.badRequest().build();
         }
 
@@ -93,6 +94,7 @@ public class WordController {
     public ResponseEntity<Void> readCSV(@RequestParam("excel_file") MultipartFile excelFile) {
         boolean success = fileService.writeWordsInSpreadsheetToDB(excelFile);
 
+        // throw custom error.
         return success ? ResponseEntity.status(HttpStatus.CREATED).build() : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 }
