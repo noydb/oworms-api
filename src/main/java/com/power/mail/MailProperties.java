@@ -10,6 +10,7 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource(value = "classpath:mail.${spring.profiles.active}.properties")
 @Data
 public class MailProperties {
+    private boolean disabled;
     private String username;
     private String password;
     private String host;

@@ -38,7 +38,7 @@ public class SettingsService {
 
         int numberOfWordsLearnt = 0;
         for (Word word : words) {
-            boolean learnt = word.getHaveLearnt();
+            boolean learnt = word.isHaveLearnt();
             if (learnt) {
                 numberOfWordsLearnt += 1;
             }

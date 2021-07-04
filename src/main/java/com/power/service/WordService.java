@@ -107,7 +107,7 @@ public class WordService {
         word.setPronunciation(updatedWord.getPronunciation());
         word.setOrigin(updatedWord.getOrigin());
         word.setPartOfSpeech(PartOfSpeech.getPartOfSpeech(updatedWord.getPartOfSpeech()));
-        word.setHaveLearnt(updatedWord.getHaveLearnt());
+        word.setHaveLearnt(updatedWord.isHaveLearnt());
         // can't change createdBy and timesViewed
 
         word = repository.save(word);

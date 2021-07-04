@@ -29,7 +29,7 @@ public class WordMapper {
                 .origin(wordDTO.getOrigin())
                 .exampleUsage(wordDTO.getExampleUsage())
                 .creationDate(wordDTO.getCreationDate())
-                .haveLearnt(wordDTO.getHaveLearnt())
+                .haveLearnt(wordDTO.isHaveLearnt())
                 .createdBy(createdBy)
                 .timesViewed(wordDTO.getTimesViewed())
                 .build();
@@ -46,7 +46,7 @@ public class WordMapper {
                 .origin(word.getOrigin())
                 .exampleUsage(word.getExampleUsage())
                 .creationDate(word.getCreationDate())
-                .haveLearnt(word.getHaveLearnt())
+                .haveLearnt(word.isHaveLearnt())
                 .createdBy(word.getCreatedBy())
                 .timesViewed(word.getTimesViewed())
                 .build();
