@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDate;
 
 @Valid
 @Getter
@@ -26,7 +27,7 @@ public class WordDTO {
     private String definition;
 
     @NotEmpty
-    private PartOfSpeechDTO partOfSpeech;
+    private String partOfSpeech;
 
     private String pronunciation;
 
@@ -34,7 +35,11 @@ public class WordDTO {
 
     private String exampleUsage;
 
+    private LocalDate creationDate;
+
     private Boolean haveLearnt;
+
     private String createdBy;
+
     private int timesViewed = 0;
 }

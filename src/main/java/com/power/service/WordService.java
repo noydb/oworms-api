@@ -9,12 +9,12 @@ import com.power.util.FilterUtil;
 import com.power.util.WordUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 
@@ -23,18 +23,18 @@ public class WordService {
 
     private final WordRepository repository;
     private final WordMapper mapper;
-    private final FileService fileService;
+    private final EmailService emailService;
 
     public WordService(final WordRepository repository,
                        final WordMapper mapper,
-                       final FileService fileService) {
+                       final EmailService emailService) {
         this.repository = repository;
         this.mapper = mapper;
-        this.fileService = fileService;
+        this.emailService = emailService;
     }
 
     @Transactional
-    public void create(final WordDTO wordDTO, String id) {
+    public WordDTO create(final WordDTO wordDTO, String id) {
         WordUtil.clean(wordDTO);
 
         if (wordExists(wordDTO)) {
@@ -42,8 +42,13 @@ public class WordService {
         }
 
         final Word word = mapper.map(wordDTO, id);
+        word.setCreationDate(LocalDate.now());
 
         repository.save(word);
+
+        emailService.sendNewWordEmail(wordDTO);
+
+        return mapper.map(word);
     }
 
     private boolean wordExists(WordDTO wordDTO) {
@@ -101,16 +106,12 @@ public class WordService {
         word.setDefinition(updatedWord.getDefinition());
         word.setPronunciation(updatedWord.getPronunciation());
         word.setOrigin(updatedWord.getOrigin());
-        word.setPartOfSpeech(PartOfSpeech.getPartOfSpeech(updatedWord.getPartOfSpeech().getLabel()));
+        word.setPartOfSpeech(PartOfSpeech.getPartOfSpeech(updatedWord.getPartOfSpeech()));
         word.setHaveLearnt(updatedWord.getHaveLearnt());
         // can't change createdBy and timesViewed
 
         word = repository.save(word);
 
         return mapper.map(word);
-    }
-
-    public boolean readCSV(final MultipartFile excelFile) {
-        return fileService.writeWordsInSpreadsheetToDB(excelFile);
     }
 }
