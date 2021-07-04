@@ -37,7 +37,7 @@ public class WordDTO {
 
     private LocalDate creationDate;
 
-    private Boolean haveLearnt;
+    private boolean haveLearnt = false;
 
     private String createdBy;
 

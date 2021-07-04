@@ -44,6 +44,10 @@ public class EmailService {
     }
 
     private void sendEmail(NewWordEmailDTO newWordEmail) {
+        if (properties.isDisabled()) {
+            return;
+        }
+
         MimeMessagePreparator messagePrep = (MimeMessage mimeMessage) -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 

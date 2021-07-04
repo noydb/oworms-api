@@ -48,7 +48,7 @@ public class Word {
     private LocalDate creationDate;
 
     @Column
-    private Boolean haveLearnt;
+    private boolean haveLearnt = false;
 
     @Column
     private String createdBy;

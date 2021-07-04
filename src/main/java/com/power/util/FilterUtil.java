@@ -21,7 +21,7 @@ public class FilterUtil {
                 .filter(word -> isAMatch(word.getDefinition(), definition))
                 .filter(word -> partOfSpeechMatch(word.getPartOfSpeech(), partsOfSpeech))
                 .filter(word -> isAMatch(word.getCreatedBy(), creator))
-                .filter(word -> haveLearntMatch(word.getHaveLearnt(), haveLearnt))
+                .filter(word -> haveLearntMatch(word.isHaveLearnt(), haveLearnt))
                 .collect(toList());
 
         return filteredWords;
@@ -61,7 +61,7 @@ public class FilterUtil {
         }
     }
 
-    private static boolean haveLearntMatch(Boolean haveLearnt, String hlFilter) {
+    private static boolean haveLearntMatch(boolean haveLearnt, String hlFilter) {
         boolean invalidFilter = hlFilter == null || !WordUtil.isEqual(hlFilter, "y") || !WordUtil.isEqual(hlFilter, "n");
 
         if (invalidFilter) {
