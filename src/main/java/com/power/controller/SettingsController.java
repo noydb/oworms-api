@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/o/worms/stats")
+@RequestMapping(value = "/o/settings")
 public class SettingsController {
 
     private final SettingsService service;

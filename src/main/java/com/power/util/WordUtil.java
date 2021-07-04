@@ -1,5 +1,7 @@
 package com.power.util;
 
+import com.power.dto.WordDTO;
+
 import java.util.Locale;
 
 public class WordUtil {
@@ -25,5 +27,17 @@ public class WordUtil {
         }
 
         return arg.trim().toLowerCase(Locale.ROOT);
+    }
+
+    public static void clean(WordDTO wordDTO) {
+        String theWord = wordDTO.getTheWord();
+        if (!isBlank(theWord)) {
+            wordDTO.setTheWord(clean(theWord));
+        }
+
+        String definition = wordDTO.getDefinition();
+        if (!isBlank(definition)) {
+            wordDTO.setDefinition(clean(definition));
+        }
     }
 }

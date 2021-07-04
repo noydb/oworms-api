@@ -8,7 +8,7 @@ import lombok.Setter;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @Valid
 @Getter
@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class WordDTO implements Trim {
+public class WordDTO {
 
     private Long id;
 
@@ -26,40 +26,20 @@ public class WordDTO implements Trim {
     @NotEmpty
     private String definition;
 
+    @NotEmpty
+    private String partOfSpeech;
+
     private String pronunciation;
 
     private String origin;
 
-    @NotEmpty
-    private PartOfSpeechDTO partOfSpeech;
+    private String exampleUsage;
 
-    @NotNull
+    private LocalDate creationDate;
+
     private Boolean haveLearnt;
 
     private String createdBy;
 
     private int timesViewed = 0;
-
-    @Override
-    public void trim() {
-        if (null != theWord) {
-            setTheWord(theWord.trim());
-        }
-
-        if (null != definition) {
-            setDefinition(definition.trim());
-        }
-
-        if (null != pronunciation) {
-            setPronunciation(pronunciation.trim());
-        }
-
-        if (null != origin) {
-            setOrigin(origin.trim());
-        }
-
-        if (null != createdBy) {
-            setCreatedBy(createdBy.trim());
-        }
-    }
 }
