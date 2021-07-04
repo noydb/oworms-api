@@ -2,7 +2,6 @@ package com.power.mapper;
 
 import com.power.domain.PartOfSpeech;
 import com.power.domain.Word;
-import com.power.dto.PartOfSpeechDTO;
 import com.power.dto.WordDTO;
 import org.springframework.stereotype.Component;
 
@@ -19,17 +18,20 @@ public class WordMapper {
             createdBy = id;
         }
 
-        PartOfSpeech partOfSpeech = PartOfSpeech.valueOf(wordDTO.getPartOfSpeech().getLabel());
+        PartOfSpeech partOfSpeech = PartOfSpeech.getPartOfSpeech(wordDTO.getPartOfSpeech());
 
         return Word
                 .builder()
                 .theWord(wordDTO.getTheWord())
                 .definition(wordDTO.getDefinition())
+                .partOfSpeech(partOfSpeech)
                 .pronunciation(wordDTO.getPronunciation())
                 .origin(wordDTO.getOrigin())
-                .partOfSpeech(partOfSpeech)
+                .exampleUsage(wordDTO.getExampleUsage())
+                .creationDate(wordDTO.getCreationDate())
                 .haveLearnt(wordDTO.getHaveLearnt())
                 .createdBy(createdBy)
+                .timesViewed(wordDTO.getTimesViewed())
                 .build();
     }
 
@@ -39,9 +41,11 @@ public class WordMapper {
                 .id(word.getId())
                 .theWord(word.getTheWord())
                 .definition(word.getDefinition())
+                .partOfSpeech(word.getPartOfSpeech().getLabel())
                 .pronunciation(word.getPronunciation())
                 .origin(word.getOrigin())
-                .partOfSpeech(PartOfSpeechDTO.getPartOfSpeech(word.getPartOfSpeech().getLabel()))
+                .exampleUsage(word.getExampleUsage())
+                .creationDate(word.getCreationDate())
                 .haveLearnt(word.getHaveLearnt())
                 .createdBy(word.getCreatedBy())
                 .timesViewed(word.getTimesViewed())

@@ -5,43 +5,50 @@ import com.power.domain.Word;
 import com.power.dto.WordDTO;
 import com.power.mapper.WordMapper;
 import com.power.repository.WordRepository;
+import com.power.util.FilterUtil;
 import com.power.util.WordUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
+import java.util.Random;
 
 @Service
 public class WordService {
 
     private final WordRepository repository;
     private final WordMapper mapper;
-    private final FileService fileService;
+    private final EmailService emailService;
 
     public WordService(final WordRepository repository,
                        final WordMapper mapper,
-                       final FileService fileService) {
+                       final EmailService emailService) {
         this.repository = repository;
         this.mapper = mapper;
-        this.fileService = fileService;
+        this.emailService = emailService;
     }
 
     @Transactional
-    public void create(final WordDTO wordDTO, String id) {
-        wordDTO.trim();
+    public WordDTO create(final WordDTO wordDTO, String id) {
+        WordUtil.clean(wordDTO);
 
         if (wordExists(wordDTO)) {
             throw new EntityExistsException("That word already exists.");
         }
 
         final Word word = mapper.map(wordDTO, id);
+        word.setCreationDate(LocalDate.now());
 
         repository.save(word);
+
+        emailService.sendNewWordEmail(wordDTO);
+
+        return mapper.map(word);
     }
 
     private boolean wordExists(WordDTO wordDTO) {
@@ -55,7 +62,9 @@ public class WordService {
                                      String haveLearnt) {
         final List<Word> words = repository.findAll();
 
-        return filter(words, theWord, definition, partsOfSpeech, creator, haveLearnt);
+        final List<Word> filteredWords = FilterUtil.filter(words, theWord, definition, partsOfSpeech, creator, haveLearnt);
+
+        return mapper.map(filteredWords);
     }
 
     public WordDTO retrieve(final String theWord) {
@@ -67,74 +76,21 @@ public class WordService {
         return mapper.map(word);
     }
 
-    public boolean readCSV(final MultipartFile excelFile) {
-        return fileService.writeWordsInSpreadsheetToDB(excelFile);
-    }
+    public WordDTO retrieveRandom() {
+        final List<Word> words = repository.findAll();
 
-    private List<WordDTO> filter(List<Word> words,
-                                 String theWord,
-                                 String definition,
-                                 List<String> partsOfSpeech,
-                                 String creator,
-                                 String haveLearnt) {
-        List<Word> filteredWords = words
-                .parallelStream()
-                .filter(word -> isAMatch(word.getTheWord(), theWord))
-                .filter(word -> isAMatch(word.getDefinition(), definition))
-                .filter(word -> partOfSpeechMatch(word.getPartOfSpeech(), partsOfSpeech))
-                .filter(word -> isAMatch(word.getCreatedBy(), creator))
-                .filter(word -> haveLearntMatch(word.getHaveLearnt(), haveLearnt))
-                .collect(toList());
-
-        return mapper.map(filteredWords);
-    }
-
-    private boolean isAMatch(String theWord, String filterWord) {
-        if (WordUtil.isBlank(filterWord)) {
-            return true;
-        }
-
-        return WordUtil.isEqual(theWord, filterWord);
-    }
-
-    private boolean partOfSpeechMatch(PartOfSpeech partOfSpeech, List<String> partsOfSpeech) {
-        if (null == partsOfSpeech || partsOfSpeech.isEmpty()) {
-            return true;
-        }
-
-        return partsOfSpeech
-                .stream()
-                .anyMatch((posFilter) -> isAMatch(partOfSpeech, posFilter));
-    }
-
-    private boolean isAMatch(PartOfSpeech partOfSpeech, String posFilter) {
-        if (WordUtil.isBlank(posFilter)) {
-            return true;
-        }
-
+        Random rand;
+        int randomIndex = 0; // 0 (inclusive) -> arg (exclusive)
         try {
-            PartOfSpeech partOfSpeechParsed = PartOfSpeech.getPartOfSpeech(posFilter);
-
-            return partOfSpeech.equals(partOfSpeechParsed);
-        } catch (IllegalArgumentException e) {
-            // the part of speech is not recognized. return true to ignore this filter.
-            // (the user is dumb)
-            return true;
-        }
-    }
-
-    private boolean haveLearntMatch(Boolean haveLearnt, String hlFilter) {
-        boolean invalidFilter = hlFilter == null || !WordUtil.isEqual(hlFilter, "y") || !WordUtil.isEqual(hlFilter, "n");
-
-        if (invalidFilter) {
-            return true;
+            rand = SecureRandom.getInstanceStrong();
+            randomIndex = rand.nextInt(words.size());
+        } catch (NoSuchAlgorithmException e) {
+            // throw error.
         }
 
-        if (hlFilter.equals("y")) {
-            return haveLearnt;
-        }
+        Word randomWord = words.get(randomIndex);
 
-        return !haveLearnt;
+        return mapper.map(randomWord);
     }
 
     public WordDTO update(String theWord, WordDTO updatedWord) {
@@ -150,7 +106,7 @@ public class WordService {
         word.setDefinition(updatedWord.getDefinition());
         word.setPronunciation(updatedWord.getPronunciation());
         word.setOrigin(updatedWord.getOrigin());
-        word.setPartOfSpeech(PartOfSpeech.getPartOfSpeech(updatedWord.getPartOfSpeech().getLabel()));
+        word.setPartOfSpeech(PartOfSpeech.getPartOfSpeech(updatedWord.getPartOfSpeech()));
         word.setHaveLearnt(updatedWord.getHaveLearnt());
         // can't change createdBy and timesViewed
 

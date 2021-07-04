@@ -1,8 +1,8 @@
 package com.power.controller;
 
 import com.power.dto.WordDTO;
+import com.power.service.FileService;
 import com.power.service.WordService;
-import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,36 +19,31 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.util.List;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 @RestController
 @RequestMapping(value = "/o/worms")
 public class WordController {
 
     private final WordService service;
+    private final FileService fileService;
 
-    public WordController(final WordService service) {
+    public WordController(final WordService service, final FileService fileService) {
         this.service = service;
+        this.fileService = fileService;
     }
 
     @PostMapping(
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Void> create(final @Valid @RequestBody WordDTO wordDTO,
-                                       final @RequestParam(value = "u", required = false) String u) {
+    public ResponseEntity<WordDTO> create(final @Valid @RequestBody WordDTO wordDTO,
+                                          final @RequestParam(value = "u", required = false) String u) {
         if (null == wordDTO || null == u) {
             return ResponseEntity.badRequest().build();
         }
 
-        service.create(wordDTO, u);
+        WordDTO created = service.create(wordDTO, u);
 
-        Link link = linkTo(methodOn(WordController.class).create(wordDTO, u))
-                .slash(wordDTO.getId())
-                .withRel("retrieve");
-
-        return ResponseEntity.created(link.toUri()).build();
+        return ResponseEntity.ok(created);
     }
 
     @GetMapping(
@@ -73,7 +68,7 @@ public class WordController {
     }
 
     @PutMapping(
-            value = "{word}",
+            value = "/{word}",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
@@ -83,12 +78,20 @@ public class WordController {
         return ResponseEntity.ok().body(updatedWordDTO);
     }
 
+    @GetMapping(
+            value = "/random",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<WordDTO> retrieve() {
+        return ResponseEntity.ok(service.retrieveRandom());
+    }
+
     @PostMapping(
             value = "/read",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public ResponseEntity<Void> readCSV(@RequestParam("excel_file") MultipartFile excelFile) {
-        boolean success = service.readCSV(excelFile);
+        boolean success = fileService.writeWordsInSpreadsheetToDB(excelFile);
 
         return success ? ResponseEntity.status(HttpStatus.CREATED).build() : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }

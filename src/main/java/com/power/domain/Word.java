@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "WORD")
@@ -32,13 +33,19 @@ public class Word {
     private String definition;
 
     @Column
+    private PartOfSpeech partOfSpeech;
+
+    @Column
     private String pronunciation;
 
     @Column
     private String origin;
 
     @Column
-    private PartOfSpeech partOfSpeech;
+    private String exampleUsage;
+
+    @Column
+    private LocalDate creationDate;
 
     @Column
     private Boolean haveLearnt;
@@ -48,4 +55,5 @@ public class Word {
 
     @Column
     private Integer timesViewed;
+
 }
