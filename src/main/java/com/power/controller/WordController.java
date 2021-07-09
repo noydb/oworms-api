@@ -1,6 +1,6 @@
 package com.power.controller;
 
-import com.power.api.WordAPI;
+import com.power.controller.api.WordAPI;
 import com.power.dto.WordDTO;
 import com.power.service.WordService;
 import org.springframework.http.MediaType;

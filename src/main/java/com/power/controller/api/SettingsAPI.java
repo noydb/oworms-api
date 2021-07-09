@@ -1,4 +1,4 @@
-package com.power.api;
+package com.power.controller.api;
 
 import com.power.dto.StatisticsDTO;
 import io.swagger.annotations.ApiOperation;

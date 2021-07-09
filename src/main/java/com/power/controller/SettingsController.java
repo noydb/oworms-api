@@ -1,6 +1,6 @@
 package com.power.controller;
 
-import com.power.api.SettingsAPI;
+import com.power.controller.api.SettingsAPI;
 import com.power.dto.StatisticsDTO;
 import com.power.service.SettingsService;
 import org.springframework.http.MediaType;
