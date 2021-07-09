@@ -1,93 +1,93 @@
 package com.power.service;
 
-import com.power.domain.PartOfSpeech;
 import com.power.domain.Word;
+import com.power.error.OWormException;
+import com.power.error.OWormExceptionType;
 import com.power.repository.WordRepository;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
+import com.power.util.FileUtil;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
+import java.io.InputStream;
 import java.util.List;
-import java.util.Locale;
-
-import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @Service
 public class FileService {
 
     private final WordRepository repository;
+    private final HelperService helperService;
 
-    private static final List<String> PARTS_OF_SPEECH = Arrays.asList("Adjective", "Adverb", "Noun", "Verb", "Other");
-
-    public FileService(WordRepository repository) {
+    public FileService(final WordRepository repository,
+                       final HelperService helperService) {
         this.repository = repository;
+        this.helperService = helperService;
     }
 
-    public boolean writeWordsInSpreadsheetToDB(MultipartFile excelFile) {
+    public InputStreamResource getWordsInCSV() {
+        try {
+            File file = new File(FileUtil.getCSVName());
+            FileWriter fileWriter = new FileWriter(file);
+
+            final String FILE_HEADERS = "word,definition,partOfSpeech,pronunciation,origin,exampleUsage,creationDate,haveLearnt,createdBy,timesViewed";
+            fileWriter.append(FILE_HEADERS).append("\n");
+
+            List<Word> words = repository.findAll();
+            for (Word word : words) {
+                fileWriter.append(FileUtil.convertWordToRow(word));
+            }
+
+            fileWriter.flush();
+            fileWriter.close();
+
+            InputStream input = new FileInputStream(file);
+
+            return new InputStreamResource(input);
+        } catch (IOException e) {
+            throw new OWormException(
+                    OWormExceptionType.CSV_WRITE_FAILURE,
+                    "Error while writing words in database to CSV",
+                    e.getMessage()
+            );
+        }
+    }
+
+    public void writeWordsInSpreadsheetToDB(MultipartFile excelFile, String permissionKey) {
+        helperService.checkPermission(permissionKey);
+
         try {
             XSSFWorkbook workbook = new XSSFWorkbook(excelFile.getInputStream());
+            XSSFSheet sheet = workbook.getSheetAt(0);
 
-            for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
-                XSSFSheet worksheet = workbook.getSheetAt(i);
+            // 1 because we ignore the headers
+            for (int x = 1; x < sheet.getPhysicalNumberOfRows(); x++) {
+                final Word word = FileUtil.convertRowToWord(sheet, x);
 
-                // 2 because we ignore the headers
-                for (int x = 2; x < worksheet.getPhysicalNumberOfRows(); x++) {
-                    final Word word = convertColumnValuesToWord(worksheet, x, i);
+                if (null == word) {
+                    break;
+                }
 
-                    if (null == word) {
-                        break;
-                    }
-
+                // if a word already exists it will be skipped
+                if (!wordExists(word.getTheWord())) {
                     repository.save(word);
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
-
-            return false;
+            throw new OWormException(
+                    OWormExceptionType.CSV_READ_FAILURE,
+                    "Error while writing words in spreadsheet to database",
+                    e.getMessage()
+            );
         }
-
-        return true;
     }
 
-    private Word convertColumnValuesToWord(final XSSFSheet worksheet, int rowIndex, int sheetIndex) {
-        XSSFRow row = worksheet.getRow(rowIndex);
-
-        final Word word = new Word();
-
-        if (row == null) {
-            return null;
-        }
-
-        final XSSFCell theWordCell = row.getCell(0);
-        if (null != theWordCell && !isBlank(theWordCell.getStringCellValue())) {
-            word.setTheWord(theWordCell.getStringCellValue().trim());
-        }
-
-        final XSSFCell definitionCell = row.getCell(1);
-        if (null != definitionCell) {
-            String definition = definitionCell.getStringCellValue().toLowerCase(Locale.ROOT).trim();
-            word.setDefinition(definition);
-        }
-
-        final XSSFCell originCell = row.getCell(2);
-        if (null != originCell) {
-            word.setOrigin(originCell.getStringCellValue().toLowerCase(Locale.ROOT).trim());
-        }
-
-        final String partOfSpeech = FileService.PARTS_OF_SPEECH.get(sheetIndex);
-        word.setPartOfSpeech(PartOfSpeech.getPartOfSpeech(partOfSpeech));
-
-        word.setCreatedBy("bp");
-        word.setHaveLearnt(false);
-        word.setTimesViewed(0);
-
-        return word;
+    private boolean wordExists(String theWord) {
+        return repository.findByTheWordIgnoreCase(theWord).isPresent();
     }
-
 }

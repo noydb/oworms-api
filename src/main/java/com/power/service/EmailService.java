@@ -1,10 +1,13 @@
 package com.power.service;
 
-import com.power.dto.NewWordEmailDTO;
+import com.power.dto.EmailDTO;
 import com.power.dto.WordDTO;
+import com.power.error.OWormException;
+import com.power.error.OWormExceptionType;
 import com.power.mail.MailContentBuilder;
 import com.power.mail.MailProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
@@ -29,24 +32,12 @@ public class EmailService {
         this.properties = properties;
     }
 
-    public void sendNewWordEmail(WordDTO wordDTO) {
-        NewWordEmailDTO newWordEmail = new NewWordEmailDTO();
-        newWordEmail.setWord(wordDTO.getTheWord());
-        newWordEmail.setDefinition(wordDTO.getDefinition());
-        newWordEmail.setPartOfSpeech(wordDTO.getPartOfSpeech());
-
-        newWordEmail.setRecipients(new String[]{});
-
-        String retrievalLink = properties.getRetrievalLink().replace("{theWord}", wordDTO.getTheWord());
-        newWordEmail.setRetrievalLink(retrievalLink);
-
-        sendEmail(newWordEmail);
-    }
-
-    private void sendEmail(NewWordEmailDTO newWordEmail) {
+    public void sendEmail(String title, String action, WordDTO wordDTO) {
         if (properties.isDisabled()) {
             return;
         }
+
+        EmailDTO emailDTO = getEmailDTO(title, action, wordDTO);
 
         String[] recipients = properties.getRecipients().split(",");
 
@@ -55,15 +46,24 @@ public class EmailService {
 
             messageHelper.setFrom("bot@oworms.com");
             messageHelper.setTo(recipients[0]);
-            messageHelper.setSubject(NewWordEmailDTO.SUBJECT);
+            messageHelper.setSubject(title);
             messageHelper.setBcc(recipients);
 
-            String messageContent = mailContentBuilder.build(newWordEmail, NewWordEmailDTO.TEMPLATE);
+            String messageContent = mailContentBuilder.build(emailDTO, EmailDTO.TEMPLATE);
 
             messageHelper.setText(messageContent, true);
         };
 
-        mailSender.send(messagePrep);
+        try {
+            mailSender.send(messagePrep);
+        } catch (MailException e) {
+            throw new OWormException(OWormExceptionType.EMAIL_SEND_FAILURE, "Failed to send new word email");
+        }
     }
 
+    private EmailDTO getEmailDTO(String title, String action, WordDTO wordDTO) {
+        String retrievalLink = properties.getRetrievalLink().replace("{id}", String.valueOf(wordDTO.getId()));
+
+        return new EmailDTO(title, action, wordDTO, retrievalLink);
+    }
 }

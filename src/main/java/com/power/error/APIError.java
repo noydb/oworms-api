@@ -14,5 +14,10 @@ public class APIError {
     private LocalDateTime timestamp;
     private HttpStatus status;
     private String message;
-    private String debugMessage;
+
+    public APIError(LocalDateTime timestamp, HttpStatus status, String message) {
+        this.timestamp = timestamp;
+        this.status = status;
+        this.message = message;
+    }
 }

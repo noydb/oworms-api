@@ -11,7 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "WORD")
@@ -45,15 +45,14 @@ public class Word {
     private String exampleUsage;
 
     @Column
-    private LocalDate creationDate;
+    private boolean haveLearnt = false;
 
     @Column
-    private boolean haveLearnt = false;
+    private LocalDateTime creationDate;
 
     @Column
     private String createdBy;
 
     @Column
     private Integer timesViewed;
-
 }

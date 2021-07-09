@@ -12,12 +12,7 @@ import static java.util.stream.Collectors.toList;
 @Component
 public class WordMapper {
 
-    public Word map(WordDTO wordDTO, String id) {
-        String createdBy = wordDTO.getCreatedBy();
-        if (createdBy == null) {
-            createdBy = id;
-        }
-
+    public Word map(WordDTO wordDTO) {
         PartOfSpeech partOfSpeech = PartOfSpeech.getPartOfSpeech(wordDTO.getPartOfSpeech());
 
         return Word
@@ -28,9 +23,9 @@ public class WordMapper {
                 .pronunciation(wordDTO.getPronunciation())
                 .origin(wordDTO.getOrigin())
                 .exampleUsage(wordDTO.getExampleUsage())
-                .creationDate(wordDTO.getCreationDate())
                 .haveLearnt(wordDTO.isHaveLearnt())
-                .createdBy(createdBy)
+                .creationDate(wordDTO.getCreationDate())
+                .createdBy(wordDTO.getCreatedBy())
                 .timesViewed(wordDTO.getTimesViewed())
                 .build();
     }
@@ -45,8 +40,8 @@ public class WordMapper {
                 .pronunciation(word.getPronunciation())
                 .origin(word.getOrigin())
                 .exampleUsage(word.getExampleUsage())
-                .creationDate(word.getCreationDate())
                 .haveLearnt(word.isHaveLearnt())
+                .creationDate(word.getCreationDate())
                 .createdBy(word.getCreatedBy())
                 .timesViewed(word.getTimesViewed())
                 .build();

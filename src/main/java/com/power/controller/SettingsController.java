@@ -1,17 +1,17 @@
 package com.power.controller;
 
+import com.power.api.SettingsAPI;
 import com.power.dto.StatisticsDTO;
 import com.power.service.SettingsService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/o/settings")
-public class SettingsController {
+public class SettingsController implements SettingsAPI {
 
     private final SettingsService service;
 
@@ -20,7 +20,7 @@ public class SettingsController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StatisticsDTO> getStatistics(final @RequestParam(value = "u", required = false) String u) {
+    public ResponseEntity<StatisticsDTO> getStatistics() {
         return ResponseEntity.ok(service.getStatistics());
     }
 }

@@ -1,9 +1,8 @@
 package com.power.controller;
 
+import com.power.api.WordAPI;
 import com.power.dto.WordDTO;
-import com.power.service.FileService;
 import com.power.service.WordService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,39 +13,34 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping(value = "/o/worms")
-public class WordController {
+public class WordController implements WordAPI {
 
     private final WordService service;
-    private final FileService fileService;
 
-    public WordController(final WordService service, final FileService fileService) {
+    public WordController(final WordService service) {
         this.service = service;
-        this.fileService = fileService;
     }
 
+    @Override
     @PostMapping(
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<WordDTO> create(final @Valid @RequestBody WordDTO wordDTO,
-                                          final @RequestParam(value = "u", required = false) String u) {
-        if (null == wordDTO || null == u) {
-            // throw custom error.
-            return ResponseEntity.badRequest().build();
-        }
-
-        WordDTO created = service.create(wordDTO, u);
+                                          final @RequestParam(value = "permission_key") String permissionKey,
+                                          final @RequestParam(value = "u") String user) {
+        WordDTO created = service.create(wordDTO, permissionKey, user);
 
         return ResponseEntity.ok(created);
     }
 
+    @Override
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -60,41 +54,35 @@ public class WordController {
         );
     }
 
+    @Override
     @GetMapping(
-            value = "/{word}",
+            value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<WordDTO> retrieve(@PathVariable("word") String theWord) {
-        return ResponseEntity.ok(service.retrieve(theWord));
+    public ResponseEntity<WordDTO> retrieve(@PathVariable("id") Long wordId) {
+        return ResponseEntity.ok(service.retrieve(wordId));
     }
 
-    @PutMapping(
-            value = "/{word}",
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<WordDTO> update(@PathVariable("word") String theWord, @RequestBody WordDTO updatedWord) {
-        WordDTO updatedWordDTO = service.update(theWord, updatedWord);
-
-        return ResponseEntity.ok().body(updatedWordDTO);
-    }
-
+    @Override
     @GetMapping(
             value = "/random",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<WordDTO> retrieve() {
+    public ResponseEntity<WordDTO> retrieveRandom() {
         return ResponseEntity.ok(service.retrieveRandom());
     }
 
-    @PostMapping(
-            value = "/read",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    @Override
+    @PutMapping(
+            value = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Void> readCSV(@RequestParam("excel_file") MultipartFile excelFile) {
-        boolean success = fileService.writeWordsInSpreadsheetToDB(excelFile);
+    public ResponseEntity<WordDTO> update(@PathVariable("id") Long wordId,
+                                          @RequestParam(value = "permission_key") String permissionKey,
+                                          @RequestBody WordDTO updatedWord) {
+        WordDTO updatedWordDTO = service.update(wordId, updatedWord, permissionKey);
 
-        // throw custom error.
-        return success ? ResponseEntity.status(HttpStatus.CREATED).build() : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        return ResponseEntity.ok().body(updatedWordDTO);
     }
 }

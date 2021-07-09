@@ -8,7 +8,7 @@ import lombok.Setter;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Valid
 @Getter
@@ -35,7 +35,7 @@ public class WordDTO {
 
     private String exampleUsage;
 
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
 
     private boolean haveLearnt = false;
 

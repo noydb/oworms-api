@@ -1,7 +1,5 @@
 package com.power.util;
 
-import com.power.dto.WordDTO;
-
 import java.util.Locale;
 
 public class WordUtil {
@@ -18,26 +16,26 @@ public class WordUtil {
             return arg == null && argTheSecond == null;
         }
 
-        return clean(arg).contains(clean(argTheSecond));
+        return arg.toLowerCase(Locale.ROOT).contains(argTheSecond.toLowerCase(Locale.ROOT));
     }
 
-    private static String clean(String arg) {
-        if (arg == null) {
+    /**
+     * Some of the string fields on {@link com.power.domain.Word} could have commas in them.
+     * This wraps the values that do in "" so the CSV does not split inadvertently
+     *
+     * @param input string will be checked for "," value(s)
+     * @return the argument wrapped in double quotes if commas are present or the argument if
+     * no commas are present or null if the argument is null.
+     */
+    public static String wrapTextIfCommaPresent(String input) {
+        if (WordUtil.isBlank(input)) {
             return null;
         }
 
-        return arg.trim().toLowerCase(Locale.ROOT);
-    }
-
-    public static void clean(WordDTO wordDTO) {
-        String theWord = wordDTO.getTheWord();
-        if (!isBlank(theWord)) {
-            wordDTO.setTheWord(clean(theWord));
+        if (input.contains(",")) {
+            return "\"" + input + "\"";
         }
 
-        String definition = wordDTO.getDefinition();
-        if (!isBlank(definition)) {
-            wordDTO.setDefinition(clean(definition));
-        }
+        return input;
     }
 }
