@@ -1,6 +1,6 @@
 package com.power.controller;
 
-import com.power.api.FileAPI;
+import com.power.controller.api.FileAPI;
 import com.power.service.FileService;
 import com.power.util.FileUtil;
 import org.springframework.core.io.InputStreamResource;

@@ -129,6 +129,6 @@ public class WordService {
     private Word findById(Long id) {
         return repository
                 .findById(id)
-                .orElseThrow(() -> new OWormException(OWormExceptionType.WORD_NOT_FOUND, "The word you are trying to update does not exist"));
+                .orElseThrow(() -> new OWormException(OWormExceptionType.WORD_NOT_FOUND, "A word with id " + id + " does not exist"));
     }
 }
