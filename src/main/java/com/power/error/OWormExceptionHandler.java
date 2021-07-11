@@ -30,7 +30,7 @@ public class OWormExceptionHandler {
         switch (exceptionType) {
             case WORD_EXISTS:
                 return HttpStatus.CONFLICT;
-            case WORD_NOT_FOUND:
+            case NOT_FOUND:
                 return HttpStatus.NOT_FOUND;
             case INSUFFICIENT_RIGHTS:
                 return HttpStatus.FORBIDDEN;

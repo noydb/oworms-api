@@ -46,14 +46,17 @@ public interface WordAPI {
 
     @ApiOperation(
             value = "Retrieves all words meeting the criteria provided by the query parameters. " +
-                    "If no query parameters are specified, all words will be returned." +
-                    "If no words exist, an empty array will be returned.",
+                    "If no query parameters are specified, all words will be returned.",
             response = List.class
     )
     @ApiResponses(value = {
             @ApiResponse(
                     code = 200,
                     message = "Retrieved all words"
+            ),
+            @ApiResponse(
+                    code = 404,
+                    message = "If now words are found"
             ),
             @ApiResponse(
                     code = 500,
@@ -87,6 +90,26 @@ public interface WordAPI {
             )
     })
     ResponseEntity<WordDTO> retrieve(Long wordId);
+
+    @ApiOperation(
+            value = "Retrieves details for the word using the Oxford Dictionaries API in a JSON string format",
+            response = String.class
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    code = 200,
+                    message = "Retrieved details"
+            ),
+            @ApiResponse(
+                    code = 404,
+                    message = "That word does not exist"
+            ),
+            @ApiResponse(
+                    code = 500,
+                    message = "An error occurred while retrieving details"
+            )
+    })
+    ResponseEntity<String> oxfordRetrieve(String theWord, String permissionKey);
 
     @ApiOperation(
             value = "Retrieves a random word",

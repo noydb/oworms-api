@@ -15,6 +15,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.security.NoSuchAlgorithmException;
@@ -84,6 +85,10 @@ public class WordService {
 
         final List<Word> filteredWords = FilterUtil.filter(words, theWord, definition, partsOfSpeech, creator, haveLearnt);
 
+        if (filteredWords.isEmpty()) {
+            throw new OWormException(OWormExceptionType.NOT_FOUND, "No words were found");
+        }
+
         return mapper.map(filteredWords);
     }
 
@@ -126,7 +131,11 @@ public class WordService {
 
         String url = oxfordApiURL.replace("{theWord}", theWord);
 
-        return restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+        try {
+            return restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+        } catch (RestClientException e) {
+            throw new OWormException(OWormExceptionType.GENERAL_FAILURE, "Error while searching Oxford API", e.getMessage());
+        }
     }
 
     public WordDTO update(Long wordId, WordDTO updatedWord, String permissionKey) {
@@ -160,6 +169,6 @@ public class WordService {
     private Word findById(Long id) {
         return repository
                 .findById(id)
-                .orElseThrow(() -> new OWormException(OWormExceptionType.WORD_NOT_FOUND, "A word with id " + id + " does not exist"));
+                .orElseThrow(() -> new OWormException(OWormExceptionType.NOT_FOUND, "A word with an ID of " + id + " does not exist"));
     }
 }

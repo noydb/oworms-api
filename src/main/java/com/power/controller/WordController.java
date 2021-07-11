@@ -72,6 +72,7 @@ public class WordController implements WordAPI {
         return ResponseEntity.ok(service.retrieveRandom());
     }
 
+    @Override
     @GetMapping(
             value = "/oxford/{theWord}",
             produces = MediaType.APPLICATION_JSON_VALUE
