@@ -8,8 +8,14 @@ import com.power.error.OWormExceptionType;
 import com.power.mapper.WordMapper;
 import com.power.repository.WordRepository;
 import com.power.util.FilterUtil;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -24,6 +30,15 @@ public class WordService {
     private final WordMapper mapper;
     private final EmailService emailService;
     private final HelperService helperService;
+
+    @Value("${oxford.api.url}")
+    private String oxfordApiURL;
+
+    @Value("${oxford.app.id}")
+    private String oxfordAppId;
+
+    @Value("${oxford.app.key}")
+    private String oxfordAppKey;
 
     public WordService(final WordRepository repository,
                        final WordMapper mapper,
@@ -96,6 +111,22 @@ public class WordService {
         Word randomWord = words.get(randomIndex);
 
         return mapper.map(randomWord);
+    }
+
+    public ResponseEntity<String> oxfordRetrieve(String theWord, String permissionKey) {
+        helperService.checkPermission(permissionKey);
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("app_id", oxfordAppId);
+        headers.set("app_key", oxfordAppKey);
+
+        HttpEntity<String> entity = new HttpEntity<>("body", headers);
+
+        String url = oxfordApiURL.replace("{theWord}", theWord);
+
+        return restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
     }
 
     public WordDTO update(Long wordId, WordDTO updatedWord, String permissionKey) {

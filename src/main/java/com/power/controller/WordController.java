@@ -72,6 +72,15 @@ public class WordController implements WordAPI {
         return ResponseEntity.ok(service.retrieveRandom());
     }
 
+    @GetMapping(
+            value = "/oxford/{theWord}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<String> oxfordRetrieve(@PathVariable("theWord") String theWord,
+                                                 @RequestParam(value = "permission_key") String permissionKey) {
+        return service.oxfordRetrieve(theWord, permissionKey);
+    }
+
     @Override
     @PutMapping(
             value = "/{id}",
