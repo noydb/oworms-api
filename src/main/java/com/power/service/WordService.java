@@ -67,7 +67,7 @@ public class WordService {
 
         WordDTO createdWord = mapper.map(word);
 
-        emailService.sendEmail("o-worms | new word added", "A new word was recently added", createdWord);
+        emailService.sendEmail("oworms | new word added", "A new word was recently added", createdWord);
 
         return createdWord;
     }
@@ -161,7 +161,7 @@ public class WordService {
 
         WordDTO updateWord = mapper.map(word);
 
-        emailService.sendEmail("o-worms | word updated", "A word was recently updated", updateWord);
+        emailService.sendEmail("oworms | word updated", "A word was recently updated", updateWord);
 
         return updateWord;
     }
