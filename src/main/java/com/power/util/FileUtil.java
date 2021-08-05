@@ -46,7 +46,6 @@ public class FileUtil {
 
         final LocalDateTime creationDate = row.getCell(7).getLocalDateTimeCellValue();
         if (creationDate == null) {
-            // doesn't set time....
             word.setCreationDate(LocalDateTime.now());
         } else {
             word.setCreationDate(creationDate);

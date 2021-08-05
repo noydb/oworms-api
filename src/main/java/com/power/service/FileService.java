@@ -35,7 +35,8 @@ public class FileService {
             File file = new File(FileUtil.getCSVName());
             FileWriter fileWriter = new FileWriter(file);
 
-            final String FILE_HEADERS = "word,definition,partOfSpeech,pronunciation,origin,exampleUsage,creationDate,haveLearnt,createdBy,timesViewed";
+            final String FILE_HEADERS = "word,definition,partOfSpeech,pronunciation,origin," +
+                    "exampleUsage,haveLearnt,creationDate,createdBy,timesViewed";
             fileWriter.append(FILE_HEADERS).append("\n");
 
             List<Word> words = repository.findAll();
