@@ -65,9 +65,10 @@ public class WordService {
 
         repository.save(word);
 
+        int numberOfWords = repository.findAll().size();
         WordDTO createdWord = mapper.map(word);
 
-        emailService.sendEmail("oworms | new word added", "A new word was recently added", createdWord);
+        emailService.sendEmail("oworms | word #" + numberOfWords + "added", "A new word was recently added", createdWord);
 
         return createdWord;
     }
