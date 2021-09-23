@@ -54,6 +54,7 @@ public class WordService {
     @Transactional
     public WordDTO create(final WordDTO wordDTO, String permissionKey, String user) {
         helperService.checkPermission(permissionKey);
+        helperService.checkActionLimit();
 
         if (wordExists(wordDTO)) {
             throw new OWormException(OWormExceptionType.WORD_EXISTS, "The word, " + wordDTO.getTheWord() + " already exists");
@@ -82,6 +83,8 @@ public class WordService {
                                      List<String> partsOfSpeech,
                                      String creator,
                                      String haveLearnt) {
+        helperService.checkRetrievalLimit();
+
         final List<Word> words = repository.findAll();
 
         final List<Word> filteredWords = FilterUtil.filter(words, theWord, definition, partsOfSpeech, creator, haveLearnt);
@@ -94,6 +97,8 @@ public class WordService {
     }
 
     public WordDTO retrieve(final Long wordId) {
+        helperService.checkRetrievalLimit();
+
         final Word word = findById(wordId);
 
         word.setTimesViewed(word.getTimesViewed() + 1);
@@ -103,6 +108,8 @@ public class WordService {
     }
 
     public WordDTO retrieveRandom() {
+        helperService.checkRetrievalLimit();
+
         final List<Word> words = repository.findAll();
 
         Random rand;
@@ -121,6 +128,7 @@ public class WordService {
 
     public ResponseEntity<String> oxfordRetrieve(String theWord, String permissionKey) {
         helperService.checkPermission(permissionKey);
+        helperService.checkRetrievalLimit();
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -141,6 +149,7 @@ public class WordService {
 
     public WordDTO update(Long wordId, WordDTO updatedWord, String permissionKey) {
         helperService.checkPermission(permissionKey);
+        helperService.checkActionLimit();
 
         Word word = findById(wordId);
 
