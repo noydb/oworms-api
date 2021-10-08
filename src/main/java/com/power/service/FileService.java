@@ -36,7 +36,7 @@ public class FileService {
             FileWriter fileWriter = new FileWriter(file);
 
             final String FILE_HEADERS = "word,definition,partOfSpeech,pronunciation,origin," +
-                    "exampleUsage,haveLearnt,creationDate,createdBy,timesViewed";
+                    "exampleUsage,note,haveLearnt,creationDate,createdBy,timesViewed";
             fileWriter.append(FILE_HEADERS).append("\n");
 
             List<Word> words = repository.findAll();

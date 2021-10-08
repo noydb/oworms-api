@@ -24,6 +24,10 @@ public class FileUtil {
         //****** column order follows Word class field order ******//
 
         final String theWord = FileUtil.getCellValue(row.getCell(0));
+        if (WordUtil.isBlank(theWord)) {
+            return null; // parser sometimes detects blank rows. we kill it here if that happens
+        }
+
         word.setTheWord(theWord);
 
         final String definition = FileUtil.getCellValue(row.getCell(1));
@@ -41,20 +45,23 @@ public class FileUtil {
         final String exampleUsage = FileUtil.getCellValue(row.getCell(5));
         word.setExampleUsage(exampleUsage);
 
-        final boolean haveLearnt = row.getCell(6).getBooleanCellValue();
+        final String note = FileUtil.getCellValue(row.getCell(6));
+        word.setNote(note);
+
+        final boolean haveLearnt = row.getCell(7).getBooleanCellValue();
         word.setHaveLearnt(haveLearnt);
 
-        final LocalDateTime creationDate = row.getCell(7).getLocalDateTimeCellValue();
+        final String creationDate = row.getCell(8).getStringCellValue();
         if (creationDate == null) {
             word.setCreationDate(LocalDateTime.now());
         } else {
-            word.setCreationDate(creationDate);
+            word.setCreationDate(LocalDateTime.parse(creationDate));
         }
 
-        final String createdBy = FileUtil.getCellValue(row.getCell(8));
+        final String createdBy = FileUtil.getCellValue(row.getCell(9));
         word.setCreatedBy(createdBy);
 
-        final double timesViewed = row.getCell(9).getNumericCellValue();
+        final double timesViewed = row.getCell(10).getNumericCellValue();
         word.setTimesViewed((int) timesViewed);
 
         return word;
@@ -62,13 +69,14 @@ public class FileUtil {
 
     public static String convertWordToRow(Word word) {
         return String.format(
-                "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s%n",
+                "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s%n",
                 getRowValue(word.getTheWord()),
-                WordUtil.wrapTextIfCommaPresent(word.getDefinition()),
+                getRowValue(word.getDefinition()),
                 word.getPartOfSpeech().getLabel(),
                 getRowValue(word.getPronunciation()),
                 getRowValue(word.getOrigin()),
                 getRowValue(word.getExampleUsage()),
+                getRowValue(word.getNote()),
                 word.isHaveLearnt(),
                 word.getCreationDate().toString(),
                 getRowValue(word.getCreatedBy()),
@@ -95,11 +103,30 @@ public class FileUtil {
     }
 
     public static String getCellValue(final XSSFCell cell) {
-        if (cell == null || WordUtil.isBlank(cell.getStringCellValue())) {
+        if (cell == null) {
             return null;
         }
 
-        return cell.getStringCellValue();
+        return getStringValue(cell);
     }
 
+    private static String getStringValue(XSSFCell cell) {
+        switch (cell.getCellType()) {
+            case NUMERIC:
+                double doubleVal = cell.getNumericCellValue();
+                return String.valueOf(doubleVal);
+            case STRING:
+                return cell.getStringCellValue();
+            case ERROR:
+                return String.valueOf(cell.getErrorCellValue());
+            case BLANK:
+                return "";
+            case FORMULA:
+                return cell.getCellFormula();
+            case BOOLEAN:
+                return String.valueOf(cell.getBooleanCellValue());
+            default:
+                return "error getting string from cell";
+        }
+    }
 }

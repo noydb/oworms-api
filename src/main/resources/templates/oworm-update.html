@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+
+    <title th:text="${message.title}"></title>
+
+    <style>
+        .old {
+            color: #b81515;
+        }
+
+        .new {
+            color: #41c71b;
+        }
+    </style>
+</head>
+<body style="font-family: 'Courier New', sans-serif; font-size: 16px">
+<div style="margin-bottom: 1.5rem">
+    <label th:text="${message.action}"></label>
+</div>
+
+<div>
+    <label>Word: </label>
+    <label class="old" th:text="${message.oldWord.theWord}"></label>
+    <span> -> </span>
+    <label class="new" th:text="${message.updatedWord.theWord}"></label>
+</div>
+<div>
+    <label>Definition: </label>
+    <label class="old" th:text="${message.oldWord.definition}"></label>
+    <span> -> </span>
+    <label class="new" th:text="${message.updatedWord.definition}"></label>
+</div>
+<div>
+    <label>Part Of Speech: </label>
+    <label class="old" th:text="${message.oldWord.partOfSpeech}"></label>
+    <span> -> </span>
+    <label class="new" th:text="${message.updatedWord.partOfSpeech}"></label>
+</div>
+<div>
+    <label>Pronunciation: </label>
+    <label class="old"
+           th:if="${message.oldWord.pronunciation != null}"
+           th:text="${message.oldWord.pronunciation}"></label>
+    <span th:if="${message.oldWord.pronunciation != null}"> -> </span>
+    <label class="new" th:text="${message.updatedWord.pronunciation}"></label>
+</div>
+<div>
+    <label>Origin: </label>
+    <label class="old"
+           th:if="${message.oldWord.origin != null}"
+           th:text="${message.oldWord.origin}"></label>
+    <span th:if="${message.oldWord.origin != null}"> -> </span>
+    <label class="new" th:text="${message.updatedWord.origin}"></label>
+</div>
+<div>
+    <label>Example Usage: </label>
+    <label class="old"
+           th:if="${message.oldWord.exampleUsage != null}"
+           th:text="${message.oldWord.exampleUsage}"></label>
+    <span th:if="${message.oldWord.exampleUsage != null}"> -> </span>
+    <label class="new" th:text="${message.updatedWord.exampleUsage}"></label>
+</div>
+<div>
+    <label>Have Learnt: </label>
+    <label class="old" th:text="${message.oldWord.haveLearnt}"></label>
+    <span> -> </span>
+    <label class="new" th:text="${message.updatedWord.haveLearnt}"></label>
+</div>
+<div>
+    <label>Created By: </label>
+    <label th:text="${message.oldWord.createdBy}"></label>
+</div>
+<div>
+    <label>Times Viewed: </label>
+    <label th:text="${message.oldWord.timesViewed}"></label>
+</div>
+
+<div style="margin-top: 1.5rem; margin-bottom: 1.5rem">
+    <label>To view more details about this word, visit:</label>
+    <a th:href="${message.retrievalLink}">
+        <label th:text="${message.retrievalLink}"></label>
+    </a>
+</div>
+
+<div>
+    <p>Regards,</p>
+    <p>"bot"</p>
+</div>
+
+</body>
+</html>
