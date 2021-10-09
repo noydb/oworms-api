@@ -1,6 +1,7 @@
 package com.power.service;
 
-import com.power.dto.EmailDTO;
+import com.power.dto.NewWordEmailDTO;
+import com.power.dto.UpdatedWordEmailDTO;
 import com.power.dto.WordDTO;
 import com.power.error.OWormException;
 import com.power.error.OWormExceptionType;
@@ -32,12 +33,12 @@ public class EmailService {
         this.properties = properties;
     }
 
-    public void sendEmail(String title, String action, WordDTO wordDTO) {
+    public void sendNewWordEmail(String title, WordDTO wordDTO) {
         if (properties.isDisabled()) {
             return;
         }
 
-        EmailDTO emailDTO = getEmailDTO(title, action, wordDTO);
+        NewWordEmailDTO newWordEmailDTO = getNewWordEmailDTO(title, wordDTO);
 
         String[] recipients = properties.getRecipients().split(",");
 
@@ -49,7 +50,7 @@ public class EmailService {
             messageHelper.setSubject(title);
             messageHelper.setBcc(recipients);
 
-            String messageContent = mailContentBuilder.build(emailDTO, EmailDTO.TEMPLATE);
+            String messageContent = mailContentBuilder.build(newWordEmailDTO, NewWordEmailDTO.TEMPLATE);
 
             messageHelper.setText(messageContent, true);
         };
@@ -61,9 +62,45 @@ public class EmailService {
         }
     }
 
-    private EmailDTO getEmailDTO(String title, String action, WordDTO wordDTO) {
+    private NewWordEmailDTO getNewWordEmailDTO(String title, WordDTO wordDTO) {
         String retrievalLink = properties.getRetrievalLink().replace("{id}", String.valueOf(wordDTO.getId()));
 
-        return new EmailDTO(title, action, wordDTO, retrievalLink);
+        return new NewWordEmailDTO(title, wordDTO, retrievalLink);
+    }
+
+    public void sendUpdateWordEmail(String title, WordDTO oldWord, WordDTO updatedWord) {
+        if (properties.isDisabled()) {
+            return;
+        }
+
+        String[] recipients = properties.getRecipients().split(",");
+
+        MimeMessagePreparator messagePrep = (MimeMessage mimeMessage) -> {
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+            messageHelper.setFrom("bot@oworms.com");
+            messageHelper.setTo(recipients[0]);
+            messageHelper.setSubject(title);
+            messageHelper.setBcc(recipients);
+
+            String messageContent = mailContentBuilder.build(
+                    getUpdateWordEmailDTO(title, oldWord, updatedWord),
+                    UpdatedWordEmailDTO.TEMPLATE
+            );
+
+            messageHelper.setText(messageContent, true);
+        };
+
+        try {
+            mailSender.send(messagePrep);
+        } catch (MailException e) {
+            throw new OWormException(OWormExceptionType.EMAIL_SEND_FAILURE, "Failed to send new word email");
+        }
+    }
+
+    private UpdatedWordEmailDTO getUpdateWordEmailDTO(String title, WordDTO oldWord, WordDTO updatedWord) {
+        String retrievalLink = properties.getRetrievalLink().replace("{id}", String.valueOf(updatedWord.getId()));
+
+        return new UpdatedWordEmailDTO(title, oldWord, updatedWord, retrievalLink);
     }
 }

@@ -69,7 +69,7 @@ public class WordService {
         int numberOfWords = repository.findAll().size();
         WordDTO createdWord = mapper.map(word);
 
-        emailService.sendEmail("oworms | word #" + numberOfWords + " added", "A new word was recently added", createdWord);
+        emailService.sendNewWordEmail("oworms | word #" + numberOfWords + " added", createdWord);
 
         return createdWord;
     }
@@ -152,6 +152,7 @@ public class WordService {
         helperService.checkActionLimit();
 
         Word word = findById(wordId);
+        WordDTO oldWordDTO = mapper.map(word);
 
         boolean alreadyExists = repository.findByTheWordIgnoreCaseAndIdNot(updatedWord.getTheWord(), wordId).isPresent();
         if (alreadyExists) {
@@ -168,12 +169,15 @@ public class WordService {
         // creationDate, createdBy, and timesViewed cannot be modified.
 
         word = repository.save(word);
+        updatedWord = mapper.map(word);
 
-        WordDTO updateWord = mapper.map(word);
+        emailService.sendUpdateWordEmail(
+                "oworms | word #" + word.getId() + " updated",
+                oldWordDTO,
+                updatedWord
+        );
 
-        emailService.sendEmail("oworms | word updated", "A word was recently updated", updateWord);
-
-        return updateWord;
+        return updatedWord;
     }
 
     private Word findById(Long id) {
