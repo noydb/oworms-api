@@ -23,29 +23,29 @@ public class FileUtil {
 
         //****** column order follows Word class field order ******//
 
-        final String theWord = FileUtil.getCellValue(row.getCell(0));
+        final String theWord = FileUtil.getCellStringValue(row.getCell(0));
         if (WordUtil.isBlank(theWord)) {
             return null; // parser sometimes detects blank rows. we kill it here if that happens
         }
 
         word.setTheWord(theWord);
 
-        final String definition = FileUtil.getCellValue(row.getCell(1));
+        final String definition = FileUtil.getCellStringValue(row.getCell(1));
         word.setDefinition(definition);
 
-        final String partOfSpeech = FileUtil.getCellValue(row.getCell(2));
+        final String partOfSpeech = FileUtil.getCellStringValue(row.getCell(2));
         word.setPartOfSpeech(PartOfSpeech.getPartOfSpeech(partOfSpeech));
 
-        final String pronunciation = FileUtil.getCellValue(row.getCell(3));
+        final String pronunciation = FileUtil.getCellStringValue(row.getCell(3));
         word.setPronunciation(pronunciation);
 
-        final String origin = FileUtil.getCellValue(row.getCell(4));
+        final String origin = FileUtil.getCellStringValue(row.getCell(4));
         word.setOrigin(origin);
 
-        final String exampleUsage = FileUtil.getCellValue(row.getCell(5));
+        final String exampleUsage = FileUtil.getCellStringValue(row.getCell(5));
         word.setExampleUsage(exampleUsage);
 
-        final String note = FileUtil.getCellValue(row.getCell(6));
+        final String note = FileUtil.getCellStringValue(row.getCell(6));
         word.setNote(note);
 
         final boolean haveLearnt = row.getCell(7).getBooleanCellValue();
@@ -58,7 +58,7 @@ public class FileUtil {
             word.setCreationDate(LocalDateTime.parse(creationDate));
         }
 
-        final String createdBy = FileUtil.getCellValue(row.getCell(9));
+        final String createdBy = FileUtil.getCellStringValue(row.getCell(9));
         word.setCreatedBy(createdBy);
 
         final double timesViewed = row.getCell(10).getNumericCellValue();
@@ -102,15 +102,11 @@ public class FileUtil {
         return LocalDate.now().format(format);
     }
 
-    public static String getCellValue(final XSSFCell cell) {
+    private static String getCellStringValue(XSSFCell cell) {
         if (cell == null) {
             return null;
         }
 
-        return getStringValue(cell);
-    }
-
-    private static String getStringValue(XSSFCell cell) {
         switch (cell.getCellType()) {
             case NUMERIC:
                 double doubleVal = cell.getNumericCellValue();

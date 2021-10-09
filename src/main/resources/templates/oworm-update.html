@@ -20,7 +20,7 @@
 </head>
 <body style="font-family: 'Courier New', sans-serif; font-size: 16px">
 <div style="margin-bottom: 1.5rem">
-    <label th:text="${message.action}"></label>
+    <label th:text="${message.ACTION}"></label>
 </div>
 
 <div>
@@ -64,6 +64,14 @@
            th:text="${message.oldWord.exampleUsage}"></label>
     <span th:if="${message.oldWord.exampleUsage != null}"> -> </span>
     <label class="new" th:text="${message.updatedWord.exampleUsage}"></label>
+</div>
+<div>
+    <label>Note</label>
+    <label class="old"
+           th:if="${message.oldWord.note != null}"
+           th:text="${message.oldWord.note}"></label>
+    <span th:if="${message.oldWord.note != null}"> -> </span>
+    <label class="new" th:text="${message.updatedWord.note}"></label>
 </div>
 <div>
     <label>Have Learnt: </label>

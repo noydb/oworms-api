@@ -8,9 +8,8 @@ import lombok.Setter;
 public class NewWordEmailDTO {
 
     public static final String TEMPLATE = "oworm-new";
-
+    public static final String ACTION = "A new word was recently added";
     private String title;
-    private final String action = "A new word was recently added";
     private WordDTO word;
     private String retrievalLink;
 
