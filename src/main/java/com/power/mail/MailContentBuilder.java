@@ -1,6 +1,7 @@
 package com.power.mail;
 
-import com.power.dto.EmailDTO;
+import com.power.dto.NewWordEmailDTO;
+import com.power.dto.UpdatedWordEmailDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -16,11 +17,17 @@ public class MailContentBuilder {
         this.templateEngine = templateEngine;
     }
 
-    public String build(EmailDTO message, String templateName) {
+    public String build(NewWordEmailDTO message, String templateName) {
         Context context = new Context();
         context.setVariable("message", message);
 
         return templateEngine.process(templateName, context);
     }
 
+    public String build(UpdatedWordEmailDTO message, String templateName) {
+        Context context = new Context();
+        context.setVariable("message", message);
+
+        return templateEngine.process(templateName, context);
+    }
 }

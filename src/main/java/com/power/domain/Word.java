@@ -45,6 +45,9 @@ public class Word {
     private String exampleUsage;
 
     @Column
+    private String note;
+
+    @Column
     private boolean haveLearnt = false;
 
     @Column

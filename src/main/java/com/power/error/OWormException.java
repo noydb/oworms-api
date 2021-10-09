@@ -4,7 +4,7 @@ public class OWormException extends RuntimeException {
 
     private final OWormExceptionType errorType;
     private final String message;
-    private String debugMessage;
+    private final String debugMessage;
 
     public OWormException(OWormExceptionType errorType, String message, String debugMessage) {
         this.errorType = errorType;
@@ -15,6 +15,7 @@ public class OWormException extends RuntimeException {
     public OWormException(OWormExceptionType errorType, String message) {
         this.errorType = errorType;
         this.message = message;
+        this.debugMessage = null;
     }
 
     public OWormExceptionType getErrorType() {

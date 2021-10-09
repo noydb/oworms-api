@@ -47,7 +47,8 @@ public interface WordAPI {
     @ApiOperation(
             value = "Retrieves all words meeting the criteria provided by the query parameters. " +
                     "If no query parameters are specified, all words will be returned.",
-            response = List.class
+            response = WordDTO.class,
+            responseContainer = "List"
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -56,7 +57,7 @@ public interface WordAPI {
             ),
             @ApiResponse(
                     code = 404,
-                    message = "If now words are found"
+                    message = "No words found"
             ),
             @ApiResponse(
                     code = 500,
