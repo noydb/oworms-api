@@ -3,6 +3,7 @@ package com.power.controller;
 import com.power.controller.api.SettingsAPI;
 import com.power.dto.StatisticsDTO;
 import com.power.service.SettingsService;
+import com.power.util.LogUtil;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,8 @@ public class SettingsController implements SettingsAPI {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StatisticsDTO> getStatistics() {
+        LogUtil.log("Retrieving statistics");
+
         return ResponseEntity.ok(service.getStatistics());
     }
 }

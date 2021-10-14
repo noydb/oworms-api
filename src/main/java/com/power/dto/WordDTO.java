@@ -35,9 +35,11 @@ public class WordDTO {
 
     private String exampleUsage;
 
-    private LocalDateTime creationDate;
+    private String note;
 
     private boolean haveLearnt = false;
+
+    private LocalDateTime creationDate;
 
     private String createdBy;
 

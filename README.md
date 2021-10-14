@@ -1,4 +1,5 @@
 # oworms-api
+[![Maintainability](https://api.codeclimate.com/v1/badges/7bd7122324ce4551a180/maintainability)](https://codeclimate.com/github/noydb/oworms-api/maintainability)
 
 <img src="https://github.com/benj-power/oworms-ui/blob/develop/src/asset/oh-worm.jpg"></img>
 
