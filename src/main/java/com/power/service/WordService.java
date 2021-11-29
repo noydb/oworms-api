@@ -166,6 +166,7 @@ public class WordService {
         word.setOrigin(updatedWord.getOrigin());
         word.setExampleUsage(updatedWord.getExampleUsage());
         word.setHaveLearnt(updatedWord.isHaveLearnt());
+        word.setNote(updatedWord.getNote());
         // creationDate, createdBy, and timesViewed cannot be modified.
 
         word = repository.save(word);
