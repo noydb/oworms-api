@@ -1,6 +1,7 @@
 package com.power.util;
 
 import com.power.domain.PartOfSpeech;
+import com.power.domain.Tag;
 import com.power.domain.Word;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -9,6 +10,9 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class FileUtil {
 
@@ -48,8 +52,8 @@ public class FileUtil {
         final String note = FileUtil.getCellStringValue(row.getCell(6));
         word.setNote(note);
 
-        final boolean haveLearnt = row.getCell(7).getBooleanCellValue();
-        word.setHaveLearnt(haveLearnt);
+        final String tagString = FileUtil.getCellStringValue(row.getCell(7));
+        word.setTags(FileUtil.getTags(tagString));
 
         final String creationDate = row.getCell(8).getStringCellValue();
         if (creationDate == null) {
@@ -68,6 +72,13 @@ public class FileUtil {
     }
 
     public static String convertWordToRow(Word word) {
+        StringBuilder tagS = new StringBuilder();
+
+        List<Tag> tags = word.getTags();
+        for (Tag tag : tags) {
+            tagS.append(tag.getName()).append("-");
+        }
+
         return String.format(
                 "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s%n",
                 getRowValue(word.getTheWord()),
@@ -77,8 +88,8 @@ public class FileUtil {
                 getRowValue(word.getOrigin()),
                 getRowValue(word.getExampleUsage()),
                 getRowValue(word.getNote()),
-                word.isHaveLearnt(),
-                word.getCreationDate().toString(),
+                tagS,
+                getRowValue(word.getCreationDate().toString()),
                 getRowValue(word.getCreatedBy()),
                 word.getTimesViewed()
         );
@@ -100,6 +111,22 @@ public class FileUtil {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         return LocalDate.now().format(format);
+    }
+
+    private static List<Tag> getTags(String tagString) {
+        if (WordUtil.isBlank(tagString)) {
+            return Collections.emptyList();
+        }
+
+        String[] tagNames = tagString.split("-");
+
+        List<Tag> tags = new ArrayList<>();
+
+        for (String tagName : tagNames) {
+            tags.add(new Tag(tagName.toLowerCase().trim()));
+        }
+
+        return tags;
     }
 
     private static String getCellStringValue(XSSFCell cell) {

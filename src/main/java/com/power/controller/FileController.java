@@ -3,7 +3,6 @@ package com.power.controller;
 import com.power.controller.api.FileAPI;
 import com.power.service.FileService;
 import com.power.util.FileUtil;
-import com.power.util.LogUtil;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -33,7 +32,7 @@ public class FileController implements FileAPI {
     )
     public ResponseEntity<Void> readCSV(@RequestParam("excel_file") MultipartFile excelFile,
                                         @RequestParam(value = "permission_key") String permissionKey) {
-        LogUtil.log("Parsing CSV");
+//        LogUtil.log("Parsing CSV");
 
         fileService.writeWordsInSpreadsheetToDB(excelFile, permissionKey);
 
@@ -46,7 +45,7 @@ public class FileController implements FileAPI {
             path = "/csv"
     )
     public ResponseEntity<Resource> getCSV() {
-        LogUtil.log("Generating CSV");
+//        LogUtil.log("Generating CSV");
 
         InputStreamResource isResource = fileService.getWordsInCSV();
 

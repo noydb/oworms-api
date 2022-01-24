@@ -3,6 +3,7 @@ package com.power.service;
 import com.power.domain.PartOfSpeech;
 import com.power.domain.Word;
 import com.power.dto.WordDTO;
+import com.power.dto.WordRequestDTO;
 import com.power.error.OWormException;
 import com.power.error.OWormExceptionType;
 import com.power.mapper.WordMapper;
@@ -28,9 +29,9 @@ import java.util.Random;
 public class WordService {
 
     private final WordRepository repository;
-    private final WordMapper mapper;
     private final EmailService emailService;
     private final HelperService helperService;
+    private final TagService tagService;
 
     @Value("${oxford.api.url}")
     private String oxfordApiURL;
@@ -42,32 +43,34 @@ public class WordService {
     private String oxfordAppKey;
 
     public WordService(final WordRepository repository,
-                       final WordMapper mapper,
                        final EmailService emailService,
-                       final HelperService helperService) {
+                       final HelperService helperService,
+                       final TagService tagService) {
         this.repository = repository;
-        this.mapper = mapper;
         this.emailService = emailService;
         this.helperService = helperService;
+        this.tagService = tagService;
     }
 
     @Transactional
-    public WordDTO create(final WordDTO wordDTO, String permissionKey, String user) {
+    public WordDTO create(final WordRequestDTO wordRequestDTO, String permissionKey, String user) {
         helperService.checkPermission(permissionKey);
         helperService.checkActionLimit();
 
-        if (wordExists(wordDTO)) {
-            throw new OWormException(OWormExceptionType.WORD_EXISTS, "The word, " + wordDTO.getTheWord() + " already exists");
+        if (wordExists(wordRequestDTO.getWord())) {
+            throw new OWormException(OWormExceptionType.WORD_EXISTS, "That word already exists");
         }
 
-        final Word word = mapper.map(wordDTO);
+        final Word word = WordMapper.map(wordRequestDTO.getWord());
+
         word.setCreatedBy(user);
         word.setCreationDate(LocalDateTime.now());
+        repository.saveAndFlush(word);
 
-        repository.save(word);
+        tagService.updateTagsForWord(word.getId(), wordRequestDTO.getTagIds(), permissionKey);
 
-        int numberOfWords = repository.findAll().size();
-        WordDTO createdWord = mapper.map(word);
+        int numberOfWords = (int) repository.count();
+        WordDTO createdWord = WordMapper.map(word);
 
         emailService.sendNewWordEmail("oworms | word #" + numberOfWords + " added", createdWord);
 
@@ -78,22 +81,35 @@ public class WordService {
         return repository.findByTheWordIgnoreCase(wordDTO.getTheWord()).isPresent();
     }
 
-    public List<WordDTO> retrieveAll(String theWord,
-                                     String definition,
-                                     List<String> partsOfSpeech,
-                                     String creator,
-                                     String haveLearnt) {
+    public List<WordDTO> retrieveAll(String word,
+                                     List<String> pos,
+                                     String def,
+                                     String origin,
+                                     String example,
+                                     List<String> tags,
+                                     String note,
+                                     String creator) {
         helperService.checkRetrievalLimit();
 
         final List<Word> words = repository.findAll();
 
-        final List<Word> filteredWords = FilterUtil.filter(words, theWord, definition, partsOfSpeech, creator, haveLearnt);
+        final List<Word> filteredWords = FilterUtil.filter(
+                words,
+                word,
+                pos,
+                def,
+                origin,
+                example,
+                tags,
+                note,
+                creator
+        );
 
         if (filteredWords.isEmpty()) {
             throw new OWormException(OWormExceptionType.NOT_FOUND, "No words were found");
         }
 
-        return mapper.map(filteredWords);
+        return WordMapper.mapTo(filteredWords);
     }
 
     public WordDTO retrieve(final Long wordId) {
@@ -104,7 +120,9 @@ public class WordService {
         word.setTimesViewed(word.getTimesViewed() + 1);
         repository.save(word);
 
-        return mapper.map(word);
+        WordDTO wordDTO = WordMapper.map(word);
+
+        return wordDTO;
     }
 
     public WordDTO retrieveRandom() {
@@ -116,14 +134,14 @@ public class WordService {
         int randomIndex; // 0 (inclusive) -> arg (exclusive)
         try {
             rand = SecureRandom.getInstanceStrong();
-            randomIndex = rand.nextInt(words.size());
+            randomIndex = rand.nextInt((int) repository.count());
         } catch (NoSuchAlgorithmException e) {
             throw new OWormException(OWormExceptionType.GENERAL_FAILURE, "Error while retrieving random word");
         }
 
         Word randomWord = words.get(randomIndex);
 
-        return mapper.map(randomWord);
+        return WordMapper.map(randomWord);
     }
 
     public ResponseEntity<String> oxfordRetrieve(String theWord, String permissionKey) {
@@ -147,38 +165,40 @@ public class WordService {
         }
     }
 
-    public WordDTO update(Long wordId, WordDTO updatedWord, String permissionKey) {
+    public WordDTO update(Long wordId, WordRequestDTO wordRequestDTO, String permissionKey) {
         helperService.checkPermission(permissionKey);
         helperService.checkActionLimit();
 
         Word word = findById(wordId);
-        WordDTO oldWordDTO = mapper.map(word);
+        WordDTO oldWordDTO = WordMapper.map(word);
 
-        boolean alreadyExists = repository.findByTheWordIgnoreCaseAndIdNot(updatedWord.getTheWord(), wordId).isPresent();
+        WordDTO uWordDTO = wordRequestDTO.getWord();
+
+        boolean alreadyExists = repository.findByTheWordIgnoreCaseAndIdNot(uWordDTO.getTheWord(), wordId).isPresent();
         if (alreadyExists) {
             throw new OWormException(OWormExceptionType.WORD_EXISTS, "That word already exists");
         }
 
-        word.setTheWord(updatedWord.getTheWord());
-        word.setDefinition(updatedWord.getDefinition());
-        word.setPartOfSpeech(PartOfSpeech.getPartOfSpeech(updatedWord.getPartOfSpeech()));
-        word.setPronunciation(updatedWord.getPronunciation());
-        word.setOrigin(updatedWord.getOrigin());
-        word.setExampleUsage(updatedWord.getExampleUsage());
-        word.setHaveLearnt(updatedWord.isHaveLearnt());
-        word.setNote(updatedWord.getNote());
+        word.setTheWord(uWordDTO.getTheWord());
+        word.setDefinition(uWordDTO.getDefinition());
+        word.setPartOfSpeech(PartOfSpeech.getPartOfSpeech(uWordDTO.getPartOfSpeech()));
+        word.setPronunciation(uWordDTO.getPronunciation());
+        word.setOrigin(uWordDTO.getOrigin());
+        word.setExampleUsage(uWordDTO.getExampleUsage());
+        word.setNote(uWordDTO.getNote());
         // creationDate, createdBy, and timesViewed cannot be modified.
 
-        word = repository.save(word);
-        updatedWord = mapper.map(word);
+        word = repository.saveAndFlush(word);
+
+        tagService.updateTagsForWord(word.getId(), wordRequestDTO.getTagIds(), permissionKey);
 
         emailService.sendUpdateWordEmail(
                 "oworms | word #" + word.getId() + " updated",
                 oldWordDTO,
-                updatedWord
+                WordMapper.map(word)
         );
 
-        return updatedWord;
+        return uWordDTO;
     }
 
     private Word findById(Long id) {
