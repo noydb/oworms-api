@@ -24,7 +24,7 @@ public enum PartOfSpeech {
         }
 
         for (PartOfSpeech value : PartOfSpeech.values()) {
-            if (arg.equals(value.getLabel())) {
+            if (arg.equalsIgnoreCase(value.getLabel())) {
                 return value;
             }
         }

@@ -28,24 +28,13 @@ public class SettingsService {
 
         List<Word> words = repository.findAll();
 
-        int totalWords = words.size();
+        int totalWords = (int) repository.count();
         builder.totalWords(totalWords);
 
         int totalViewsOnWords = words
                 .parallelStream()
                 .reduce(0, (acc, current) -> acc + current.getTimesViewed(), Integer::sum);
         builder.totalViewsOnWords(totalViewsOnWords);
-
-        int numberOfWordsLearnt = 0;
-        for (Word word : words) {
-            boolean learnt = word.isHaveLearnt();
-            if (learnt) {
-                numberOfWordsLearnt += 1;
-            }
-        }
-
-        builder.numberOfWordsLearnt(numberOfWordsLearnt);
-        builder.percentageOfWordsLearnt(getPercentagePretty(numberOfWordsLearnt, totalWords));
 
         getPartsOfSpeechStats(builder, words);
         getFirstLetterStats(builder, words);
