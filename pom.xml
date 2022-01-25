@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.power</groupId>
     <artifactId>oworms-api</artifactId>
-    <version>1.3.10</version>
+    <version>1.4</version>
     <name>oworms-api</name>
     <description>app for storing words</description>
     <properties>
