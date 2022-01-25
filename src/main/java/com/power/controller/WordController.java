@@ -2,8 +2,8 @@ package com.power.controller;
 
 import com.power.controller.api.WordAPI;
 import com.power.dto.WordDTO;
+import com.power.dto.WordRequestDTO;
 import com.power.service.WordService;
-import com.power.util.LogUtil;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,12 +33,12 @@ public class WordController implements WordAPI {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<WordDTO> create(final @Valid @RequestBody WordDTO wordDTO,
+    public ResponseEntity<WordDTO> create(final @Valid @RequestBody WordRequestDTO wordRequestDTO,
                                           final @RequestParam(value = "permission_key") String permissionKey,
                                           final @RequestParam(value = "u") String user) {
-        LogUtil.log("Creating word", wordDTO);
+//        LogUtil.log("Creating word", wordRequestDTO);
 
-        WordDTO created = service.create(wordDTO, permissionKey, user);
+        WordDTO created = service.create(wordRequestDTO, permissionKey, user);
 
         return ResponseEntity.ok(created);
     }
@@ -47,15 +47,18 @@ public class WordController implements WordAPI {
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<List<WordDTO>> retrieveAll(@RequestParam(value = "w", required = false) String theWord,
-                                                     @RequestParam(value = "def", required = false) String definition,
-                                                     @RequestParam(value = "pos", required = false) List<String> partsOfSpeech,
-                                                     @RequestParam(value = "creator", required = false) String creator,
-                                                     @RequestParam(value = "learnt", required = false) String haveLearnt) {
-        LogUtil.log("Retrieving all words");
+    public ResponseEntity<List<WordDTO>> retrieveAll(@RequestParam(value = "word", required = false) String word,
+                                                     @RequestParam(value = "pos", required = false) List<String> pos,
+                                                     @RequestParam(value = "def", required = false) String def,
+                                                     @RequestParam(value = "ori", required = false) String origin,
+                                                     @RequestParam(value = "ex", required = false) String example,
+                                                     @RequestParam(value = "tags", required = false) List<String> tags,
+                                                     @RequestParam(value = "note", required = false) String note,
+                                                     @RequestParam(value = "creator", required = false) String creator) {
+//        LogUtil.log("Retrieving all words");
 
         return ResponseEntity.ok(
-                service.retrieveAll(theWord, definition, partsOfSpeech, creator, haveLearnt)
+                service.retrieveAll(word, pos, def, origin, example, tags, note, creator)
         );
     }
 
@@ -65,7 +68,7 @@ public class WordController implements WordAPI {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<WordDTO> retrieve(@PathVariable("id") Long wordId) {
-        LogUtil.log("Retrieving word with ID: " + wordId);
+//        LogUtil.log("Retrieving word with ID: " + wordId);
 
         return ResponseEntity.ok(service.retrieve(wordId));
     }
@@ -86,7 +89,7 @@ public class WordController implements WordAPI {
     )
     public ResponseEntity<String> oxfordRetrieve(@PathVariable("theWord") String theWord,
                                                  @RequestParam(value = "permission_key") String permissionKey) {
-        LogUtil.log("Retrieving data from oxford API");
+//        LogUtil.log("Retrieving data from oxford API");
 
         return service.oxfordRetrieve(theWord, permissionKey);
     }
@@ -99,10 +102,10 @@ public class WordController implements WordAPI {
     )
     public ResponseEntity<WordDTO> update(@PathVariable("id") Long wordId,
                                           @RequestParam(value = "permission_key") String permissionKey,
-                                          @RequestBody WordDTO updatedWord) {
-        LogUtil.log("Updating word #" + wordId, updatedWord);
+                                          @RequestBody WordRequestDTO wordRequestDTO) {
+//        LogUtil.log("Updating word #" + wordId, wordRequestDTO);
 
-        WordDTO updatedWordDTO = service.update(wordId, updatedWord, permissionKey);
+        WordDTO updatedWordDTO = service.update(wordId, wordRequestDTO, permissionKey);
 
         return ResponseEntity.ok().body(updatedWordDTO);
     }

@@ -99,7 +99,7 @@ public class EmailService {
     }
 
     private UpdatedWordEmailDTO getUpdateWordEmailDTO(String title, WordDTO oldWord, WordDTO updatedWord) {
-        String retrievalLink = properties.getRetrievalLink().replace("{id}", String.valueOf(updatedWord.getId()));
+        String retrievalLink = properties.getRetrievalLink().replace("{id}", String.valueOf(oldWord.getId()));
 
         return new UpdatedWordEmailDTO(title, oldWord, updatedWord, retrievalLink);
     }
