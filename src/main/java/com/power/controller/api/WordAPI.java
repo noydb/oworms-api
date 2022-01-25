@@ -1,6 +1,7 @@
 package com.power.controller.api;
 
 import com.power.dto.WordDTO;
+import com.power.dto.WordRequestDTO;
 import com.power.error.OWormException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -39,10 +40,10 @@ public interface WordAPI {
             ),
             @ApiResponse(
                     code = 500,
-                    message = "Any other internal error while creating word"
+                    message = "Internal server error while creating the word"
             )
     })
-    ResponseEntity<WordDTO> create(WordDTO wordDTO, String permissionKey, String user) throws OWormException;
+    ResponseEntity<WordDTO> create(WordRequestDTO wordDTO, String permissionKey, String user) throws OWormException;
 
     @ApiOperation(
             value = "Retrieves all words meeting the criteria provided by the query parameters. " +
@@ -61,15 +62,18 @@ public interface WordAPI {
             ),
             @ApiResponse(
                     code = 500,
-                    message = "Internal error while retrieving all the words"
+                    message = "Internal server error while retrieving all the words"
             )
     })
     ResponseEntity<List<WordDTO>> retrieveAll(
             String theWord,
-            String definition,
-            List<String> partsOfSpeech,
-            String creator,
-            String haveLearnt
+            List<String> parts,
+            String def,
+            String origin,
+            String example,
+            List<String> tags,
+            String note,
+            String creator
     );
 
     @ApiOperation(
@@ -87,7 +91,7 @@ public interface WordAPI {
             ),
             @ApiResponse(
                     code = 500,
-                    message = "An error occurred while retrieving the word"
+                    message = "Internal server error while retrieving the word"
             )
     })
     ResponseEntity<WordDTO> retrieve(Long wordId);
@@ -107,7 +111,7 @@ public interface WordAPI {
             ),
             @ApiResponse(
                     code = 500,
-                    message = "An error occurred while retrieving details"
+                    message = "Internal server error while calling oxford api"
             )
     })
     ResponseEntity<String> oxfordRetrieve(String theWord, String permissionKey);
@@ -123,7 +127,7 @@ public interface WordAPI {
             ),
             @ApiResponse(
                     code = 500,
-                    message = "An error occurred while retrieving the random word"
+                    message = "Internal server error while retrieving the random word"
             )
     })
     ResponseEntity<WordDTO> retrieveRandom();
@@ -156,9 +160,9 @@ public interface WordAPI {
             ),
             @ApiResponse(
                     code = 500,
-                    message = "Any other internal error while updating the word"
+                    message = "Internal server error while updating the word"
             )
     })
-    ResponseEntity<WordDTO> update(Long wordId, String permissionKey, WordDTO updatedWord) throws OWormException;
+    ResponseEntity<WordDTO> update(Long wordId, String permissionKey, WordRequestDTO wordRequestDTO) throws OWormException;
 
 }
