@@ -37,7 +37,7 @@ public class SettingsService {
         this.repository = repository;
         this.userRepository = userRepository;
         this.emailService = emailService;
-        this.bucket = Bucket.builder().addLimit(Bandwidth.classic(100, Refill.greedy(100, Duration.ofDays(1)))).build();
+        this.bucket = Bucket.builder().addLimit(Bandwidth.classic(2, Refill.greedy(2, Duration.ofDays(1)))).build();
     }
 
     public void permit(String username, String bananaArg) {
@@ -59,9 +59,11 @@ public class SettingsService {
                 .orElseThrow(() -> new OWormException(OWormExceptionType.NOT_FOUND, "That user does not exist"));
 
         AppSettings settings = repository.findAll().get(0);
-        if (!Utils.areEqual(settings.getBanana(), bananaArg)) {
-            throw new OWormException(OWormExceptionType.INSUFFICIENT_RIGHTS, "You cannot do that");
-        }
+        // if we do this then server cannot backup automatically
+        // because it will always need the day's banana
+//        if (!Utils.areEqual(settings.getBanana(), bananaArg)) {
+//            throw new OWormException(OWormExceptionType.INSUFFICIENT_RIGHTS, "You cannot do that");
+//        }
 
         LocalDate now = LocalDate.now();
         if (now.isEqual(settings.getDateTime().toLocalDate())) {
