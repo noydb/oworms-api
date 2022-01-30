@@ -1,0 +1,90 @@
+package com.power.oworms.word.util;
+
+import com.power.oworms.common.util.Utils;
+import com.power.oworms.word.domain.PartOfSpeech;
+import com.power.oworms.word.domain.Tag;
+import com.power.oworms.word.domain.Word;
+
+import java.util.Comparator;
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
+
+public class FilterUtil {
+
+    public static List<Word> filter(List<Word> words,
+                                    String theWord,
+                                    List<String> pos,
+                                    String def,
+                                    String origin,
+                                    String example,
+                                    List<String> tags,
+                                    String note,
+                                    String creator) {
+        List<Word> filteredWords = words
+                .parallelStream()
+                .filter(word -> isAMatch(word.getTheWord(), theWord))
+                .filter(word -> partOfSpeechMatch(word.getPartOfSpeech(), pos))
+                .filter(word -> isAMatch(word.getDefinition(), def))
+                .filter(word -> isAMatch(word.getOrigin(), origin))
+                .filter(word -> isAMatch(word.getExampleUsage(), example))
+                .filter(word -> tagsMatch(word.getTags(), tags))
+                .filter(word -> isAMatch(word.getNote(), note))
+                .filter(word -> isAMatch(word.getCreatedBy(), creator))
+                .sorted(Comparator.comparing(Word::getTheWord))
+                .collect(toList());
+
+        return filteredWords;
+    }
+
+    private static boolean tagsMatch(List<Tag> tags, List<String> searchTags) {
+        if (null == searchTags) {
+            return true;
+        }
+
+        for (String searchTag : searchTags) {
+            for (Tag tag : tags) {
+                if (Utils.areEqual(tag.getName(), searchTag)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean isAMatch(String theWord, String filterWord) {
+        if (Utils.isBlank(filterWord)) {
+            return true;
+        }
+
+        return Utils.areEqual(theWord, filterWord);
+    }
+
+    private static boolean partOfSpeechMatch(PartOfSpeech partOfSpeech, List<String> partsOfSpeech) {
+        if (null == partsOfSpeech || partsOfSpeech.isEmpty()) {
+            return true;
+        }
+
+        return partsOfSpeech
+                .stream()
+                .anyMatch((posFilter) -> isAMatch(partOfSpeech, posFilter));
+    }
+
+    private static boolean isAMatch(PartOfSpeech partOfSpeech, String posFilter) {
+        if (Utils.isBlank(posFilter)) {
+            return true;
+        }
+
+        try {
+            PartOfSpeech partOfSpeechParsed = PartOfSpeech.getPartOfSpeech(posFilter);
+
+            return partOfSpeech.equals(partOfSpeechParsed);
+        } catch (IllegalArgumentException e) {
+            // the part of speech is not recognized. return true to ignore this filter.
+            // (the user is dumb)
+            return true;
+        }
+    }
+
+}
