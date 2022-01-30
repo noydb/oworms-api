@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
+
+    <title th:text="${message.title}"></title>
+</head>
+<body style="font-family: 'Courier New', sans-serif; font-size: 16px">
+<div style="margin-bottom: 1.5rem">
+    <label th:text="${message.ACTION}"></label>
+</div>
+
+<div>
+    <label>Word: </label>
+    <label th:text="${message.word.theWord}"></label>
+</div>
+<div>
+    <label>Part Of Speech: </label>
+    <label th:text="${message.word.partOfSpeech}"></label>
+</div>
+<div>
+    <label>Definition: </label>
+    <label th:text="${message.word.definition}"></label>
+</div>
+<div>
+    <label>Origin: </label>
+    <label th:text="${message.word.origin}"></label>
+</div>
+<div>
+    <label>Example Usage: </label>
+    <label th:text="${message.word.exampleUsage}"></label>
+</div>
+<div>
+    <label>Tags: </label>
+    <label th:text="${message.word.tags}"></label>
+</div>
+<div>
+    <label>Note: </label>
+    <label th:text="${message.word.note}"></label>
+</div>
+<div>
+    <label>Created By: </label>
+    <label th:text="${message.word.createdBy}"></label>
+</div>
+
+<div style="margin-top: 1.5rem; margin-bottom: 1.5rem">
+    <label>to learn more, click:</label>
+    <a th:href="${message.retrievalLink}">
+        <label th:text="${message.retrievalLink}"></label>
+    </a>
+</div>
+
+<div>
+    <p>thanks</p>
+    <p>b</p>
+</div>
+
+</body>
+</html>
