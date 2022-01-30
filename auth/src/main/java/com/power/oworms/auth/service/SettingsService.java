@@ -43,7 +43,7 @@ public class SettingsService {
     public void permit(String username, String bananaArg) {
         AppSettings settings = getSettings();
 
-        if (Utils.areEqual(bananaArg, settings.getBanana())) {
+        if (!Utils.areEqual(bananaArg, settings.getBanana())) {
             throw new OWormException(OWormExceptionType.INSUFFICIENT_RIGHTS, "You cannot do that");
         }
 
