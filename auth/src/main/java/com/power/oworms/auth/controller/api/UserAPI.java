@@ -1,4 +1,4 @@
-package com.power.oworms.auth.controller;
+package com.power.oworms.auth.controller.api;
 
 import com.power.oworms.auth.dto.NewUserDTO;
 import com.power.oworms.auth.error.AccountExistsException;
