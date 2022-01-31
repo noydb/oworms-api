@@ -47,7 +47,7 @@ public class SettingsService {
     public void permit(String username, String bananaArg) {
         AppSettings settings = getSettings();
 
-        if (Utils.areEqual(bananaArg, settings.getBanana())) {
+        if (!Utils.areEqual(bananaArg, settings.getBanana())) {
             throw new OWormException(OWormExceptionType.INSUFFICIENT_RIGHTS, "You cannot do that");
         }
 
@@ -63,9 +63,11 @@ public class SettingsService {
                 .orElseThrow(() -> new OWormException(OWormExceptionType.NOT_FOUND, "That user does not exist"));
 
         AppSettings settings = repository.findAll().get(0);
-        if (!Utils.areEqual(settings.getBanana(), bananaArg)) {
-            throw new OWormException(OWormExceptionType.INSUFFICIENT_RIGHTS, "You cannot do that");
-        }
+        // if we do this then server cannot backup automatically
+        // because it will always need the day's banana
+//        if (!Utils.areEqual(settings.getBanana(), bananaArg)) {
+//            throw new OWormException(OWormExceptionType.INSUFFICIENT_RIGHTS, "You cannot do that");
+//        }
 
         LocalDate now = LocalDate.now();
 
