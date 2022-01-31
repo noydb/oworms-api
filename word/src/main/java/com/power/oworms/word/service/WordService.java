@@ -3,6 +3,7 @@ package com.power.oworms.word.service;
 import com.power.oworms.auth.service.SettingsService;
 import com.power.oworms.common.error.OWormException;
 import com.power.oworms.common.error.OWormExceptionType;
+import com.power.oworms.mail.dto.BucketOverflowDTO;
 import com.power.oworms.mail.service.EmailService;
 import com.power.oworms.word.domain.PartOfSpeech;
 import com.power.oworms.word.domain.Word;
@@ -29,7 +30,8 @@ import org.springframework.web.client.RestTemplate;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Random;
 
@@ -59,13 +61,13 @@ public class WordService {
         this.emailService = emailService;
         this.tagService = tagService;
         this.ss = ss;
-        this.bucket = Bucket.builder().addLimit(Bandwidth.classic(300, Refill.greedy(300, Duration.ofDays(1)))).build();
+        this.bucket = Bucket.builder().addLimit(Bandwidth.classic(200, Refill.greedy(200, Duration.ofDays(1)))).build();
     }
 
     @Transactional
-    public WordDTO create(final WordRequestDTO wordRequestDTO, String uname, String banana) {
-        consumeToken();
-        ss.permit(uname, banana);
+    public WordDTO create(final WordRequestDTO wordRequestDTO, String u, String banana) {
+        consumeToken("create");
+        ss.permit(u, banana);
 
         if (wordExists(wordRequestDTO.getWord())) {
             throw new OWormException(OWormExceptionType.WORD_EXISTS, "That word already exists");
@@ -73,8 +75,8 @@ public class WordService {
 
         final Word word = WordMapper.map(wordRequestDTO.getWord());
 
-        word.setCreatedBy(uname);
-        word.setCreationDate(LocalDateTime.now());
+        word.setCreatedBy(u);
+        word.setCreationDate(OffsetDateTime.now(ZoneId.of("Africa/Johannesburg")));
         repository.saveAndFlush(word);
 
         tagService.updateTagsForWord(word.getId(), wordRequestDTO.getTagIds());
@@ -99,7 +101,7 @@ public class WordService {
                                      List<String> tags,
                                      String note,
                                      String creator) {
-        consumeToken();
+        consumeToken("all words");
 
         final List<Word> words = repository.findAll();
 
@@ -123,7 +125,7 @@ public class WordService {
     }
 
     public WordDTO retrieve(final Long wordId) {
-        consumeToken();
+        consumeToken("word retrieve");
 
         final Word word = findById(wordId);
 
@@ -134,7 +136,7 @@ public class WordService {
     }
 
     public WordDTO retrieveRandom() {
-        consumeToken();
+        consumeToken("random");
 
         final List<Word> words = repository.findAll();
 
@@ -152,9 +154,9 @@ public class WordService {
         return WordMapper.map(randomWord);
     }
 
-    public ResponseEntity<String> oxfordRetrieve(String theWord, String uname, String banana) {
-        consumeToken();
-        ss.permit(uname, banana);
+    public ResponseEntity<String> oxfordRetrieve(String theWord, String u, String banana) {
+        consumeToken(u);
+        ss.permit(u, banana);
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -173,9 +175,9 @@ public class WordService {
         }
     }
 
-    public WordDTO update(Long wordId, WordRequestDTO wordRequestDTO, String uname, String banana) {
-        consumeToken();
-        ss.permit(uname, banana);
+    public WordDTO update(Long wordId, WordRequestDTO wordRequestDTO, String u, String banana) {
+        consumeToken(u);
+        ss.permit(u, banana);
 
         Word word = findById(wordId);
         WordDTO oldWordDTO = WordMapper.map(word);
@@ -216,7 +218,7 @@ public class WordService {
     }
 
     public StatisticsDTO getStatistics() {
-        consumeToken();
+        consumeToken("statistics");
 
         StatisticsDTO stats = new StatisticsDTO();
 
@@ -236,8 +238,10 @@ public class WordService {
         return stats;
     }
 
-    private void consumeToken() {
+    private void consumeToken(String context) {
         if (!bucket.tryConsume(1)) {
+            emailService.sendBucketOverflow(new BucketOverflowDTO(this.getClass().getName(), context));
+
             throw new OWormException(OWormExceptionType.REQUEST_LIMIT_EXCEEDED, "You have made too many requests");
         }
     }

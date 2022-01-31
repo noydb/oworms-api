@@ -2,6 +2,8 @@ package com.power.oworms.word.service;
 
 import com.power.oworms.common.error.OWormException;
 import com.power.oworms.common.error.OWormExceptionType;
+import com.power.oworms.mail.dto.BucketOverflowDTO;
+import com.power.oworms.mail.service.EmailService;
 import com.power.oworms.word.domain.Tag;
 import com.power.oworms.word.domain.Word;
 import com.power.oworms.word.dto.TagDTO;
@@ -23,17 +25,20 @@ public class TagService {
 
     private final TagRepository repository;
     private final WordRepository wordRepository;
+    private final EmailService emailService;
     private final Bucket bucket;
 
     public TagService(final TagRepository repository,
-                      final WordRepository wordRepository) {
+                      final WordRepository wordRepository,
+                      final EmailService emailService) {
         this.repository = repository;
         this.wordRepository = wordRepository;
-        this.bucket = Bucket.builder().addLimit(Bandwidth.classic(300, Refill.greedy(300, Duration.ofDays(1)))).build();
+        this.emailService = emailService;
+        this.bucket = Bucket.builder().addLimit(Bandwidth.classic(5, Refill.greedy(5, Duration.ofDays(1)))).build();
     }
 
     public void updateTagsForWord(Long wordId, List<Long> tagIds) {
-        consumeToken();
+        consumeToken("update for word");
 
         Word word = wordRepository
                 .findById(wordId)
@@ -56,7 +61,7 @@ public class TagService {
 
     @Transactional
     public TagDTO create(final TagDTO tagDTO) {
-        consumeToken();
+        consumeToken("create");
 
         if (tagExists(tagDTO)) {
             throw new OWormException(OWormExceptionType.WORD_EXISTS, "That tag already exists");
@@ -74,7 +79,7 @@ public class TagService {
     }
 
     public List<TagDTO> retrieveAll(String name) {
-        consumeToken();
+        consumeToken("retrieve all");
 
         final List<Tag> tags = repository.findAll();
 
@@ -96,7 +101,7 @@ public class TagService {
     }
 
     public TagDTO update(Long tagId, TagDTO updatedTag) {
-        consumeToken();
+        consumeToken("update");
 
         Tag tag = findById(tagId);
 
@@ -118,10 +123,11 @@ public class TagService {
                 .orElseThrow(() -> new OWormException(OWormExceptionType.NOT_FOUND, "A tag with an ID of " + id + " does not exist"));
     }
 
-    private void consumeToken() {
+    private void consumeToken(String context) {
         if (!bucket.tryConsume(1)) {
+            emailService.sendBucketOverflow(new BucketOverflowDTO(this.getClass().getName(), context));
+
             throw new OWormException(OWormExceptionType.REQUEST_LIMIT_EXCEEDED, "You have made too many requests");
         }
     }
-
 }

@@ -44,7 +44,7 @@ public interface WordAPI {
                     message = "Internal server error while creating the word"
             )
     })
-    ResponseEntity<WordDTO> create(WordRequestDTO wordDTO, String uname, String banana) throws OWormException;
+    ResponseEntity<WordDTO> create(WordRequestDTO wordDTO, String u, String banana) throws OWormException;
 
     @ApiOperation(
             value = "Retrieves all words meeting the criteria provided by the query parameters. " +
@@ -115,7 +115,7 @@ public interface WordAPI {
                     message = "Internal server error while calling oxford api"
             )
     })
-    ResponseEntity<String> oxfordRetrieve(String theWord, String uname, String banana);
+    ResponseEntity<String> oxfordRetrieve(String theWord, String u, String banana);
 
     @ApiOperation(
             value = "Retrieves a random word",
@@ -164,7 +164,7 @@ public interface WordAPI {
                     message = "Internal server error while updating the word"
             )
     })
-    ResponseEntity<WordDTO> update(Long wordId, WordRequestDTO wordRequestDTO, String uname, String banana) throws OWormException;
+    ResponseEntity<WordDTO> update(Long wordId, WordRequestDTO wordRequestDTO, String u, String banana) throws OWormException;
 
     @ApiOperation(
             value = "Retrieves the statistics of the application",

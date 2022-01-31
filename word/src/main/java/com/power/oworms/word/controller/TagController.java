@@ -1,7 +1,6 @@
 package com.power.oworms.word.controller;
 
 import com.power.oworms.common.util.LogUtil;
-import com.power.oworms.word.controller.api.TagAPI;
 import com.power.oworms.word.dto.TagDTO;
 import com.power.oworms.word.service.TagService;
 import org.springframework.http.MediaType;
@@ -20,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/o/tags")
-public class TagController implements TagAPI {
+public class TagController {
 
     private final TagService service;
 
@@ -28,7 +27,6 @@ public class TagController implements TagAPI {
         this.service = service;
     }
 
-    @Override
     @PostMapping(
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
@@ -41,7 +39,6 @@ public class TagController implements TagAPI {
         return ResponseEntity.ok(created);
     }
 
-    @Override
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -52,7 +49,6 @@ public class TagController implements TagAPI {
         return ResponseEntity.ok(service.retrieveAll(name));
     }
 
-    @Override
     @GetMapping(
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -63,7 +59,6 @@ public class TagController implements TagAPI {
         return ResponseEntity.ok(service.retrieve(tagId));
     }
 
-    @Override
     @PutMapping(
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE,

@@ -3,6 +3,8 @@ package com.power.oworms.word.service;
 import com.power.oworms.auth.service.SettingsService;
 import com.power.oworms.common.error.OWormException;
 import com.power.oworms.common.error.OWormExceptionType;
+import com.power.oworms.mail.dto.BucketOverflowDTO;
+import com.power.oworms.mail.service.EmailService;
 import com.power.oworms.word.domain.Tag;
 import com.power.oworms.word.domain.Word;
 import com.power.oworms.word.repository.TagRepository;
@@ -34,18 +36,21 @@ public class FileService {
     private final TagRepository tagRepo;
     private final SettingsService ss;
     private final Bucket bucket;
+    private final EmailService emailService;
 
     public FileService(final WordRepository repository,
                        final TagRepository tagRepo,
-                       final SettingsService ss) {
+                       final SettingsService ss,
+                       final EmailService emailService) {
         this.repository = repository;
         this.tagRepo = tagRepo;
         this.ss = ss;
-        this.bucket = Bucket.builder().addLimit(Bandwidth.classic(10, Refill.greedy(100, Duration.ofDays(1)))).build();
+        this.emailService = emailService;
+        this.bucket = Bucket.builder().addLimit(Bandwidth.classic(5, Refill.greedy(5, Duration.ofDays(1)))).build();
     }
 
     public InputStreamResource getWordsInCSV() {
-        consumeToken();
+        consumeToken("get csv");
 
         try {
             File file = new File(FileUtil.getCSVName());
@@ -75,9 +80,9 @@ public class FileService {
         }
     }
 
-    public void writeWordsInSpreadsheetToDB(MultipartFile excelFile, String uname, String banana) {
-        consumeToken();
-        ss.permit(uname, banana);
+    public void writeWordsInSpreadsheetToDB(MultipartFile excelFile, String u, String banana) {
+        consumeToken("write to db");
+        ss.permit(u, banana);
 
         try {
             XSSFWorkbook workbook = new XSSFWorkbook(excelFile.getInputStream());
@@ -127,8 +132,10 @@ public class FileService {
         return repository.findByTheWordIgnoreCase(theWord).isPresent();
     }
 
-    private void consumeToken() {
+    private void consumeToken(String context) {
         if (!bucket.tryConsume(1)) {
+            emailService.sendBucketOverflow(new BucketOverflowDTO(this.getClass().getName(), context));
+
             throw new OWormException(OWormExceptionType.REQUEST_LIMIT_EXCEEDED, "You have made too many requests");
         }
     }

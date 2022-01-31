@@ -31,11 +31,11 @@ public class FileController implements FileAPI {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public ResponseEntity<Void> readExcel(@RequestParam("excel_file") MultipartFile excelFile,
-                                          @RequestParam("u") String uname,
+                                          @RequestParam("u") String u,
                                           @RequestParam("bna") String banana) {
         LogUtil.log("Parsing excel");
 
-        fileService.writeWordsInSpreadsheetToDB(excelFile, uname, banana);
+        fileService.writeWordsInSpreadsheetToDB(excelFile, u, banana);
 
         return ResponseEntity.ok().build();
     }

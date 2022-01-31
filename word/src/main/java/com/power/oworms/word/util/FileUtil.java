@@ -9,7 +9,8 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,9 +59,9 @@ public class FileUtil {
 
         final String creationDate = row.getCell(8).getStringCellValue();
         if (creationDate == null) {
-            word.setCreationDate(LocalDateTime.now());
+            word.setCreationDate(OffsetDateTime.now(ZoneId.of("Africa/Johannesburg")));
         } else {
-            word.setCreationDate(LocalDateTime.parse(creationDate));
+            word.setCreationDate(OffsetDateTime.parse(creationDate));
         }
 
         final String createdBy = FileUtil.getCellStringValue(row.getCell(9));

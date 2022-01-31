@@ -36,11 +36,11 @@ public class WordController implements WordAPI {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<WordDTO> create(final @Valid @RequestBody WordRequestDTO wordRequestDTO,
-                                          @RequestParam("u") String uname,
+                                          @RequestParam("u") String u,
                                           @RequestParam("bna") String banana) {
         LogUtil.log("Creating new word");
 
-        WordDTO created = service.create(wordRequestDTO, uname, banana);
+        WordDTO created = service.create(wordRequestDTO, u, banana);
 
         return ResponseEntity.ok(created);
     }
@@ -88,11 +88,11 @@ public class WordController implements WordAPI {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<String> oxfordRetrieve(@PathVariable("theWord") String theWord,
-                                                 @RequestParam("u") String uname,
+                                                 @RequestParam("u") String u,
                                                  @RequestParam("bna") String banana) {
         LogUtil.log("Calling oxford api");
 
-        return service.oxfordRetrieve(theWord, uname, banana);
+        return service.oxfordRetrieve(theWord, u, banana);
     }
 
     @Override
@@ -103,11 +103,11 @@ public class WordController implements WordAPI {
     )
     public ResponseEntity<WordDTO> update(@PathVariable("id") Long wordId,
                                           @RequestBody WordRequestDTO wordRequestDTO,
-                                          @RequestParam("u") String uname,
+                                          @RequestParam("u") String u,
                                           @RequestParam("bna") String banana) {
         LogUtil.log("Updating word #" + wordId);
 
-        WordDTO updatedWordDTO = service.update(wordId, wordRequestDTO, uname, banana);
+        WordDTO updatedWordDTO = service.update(wordId, wordRequestDTO, u, banana);
 
         return ResponseEntity.ok().body(updatedWordDTO);
     }

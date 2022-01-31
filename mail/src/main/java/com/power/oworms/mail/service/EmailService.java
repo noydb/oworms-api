@@ -4,6 +4,7 @@ import com.power.oworms.common.error.OWormException;
 import com.power.oworms.common.error.OWormExceptionType;
 import com.power.oworms.mail.config.MailContentBuilder;
 import com.power.oworms.mail.config.MailProperties;
+import com.power.oworms.mail.dto.BucketOverflowDTO;
 import com.power.oworms.mail.dto.DailyReportDTO;
 import com.power.oworms.mail.dto.EmailWordDTO;
 import com.power.oworms.mail.dto.NewWordEmailDTO;
@@ -51,6 +52,33 @@ public class EmailService {
             messageHelper.setBcc(recipients);
 
             String messageContent = mailContentBuilder.build(dailyReport, DailyReportDTO.TEMPLATE);
+
+            messageHelper.setText(messageContent, true);
+        };
+
+        try {
+            mailSender.send(messagePrep);
+        } catch (MailException e) {
+            throw new OWormException(OWormExceptionType.EMAIL_SEND_FAILURE, "Failed to send report email");
+        }
+    }
+
+    public void sendBucketOverflow(BucketOverflowDTO bucketOverflowDTO) {
+        if (properties.isDisabled()) {
+            return;
+        }
+
+        String[] recipients = properties.getRecipients().split(",");
+
+        MimeMessagePreparator messagePrep = (MimeMessage mimeMessage) -> {
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, ENCODING);
+
+            messageHelper.setFrom(BOT);
+            messageHelper.setTo(recipients[0]);
+            messageHelper.setSubject(bucketOverflowDTO.getTitle());
+            messageHelper.setBcc(recipients);
+
+            String messageContent = mailContentBuilder.build(bucketOverflowDTO, BucketOverflowDTO.TEMPLATE);
 
             messageHelper.setText(messageContent, true);
         };
