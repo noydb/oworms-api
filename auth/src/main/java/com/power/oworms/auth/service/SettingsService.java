@@ -6,6 +6,7 @@ import com.power.oworms.auth.repository.UserRepository;
 import com.power.oworms.common.error.OWormException;
 import com.power.oworms.common.error.OWormExceptionType;
 import com.power.oworms.common.util.Utils;
+import com.power.oworms.mail.dto.BucketOverflowDTO;
 import com.power.oworms.mail.dto.DailyReportDTO;
 import com.power.oworms.mail.service.EmailService;
 import io.github.bucket4j.Bandwidth;
@@ -17,6 +18,9 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,7 +41,7 @@ public class SettingsService {
         this.repository = repository;
         this.userRepository = userRepository;
         this.emailService = emailService;
-        this.bucket = Bucket.builder().addLimit(Bandwidth.classic(100, Refill.greedy(100, Duration.ofDays(1)))).build();
+        this.bucket = Bucket.builder().addLimit(Bandwidth.classic(5, Refill.greedy(5, Duration.ofDays(1)))).build();
     }
 
     public void permit(String username, String bananaArg) {
@@ -48,14 +52,14 @@ public class SettingsService {
         }
 
         userRepository
-                .findByUsernameIgnoreCase(username)
+                .findByUsername(username)
                 .orElseThrow(() -> new OWormException(OWormExceptionType.NOT_FOUND, "That user does not exist"));
     }
 
     public void doDailyAdmin(String username, String bananaArg) {
-        consumeToken();
+        consumeToken("daily admin");
         userRepository
-                .findByUsernameIgnoreCase(username)
+                .findByUsername(username)
                 .orElseThrow(() -> new OWormException(OWormExceptionType.NOT_FOUND, "That user does not exist"));
 
         AppSettings settings = repository.findAll().get(0);
@@ -64,14 +68,16 @@ public class SettingsService {
         }
 
         LocalDate now = LocalDate.now();
-        if (now.isEqual(settings.getDateTime().toLocalDate())) {
-            // settings have been configured for today already. do not send mail
+
+        long noOfDaysBetween = ChronoUnit.DAYS.between(now, settings.getDateTime());
+        if (noOfDaysBetween < 7) {
+            // settings have been configured for the week. do not send mail
             return;
         }
 
         String bananaEnc = sendNewBanana();
         settings.setBanana(bananaEnc);
-        settings.setDateTime(LocalDateTime.now());
+        settings.setDateTime(OffsetDateTime.now(ZoneId.of("Africa/Johannesburg")));
 
         repository.save(settings);
     }
@@ -85,26 +91,21 @@ public class SettingsService {
         // will only ever be one
         AppSettings settings = allSettings.get(0);
 
-        // settings are relevant for today, return it
+        // settings are relevant for this week
         LocalDate now = LocalDate.now();
-        if (now.isEqual(settings.getDateTime().toLocalDate())) {
+        long daysBetween = ChronoUnit.DAYS.between(now, settings.getDateTime());
+        if (daysBetween < 7) {
             return settings;
         }
 
         // configure settings for new day
         String banana = sendNewBanana();
         settings.setBanana(banana);
-        settings.setDateTime(LocalDateTime.now());
+        settings.setDateTime(OffsetDateTime.now(ZoneId.of("Africa/Johannesburg")));
 
         repository.save(settings);
 
         return settings;
-    }
-
-    private void consumeToken() {
-        if (!bucket.tryConsume(1)) {
-            throw new OWormException(OWormExceptionType.REQUEST_LIMIT_EXCEEDED, "You have made too many requests");
-        }
     }
 
     private String sendNewBanana() {
@@ -119,5 +120,13 @@ public class SettingsService {
         emailService.sendDailyReport(dailyReport);
 
         return banana;
+    }
+
+    private void consumeToken(String context) {
+        if (!bucket.tryConsume(1)) {
+            emailService.sendBucketOverflow(new BucketOverflowDTO(this.getClass().getName(), context));
+
+            throw new OWormException(OWormExceptionType.REQUEST_LIMIT_EXCEEDED, "You have made too many requests");
+        }
     }
 }

@@ -1,8 +1,6 @@
 package com.power.oworms.auth.controller;
 
-import com.power.oworms.auth.controller.api.UserAPI;
 import com.power.oworms.auth.dto.NewUserDTO;
-import com.power.oworms.auth.dto.UpdatePasswordDTO;
 import com.power.oworms.auth.dto.UserDTO;
 import com.power.oworms.auth.error.AccountExistsException;
 import com.power.oworms.auth.service.UserService;
@@ -21,7 +19,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/o/users")
-public class UserController implements UserAPI {
+public class UserController {
 
     private final UserService userService;
 
@@ -51,17 +49,5 @@ public class UserController implements UserAPI {
         userService.updateUser(userId, userDTO, username, banana);
 
         return ResponseEntity.ok(userDTO);
-    }
-
-    @PutMapping(
-            value = "/{userId}/password", produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<Void> update(@PathVariable("userId") Long userId,
-                                       @Valid @RequestBody UpdatePasswordDTO updatePasswordDTO,
-                                       @RequestParam(value = "u") String username,
-                                       @RequestParam(value = "bna") String banana) {
-        userService.updatePassword(userId, updatePasswordDTO, username, banana);
-
-        return ResponseEntity.noContent().build();
     }
 }

@@ -20,12 +20,6 @@ public class User {
     private String username;
 
     @Column
-    private String emailAddress;
-
-    @Column
-    private String password;
-
-    @Column
     @Enumerated(EnumType.STRING)
     private Status status;
 
@@ -43,22 +37,6 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getEmailAddress() {
-        return emailAddress;
-    }
-
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public Status getStatus() {

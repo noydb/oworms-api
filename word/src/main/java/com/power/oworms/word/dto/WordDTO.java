@@ -3,7 +3,7 @@ package com.power.oworms.word.dto;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Valid
@@ -37,7 +37,7 @@ public class WordDTO {
 
     private List<TagDTO> tags;
 
-    private LocalDateTime creationDate;
+    private OffsetDateTime creationDate;
 
     @Size(max = 15, message = "Created by cannot be more than 15 characters long")
     private String createdBy;
@@ -116,11 +116,11 @@ public class WordDTO {
         this.tags = tags;
     }
 
-    public LocalDateTime getCreationDate() {
+    public OffsetDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
+    public void setCreationDate(OffsetDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
