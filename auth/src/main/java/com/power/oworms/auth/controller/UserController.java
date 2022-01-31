@@ -1,5 +1,6 @@
 package com.power.oworms.auth.controller;
 
+import com.power.oworms.auth.controller.api.UserAPI;
 import com.power.oworms.auth.dto.NewUserDTO;
 import com.power.oworms.auth.dto.UpdatePasswordDTO;
 import com.power.oworms.auth.dto.UserDTO;
