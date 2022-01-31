@@ -1,5 +1,6 @@
 package com.power.oworms.mail.config;
 
+import com.power.oworms.mail.dto.BucketOverflowDTO;
 import com.power.oworms.mail.dto.DailyReportDTO;
 import com.power.oworms.mail.dto.NewWordEmailDTO;
 import com.power.oworms.mail.dto.UpdatedWordEmailDTO;
@@ -33,6 +34,13 @@ public class MailContentBuilder {
     }
 
     public String build(UpdatedWordEmailDTO message, String templateName) {
+        Context context = new Context();
+        context.setVariable("message", message);
+
+        return templateEngine.process(templateName, context);
+    }
+
+    public String build(BucketOverflowDTO message, String templateName) {
         Context context = new Context();
         context.setVariable("message", message);
 

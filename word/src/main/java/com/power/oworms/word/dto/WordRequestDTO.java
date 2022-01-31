@@ -1,7 +1,5 @@
 package com.power.oworms.word.dto;
 
-import com.power.oworms.word.dto.WordDTO;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;

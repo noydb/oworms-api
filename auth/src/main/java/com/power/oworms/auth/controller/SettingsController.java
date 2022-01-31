@@ -1,4 +1,4 @@
-package com.power.oworms.word.controller;
+package com.power.oworms.auth.controller;
 
 import com.power.oworms.auth.service.SettingsService;
 import org.springframework.http.MediaType;

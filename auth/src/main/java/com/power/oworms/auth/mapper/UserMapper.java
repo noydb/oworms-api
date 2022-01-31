@@ -18,7 +18,6 @@ public class UserMapper {
         User user = new User();
 
         user.setUsername(userDTO.getUsername());
-        user.setEmailAddress(userDTO.getEmail());
         user.setStatus(Status.INACTIVE);
 
         return user;
@@ -32,7 +31,6 @@ public class UserMapper {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
         userDTO.setUsername(user.getUsername());
-        userDTO.setEmail(user.getEmailAddress());
         userDTO.setStatus(user.getStatus().getLabel());
 
         return userDTO;
