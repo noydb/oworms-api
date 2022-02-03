@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -69,17 +68,16 @@ public class SettingsService {
 //            throw new OWormException(OWormExceptionType.INSUFFICIENT_RIGHTS, "You cannot do that");
 //        }
 
-        LocalDate now = LocalDate.now();
+        long noOfDaysBetween = settings.getOffsetDateTime().until(LocalDateTime.now(), ChronoUnit.DAYS);
 
-        long noOfDaysBetween = ChronoUnit.DAYS.between(now, settings.getDateTime());
-        if (noOfDaysBetween < 7) {
+        if (noOfDaysBetween < 6) {
             // settings have been configured for the week. do not send mail
             return;
         }
 
         String bananaEnc = sendNewBanana();
         settings.setBanana(bananaEnc);
-        settings.setDateTime(OffsetDateTime.now(ZoneId.of("Africa/Johannesburg")));
+        settings.setOffsetDateTime(OffsetDateTime.now(ZoneId.of("Africa/Johannesburg")));
 
         repository.save(settings);
     }
@@ -94,16 +92,15 @@ public class SettingsService {
         AppSettings settings = allSettings.get(0);
 
         // settings are relevant for this week
-        LocalDate now = LocalDate.now();
-        long daysBetween = ChronoUnit.DAYS.between(now, settings.getDateTime());
-        if (daysBetween < 7) {
+        long daysBetween = settings.getOffsetDateTime().toLocalDateTime().until(LocalDateTime.now(), ChronoUnit.DAYS);
+        if (daysBetween < 6) {
             return settings;
         }
 
-        // configure settings for new day
+        // configure settings for new week
         String banana = sendNewBanana();
         settings.setBanana(banana);
-        settings.setDateTime(OffsetDateTime.now(ZoneId.of("Africa/Johannesburg")));
+        settings.setOffsetDateTime(OffsetDateTime.now(ZoneId.of("Africa/Johannesburg")));
 
         repository.save(settings);
 

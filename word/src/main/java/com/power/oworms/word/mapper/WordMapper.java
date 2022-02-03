@@ -85,7 +85,7 @@ public class WordMapper {
         emailWord.setPartOfSpeech(wordDTO.getPartOfSpeech());
         emailWord.setDefinition(wordDTO.getDefinition());
         emailWord.setOrigin(wordDTO.getOrigin());
-        emailWord.setExampleUsage(wordDTO.getOrigin());
+        emailWord.setExampleUsage(wordDTO.getExampleUsage());
         emailWord.setTags(TagMapper.getPretty(wordDTO.getTags()));
         emailWord.setNote(wordDTO.getNote());
         emailWord.setCreatedBy(wordDTO.getCreatedBy());
