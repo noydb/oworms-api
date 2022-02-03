@@ -2,8 +2,6 @@
 ---
 [![Maintainability](https://api.codeclimate.com/v1/badges/7bd7122324ce4551a180/maintainability)](https://codeclimate.com/github/noydb/oworms-api/maintainability)
 
-<img src="https://github.com/benj-power/oworms-ui/blob/develop/src/assets/image/oh-worm.jpg"></img>
-
 [Explanation of Name](https://memedocumentation.tumblr.com/post/163767097995/explained-oh-worm-meme)
 
 [Swagger Documentation](https://oworms-api.herokuapp.com/swagger-ui/)
