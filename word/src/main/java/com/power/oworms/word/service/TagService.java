@@ -34,7 +34,7 @@ public class TagService {
         this.repository = repository;
         this.wordRepository = wordRepository;
         this.emailService = emailService;
-        this.bucket = Bucket.builder().addLimit(Bandwidth.classic(5, Refill.greedy(5, Duration.ofDays(1)))).build();
+        this.bucket = Bucket.builder().addLimit(Bandwidth.classic(300, Refill.greedy(300, Duration.ofDays(1)))).build();
     }
 
     public void updateTagsForWord(Long wordId, List<Long> tagIds) {
