@@ -34,11 +34,11 @@ public class AppSettings {
         this.id = id;
     }
 
-    public OffsetDateTime getDateTime() {
+    public OffsetDateTime getOffsetDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(OffsetDateTime dateTime) {
+    public void setOffsetDateTime(OffsetDateTime dateTime) {
         this.dateTime = dateTime;
     }
 
