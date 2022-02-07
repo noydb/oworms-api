@@ -86,16 +86,19 @@ public class SettingsService {
         }
 
         // will only ever be one
-        AppSettings settings = allSettings.get(0);
+        return allSettings.get(0);
 
+        // TODO: the saving of the new settings is rolled back if an exception is thrown.
+        // calling weekly admin works because the service returns a 200
+        // this one fails. saveAndFlush is no help either. re-implement this
         // settings are relevant for this week
-        long daysBetween = settings.getLocalDate().until(LocalDateTime.now(), ChronoUnit.DAYS);
-        if (daysBetween < 6) {
-            return settings;
-        }
-
-        // configure settings for new week
-        return saveNewBna();
+//        long daysBetween = settings.getLocalDate().until(LocalDateTime.now(), ChronoUnit.DAYS);
+//        if (daysBetween < 6) {
+//            return settings;
+//        }
+//
+//        // configure settings for new week
+//        return saveNewBna();
     }
 
     private String sendNewBanana() {
@@ -120,12 +123,13 @@ public class SettingsService {
         }
     }
 
-    private AppSettings saveNewBna() {
+    @Transactional
+    public AppSettings saveNewBna() {
         String banana = sendNewBanana();
         AppSettings newSettings = new AppSettings(banana);
 
         repository.deleteAll();
-        repository.save(newSettings);
+        repository.saveAndFlush(newSettings);
 
         return newSettings;
     }
