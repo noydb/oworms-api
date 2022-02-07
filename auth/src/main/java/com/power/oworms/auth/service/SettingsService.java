@@ -7,18 +7,17 @@ import com.power.oworms.common.error.OWormException;
 import com.power.oworms.common.error.OWormExceptionType;
 import com.power.oworms.common.util.Utils;
 import com.power.oworms.mail.dto.BucketOverflowDTO;
-import com.power.oworms.mail.dto.DailyReportDTO;
+import com.power.oworms.mail.dto.NewBnaDTO;
 import com.power.oworms.mail.service.EmailService;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Refill;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
@@ -43,6 +42,7 @@ public class SettingsService {
         this.bucket = Bucket.builder().addLimit(Bandwidth.classic(5, Refill.greedy(5, Duration.ofDays(1)))).build();
     }
 
+    @Transactional
     public void permit(String username, String bananaArg) {
         AppSettings settings = getSettings();
 
@@ -55,8 +55,9 @@ public class SettingsService {
                 .orElseThrow(() -> new OWormException(OWormExceptionType.NOT_FOUND, "That user does not exist"));
     }
 
-    public void doDailyAdmin(String username, String bananaArg) {
-        consumeToken("daily admin");
+    @Transactional
+    public void doWeeklyAdmin(String username, String bananaArg) {
+        consumeToken("weekly admin");
         userRepository
                 .findByUsername(username)
                 .orElseThrow(() -> new OWormException(OWormExceptionType.NOT_FOUND, "That user does not exist"));
@@ -68,21 +69,17 @@ public class SettingsService {
 //            throw new OWormException(OWormExceptionType.INSUFFICIENT_RIGHTS, "You cannot do that");
 //        }
 
-        long noOfDaysBetween = settings.getOffsetDateTime().until(LocalDateTime.now(), ChronoUnit.DAYS);
-
+        long noOfDaysBetween = settings.getLocalDate().until(LocalDateTime.now(), ChronoUnit.DAYS);
         if (noOfDaysBetween < 6) {
             // settings have been configured for the week. do not send mail
             return;
         }
 
-        String bananaEnc = sendNewBanana();
-        settings.setBanana(bananaEnc);
-        settings.setOffsetDateTime(OffsetDateTime.now(ZoneId.of("Africa/Johannesburg")));
-
-        repository.save(settings);
+        saveNewBna(); // configure settings for new week
     }
 
-    private AppSettings getSettings() {
+    @Transactional
+    public AppSettings getSettings() {
         List<AppSettings> allSettings = repository.findAll();
         if (allSettings.isEmpty()) {
             throw new OWormException(OWormExceptionType.FAILURE, "A settings row must exist in the DB");
@@ -92,19 +89,13 @@ public class SettingsService {
         AppSettings settings = allSettings.get(0);
 
         // settings are relevant for this week
-        long daysBetween = settings.getOffsetDateTime().toLocalDateTime().until(LocalDateTime.now(), ChronoUnit.DAYS);
+        long daysBetween = settings.getLocalDate().until(LocalDateTime.now(), ChronoUnit.DAYS);
         if (daysBetween < 6) {
             return settings;
         }
 
         // configure settings for new week
-        String banana = sendNewBanana();
-        settings.setBanana(banana);
-        settings.setOffsetDateTime(OffsetDateTime.now(ZoneId.of("Africa/Johannesburg")));
-
-        repository.save(settings);
-
-        return settings;
+        return saveNewBna();
     }
 
     private String sendNewBanana() {
@@ -113,10 +104,10 @@ public class SettingsService {
         String banana = uuid + ":" + timestamp;
 
         String eatLink = eatBananaLink.replace("{bna}", banana);
-        DailyReportDTO dailyReport = new DailyReportDTO(banana, eatLink);
-        dailyReport.setEatBananaLink(eatLink);
+        NewBnaDTO newBan = new NewBnaDTO(banana, eatLink);
+        newBan.setEatBananaLink(eatLink);
 
-        emailService.sendDailyReport(dailyReport);
+        emailService.sendNewBna(newBan);
 
         return banana;
     }
@@ -127,5 +118,15 @@ public class SettingsService {
 
             throw new OWormException(OWormExceptionType.REQUEST_LIMIT_EXCEEDED, "You have made too many requests");
         }
+    }
+
+    private AppSettings saveNewBna() {
+        String banana = sendNewBanana();
+        AppSettings newSettings = new AppSettings(banana);
+
+        repository.deleteAll();
+        repository.save(newSettings);
+
+        return newSettings;
     }
 }

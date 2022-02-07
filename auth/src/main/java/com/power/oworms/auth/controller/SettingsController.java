@@ -18,10 +18,9 @@ public class SettingsController {
         this.service = service;
     }
 
-    @GetMapping(value = "daily", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> dailyAdmin(@RequestParam("u") String username,
-                                           @RequestParam("bna") String banana) {
-        service.doDailyAdmin(username, banana);
+    @GetMapping(value = "weekly", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> weeklyAdmin(@RequestParam("u") String username, @RequestParam("bna") String banana) {
+        service.doWeeklyAdmin(username, banana);
 
         return ResponseEntity.ok().build();
     }

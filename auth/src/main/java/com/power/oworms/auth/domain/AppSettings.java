@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "settings")
@@ -21,10 +21,18 @@ public class AppSettings {
     private String id;
 
     @Column
-    private OffsetDateTime dateTime;
-    
+    private LocalDate localDate;
+
     @Column
     private String banana;
+
+    public AppSettings() {
+    }
+
+    public AppSettings(String banana) {
+        this.localDate = LocalDate.now();
+        this.banana = banana;
+    }
 
     public String getId() {
         return id;
@@ -34,12 +42,8 @@ public class AppSettings {
         this.id = id;
     }
 
-    public OffsetDateTime getOffsetDateTime() {
-        return dateTime;
-    }
-
-    public void setOffsetDateTime(OffsetDateTime dateTime) {
-        this.dateTime = dateTime;
+    public LocalDate getLocalDate() {
+        return localDate;
     }
 
     public String getBanana() {

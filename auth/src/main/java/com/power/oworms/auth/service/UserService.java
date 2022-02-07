@@ -64,7 +64,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUser(Long userId, UserDTO userDTO, String username, String banana) throws AccountExistsException {
+    public void updateUser(String userId, UserDTO userDTO, String username, String banana) throws AccountExistsException {
         consumeToken("update");
         ss.permit(username, banana);
 

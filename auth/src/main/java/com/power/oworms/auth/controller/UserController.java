@@ -42,7 +42,7 @@ public class UserController {
     @PutMapping(
             value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<UserDTO> update(@PathVariable("userId") Long userId,
+    public ResponseEntity<UserDTO> update(@PathVariable("userId") String userId,
                                           @Valid @RequestBody UserDTO userDTO,
                                           @RequestParam(value = "u") String username,
                                           @RequestParam(value = "bna") String banana) throws AccountExistsException {
