@@ -1,7 +1,7 @@
 package com.power.oworms.mail.config;
 
 import com.power.oworms.mail.dto.BucketOverflowDTO;
-import com.power.oworms.mail.dto.DailyReportDTO;
+import com.power.oworms.mail.dto.NewBnaDTO;
 import com.power.oworms.mail.dto.NewWordEmailDTO;
 import com.power.oworms.mail.dto.UpdatedWordEmailDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class MailContentBuilder {
         this.templateEngine = templateEngine;
     }
 
-    public String build(DailyReportDTO message, String templateName) {
+    public String build(NewBnaDTO message, String templateName) {
         Context context = new Context();
         context.setVariable("message", message);
 

@@ -5,7 +5,7 @@ import com.power.oworms.common.error.OWormExceptionType;
 import com.power.oworms.mail.config.MailContentBuilder;
 import com.power.oworms.mail.config.MailProperties;
 import com.power.oworms.mail.dto.BucketOverflowDTO;
-import com.power.oworms.mail.dto.DailyReportDTO;
+import com.power.oworms.mail.dto.NewBnaDTO;
 import com.power.oworms.mail.dto.EmailWordDTO;
 import com.power.oworms.mail.dto.NewWordEmailDTO;
 import com.power.oworms.mail.dto.UpdatedWordEmailDTO;
@@ -36,9 +36,9 @@ public class EmailService {
         this.properties = properties;
     }
 
-    public void sendDailyReport(DailyReportDTO dailyReport) {
+    public void sendNewBna(NewBnaDTO newBan) {
         if (properties.isDisabled()) {
-            return;
+             return;
         }
 
         String[] recipients = properties.getRecipients().split(",");
@@ -48,10 +48,10 @@ public class EmailService {
 
             messageHelper.setFrom(BOT);
             messageHelper.setTo(recipients[0]);
-            messageHelper.setSubject(dailyReport.getTitle());
+            messageHelper.setSubject(newBan.getTitle());
             messageHelper.setBcc(recipients);
 
-            String messageContent = mailContentBuilder.build(dailyReport, DailyReportDTO.TEMPLATE);
+            String messageContent = mailContentBuilder.build(newBan, NewBnaDTO.TEMPLATE);
 
             messageHelper.setText(messageContent, true);
         };

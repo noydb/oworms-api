@@ -4,16 +4,16 @@ import com.power.oworms.common.util.Utils;
 
 import java.time.LocalDateTime;
 
-public class DailyReportDTO {
+public class NewBnaDTO {
 
-    public static final String TEMPLATE = "daily-report";
+    public static final String TEMPLATE = "new-b";
     public static final String ACTION = "new banana!";
     private String title;
     private String newBanana;
     private String eatBananaLink;
 
-    public DailyReportDTO(String newBanana, String eatBananaLink) {
-        this.title = "oworms | " + Utils.format(LocalDateTime.now(), "yyyy-MM-dd") + " | banana";
+    public NewBnaDTO(String newBanana, String eatBananaLink) {
+        this.title = "oworms | week #" + Utils.format(LocalDateTime.now(), "ww") + " | banana";
 
         this.newBanana = newBanana;
         this.eatBananaLink = eatBananaLink;
