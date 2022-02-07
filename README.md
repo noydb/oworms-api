@@ -1,6 +1,5 @@
-<img src="https://github.com/benj-power/oworms-ui/blob/develop/src/assets/image/logo.svg"></img>
+<img src="https://github.com/benj-power/oworms-ui/blob/develop/src/assets/image/logo.svg"></img>[![Maintainability](https://api.codeclimate.com/v1/badges/7bd7122324ce4551a180/maintainability)](https://codeclimate.com/github/noydb/oworms-api/maintainability)
 ---
-[![Maintainability](https://api.codeclimate.com/v1/badges/7bd7122324ce4551a180/maintainability)](https://codeclimate.com/github/noydb/oworms-api/maintainability)
 
 [Explanation of Name](https://memedocumentation.tumblr.com/post/163767097995/explained-oh-worm-meme)
 

@@ -37,6 +37,7 @@ public class TagService {
         this.bucket = Bucket.builder().addLimit(Bandwidth.classic(300, Refill.greedy(300, Duration.ofDays(1)))).build();
     }
 
+    @Transactional
     public void updateTagsForWord(Long wordId, List<Long> tagIds) {
         consumeToken("update for word");
 
@@ -100,6 +101,7 @@ public class TagService {
         return TagMapper.map(tag);
     }
 
+    @Transactional
     public TagDTO update(Long tagId, TagDTO updatedTag) {
         consumeToken("update");
 
