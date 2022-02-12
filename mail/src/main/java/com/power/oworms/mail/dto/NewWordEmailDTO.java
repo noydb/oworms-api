@@ -3,7 +3,7 @@ package com.power.oworms.mail.dto;
 public class NewWordEmailDTO {
 
     public static final String TEMPLATE = "oworm-new";
-    public static final String ACTION = "A new word was recently added";
+    public static final String ACTION = "Summary";
     private String title;
     private EmailWordDTO word;
     private String retrievalLink;

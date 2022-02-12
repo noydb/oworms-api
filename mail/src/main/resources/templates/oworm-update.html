@@ -16,24 +16,20 @@
     </style>
 </head>
 <body style="font-family: 'Courier New', sans-serif; font-size: 16px">
-<div style="margin-bottom: 1.5rem">
-    <label th:text="${message.ACTION}"></label>
-</div>
 
 <div>
-    <label>Word: </label>
-    <label class="old"
+    <h2 class="old"
            th:if="${message.oldWord.theWord != message.updatedWord.theWord}"
-           th:text="${message.oldWord.theWord}"></label>
+           th:text="${message.oldWord.theWord}"></h2>
     <span th:if="${message.oldWord.theWord != message.updatedWord.theWord}"> -> </span>
-    <label class="new" th:text="${message.updatedWord.theWord}"></label>
+    <h2 class="new" th:text="${message.updatedWord.theWord}"></h2>
 </div>
 <div>
     <label>Part Of Speech: </label>
     <label class="old"
            th:if="${message.oldWord.partOfSpeech != message.updatedWord.partOfSpeech}"
            th:text="${message.oldWord.partOfSpeech}"></label>
-    <span th:if="${message.oldWord.theWord != message.updatedWord.theWord}"> -> </span>
+    <span th:if="${message.oldWord.partOfSpeech != message.updatedWord.partOfSpeech}"> -> </span>
     <label class="new" th:text="${message.updatedWord.partOfSpeech}"></label>
 </div>
 <div>
@@ -61,6 +57,14 @@
     <label class="new" th:text="${message.updatedWord.exampleUsage}"></label>
 </div>
 <div>
+    <label>Pronunciation</label>
+    <label class="old"
+           th:if="${message.oldWord.pronunciation != message.updatedWord.pronunciation}"
+           th:text="${message.oldWord.pronunciation}"></label>
+    <span th:if="${message.oldWord.pronunciation != message.updatedWord.pronunciation}"> -> </span>
+    <label class="new" th:text="${message.updatedWord.pronunciation}"></label>
+</div>
+<div>
     <label>Tags: </label>
     <label class="old"
            th:if="${message.oldWord.tags != message.updatedWord.tags}"
@@ -82,11 +86,6 @@
     <a th:href="${message.retrievalLink}">
         <label th:text="${message.retrievalLink}"></label>
     </a>
-</div>
-
-<div>
-    <p>thanks</p>
-    <p>b</p>
 </div>
 
 </body>

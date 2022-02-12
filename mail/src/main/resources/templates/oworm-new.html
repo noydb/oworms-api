@@ -9,13 +9,8 @@
     <title th:text="${message.title}"></title>
 </head>
 <body style="font-family: 'Courier New', sans-serif; font-size: 16px">
-<div style="margin-bottom: 1.5rem">
-    <label th:text="${message.ACTION}"></label>
-</div>
-
 <div>
-    <label>Word: </label>
-    <label th:text="${message.word.theWord}"></label>
+    <h2 th:text="${message.word.theWord}"></h2>
 </div>
 <div>
     <label>Part Of Speech: </label>
@@ -30,8 +25,12 @@
     <label th:text="${message.word.origin}"></label>
 </div>
 <div>
-    <label>Example Usage: </label>
+    <label>Example: </label>
     <label th:text="${message.word.exampleUsage}"></label>
+</div>
+<div>
+    <label>Pronunciation: </label>
+    <label th:text="${message.word.pronunciation}"></label>
 </div>
 <div>
     <label>Tags: </label>
@@ -41,21 +40,16 @@
     <label>Note: </label>
     <label th:text="${message.word.note}"></label>
 </div>
-<div>
+<div style="margin-top: 1.5rem">
     <label>Created By: </label>
     <label th:text="${message.word.createdBy}"></label>
 </div>
 
-<div style="margin-top: 1.5rem; margin-bottom: 1.5rem">
+<div style="margin-bottom: 1.5rem">
     <label>to learn more, click:</label>
     <a th:href="${message.retrievalLink}">
         <label th:text="${message.retrievalLink}"></label>
     </a>
-</div>
-
-<div>
-    <p>thanks</p>
-    <p>b</p>
 </div>
 
 </body>

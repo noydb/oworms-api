@@ -5,6 +5,7 @@ import com.power.oworms.auth.repository.SettingsRepository;
 import com.power.oworms.auth.repository.UserRepository;
 import com.power.oworms.common.error.OWormException;
 import com.power.oworms.common.error.OWormExceptionType;
+import com.power.oworms.common.util.LogUtil;
 import com.power.oworms.common.util.Utils;
 import com.power.oworms.mail.dto.BucketOverflowDTO;
 import com.power.oworms.mail.dto.NewBnaDTO;
@@ -47,6 +48,8 @@ public class SettingsService {
         AppSettings settings = getSettings();
 
         if (!Utils.areEqual(bananaArg, settings.getBanana())) {
+            LogUtil.log(OWormExceptionType.INSUFFICIENT_RIGHTS + " You cannot do that");
+
             throw new OWormException(OWormExceptionType.INSUFFICIENT_RIGHTS, "You cannot do that");
         }
 
