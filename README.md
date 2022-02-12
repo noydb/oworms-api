@@ -24,9 +24,10 @@ Follow these steps in order to start the server:
 7. A banana must be passed as a request parameter to all "secure" endpoints (param name is `bna`)
 8. Optionally, configure valid properties in `mail.dev.properties` to send emails. 
 
-**Note: if you cannot send emails, you MUST get the bna value from the settings row in the DB. you will need to use this for** 
-**"protected" endpoints. This is a flaw in the design, the app  cannot be used without email (because one won't receive the weekly bna).** 
-**This will be addressed. For now, grab the value from the DB manually if email sending is not an option** 
+**Note: if you cannot send emails, you MUST get the bna value from the settings row in the DB. you will need to use this for**
+**"protected" endpoints. This is a flaw in the design, the app  cannot be used without email (because one won't receive the weekly bna).**
+**This will be addressed. For now, grab the value from the DB manually if email sending is not an option**
+
 ---
 
 ### Environment Properties
