@@ -8,6 +8,7 @@ public class EmailWordDTO {
     private String definition;
     private String origin;
     private String exampleUsage;
+    private String pronunciation;
     private String tags;
     private String note;
     private String createdBy;
@@ -58,6 +59,14 @@ public class EmailWordDTO {
 
     public void setExampleUsage(String exampleUsage) {
         this.exampleUsage = exampleUsage;
+    }
+
+    public String getPronunciation() {
+        return pronunciation;
+    }
+
+    public void setPronunciation(String pronunciation) {
+        this.pronunciation = pronunciation;
     }
 
     public String getTags() {
