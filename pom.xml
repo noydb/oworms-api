@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>com.power.oworms</groupId>
+    <groupId>com.oworms</groupId>
     <artifactId>api</artifactId>
     <name>oworms-api</name>
     <version>2.1.2</version>
