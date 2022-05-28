@@ -1,7 +1,9 @@
 package com.oworms.word.service;
 
+import com.oworms.word.domain.Tag;
 import com.oworms.word.dto.WordDTO;
 import com.oworms.word.mapper.WordMapper;
+import com.oworms.word.repository.TagRepository;
 import com.oworms.word.repository.WordRepository;
 import com.oworms.word.util.FilterUtil;
 import com.oworms.word.util.StatsUtil;
@@ -35,6 +37,7 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class WordService {
@@ -55,15 +58,37 @@ public class WordService {
     @Value("${oxford.app.key}")
     private String oxfordAppKey;
 
+    private final TagRepository tagRepo;
+
     public WordService(final WordRepository repository,
                        final EmailService emailService,
                        final TagService tagService,
-                       final SettingsService ss) {
+                       final SettingsService ss,
+                       final TagRepository tagRepository) {
         this.repository = repository;
         this.emailService = emailService;
         this.tagService = tagService;
         this.ss = ss;
         this.bucket = Bucket.builder().addLimit(Bandwidth.classic(200, Refill.greedy(200, Duration.ofDays(1)))).build();
+        this.tagRepo = tagRepository;
+    }
+
+    @Transactional
+    public void generate() {
+        List<Word> words = repository.findAll();
+
+        for (Word word : words) {
+            word.setUuid(UUID.randomUUID().toString());
+            System.out.println(word.getUuid() + " " + word.getTheWord());
+        }
+        repository.saveAllAndFlush(words);
+
+        List<Tag> tags = tagRepo.findAll();
+
+        for (Tag tag : tags) {
+            tag.setUuid(UUID.randomUUID().toString());
+        }
+        tagRepo.saveAllAndFlush(tags);
     }
 
     @Transactional
@@ -123,6 +148,7 @@ public class WordService {
         return WordMapper.mapTo(filteredWords);
     }
 
+    @Transactional
     public WordDTO retrieve(final String uuid) {
         consumeToken("word retrieve");
 
