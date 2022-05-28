@@ -30,6 +30,13 @@ public class WordController implements WordAPI {
         this.service = service;
     }
 
+    @GetMapping(value = "generate")
+    public ResponseEntity generate() {
+        service.generate();
+
+        return ResponseEntity.ok().build();
+    }
+
     @Override
     @PostMapping(
             produces = MediaType.APPLICATION_JSON_VALUE,
