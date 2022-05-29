@@ -1,7 +1,9 @@
 package com.oworms.word.service;
 
+import com.oworms.word.domain.Tag;
 import com.oworms.word.dto.WordDTO;
 import com.oworms.word.mapper.WordMapper;
+import com.oworms.word.repository.TagRepository;
 import com.oworms.word.repository.WordRepository;
 import com.oworms.word.util.FilterUtil;
 import com.oworms.word.util.StatsUtil;
@@ -35,6 +37,7 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class WordService {
@@ -55,10 +58,13 @@ public class WordService {
     @Value("${oxford.app.key}")
     private String oxfordAppKey;
 
+    private final TagRepository tagRepo;
+
     public WordService(final WordRepository repository,
                        final EmailService emailService,
                        final TagService tagService,
-                       final SettingsService ss) {
+                       final SettingsService ss,
+                       final TagRepository tagRepository) {
         this.repository = repository;
         this.emailService = emailService;
         this.tagService = tagService;
