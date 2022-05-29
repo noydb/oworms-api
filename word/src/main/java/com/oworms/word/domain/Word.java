@@ -19,7 +19,7 @@ public class Word {
     @GeneratedValue
     private Long id;
 
-    @Column(length = 36)
+    @Column(length = 36, nullable = false, updatable = false)
     private String uuid;
 
     @Column(nullable = false, length = 50)

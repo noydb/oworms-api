@@ -70,25 +70,6 @@ public class WordService {
         this.tagService = tagService;
         this.ss = ss;
         this.bucket = Bucket.builder().addLimit(Bandwidth.classic(200, Refill.greedy(200, Duration.ofDays(1)))).build();
-        this.tagRepo = tagRepository;
-    }
-
-    @Transactional
-    public void generate() {
-        List<Word> words = repository.findAll();
-
-        for (Word word : words) {
-            word.setUuid(UUID.randomUUID().toString());
-            System.out.println(word.getUuid() + " " + word.getTheWord());
-        }
-        repository.saveAllAndFlush(words);
-
-        List<Tag> tags = tagRepo.findAll();
-
-        for (Tag tag : tags) {
-            tag.setUuid(UUID.randomUUID().toString());
-        }
-        tagRepo.saveAllAndFlush(tags);
     }
 
     @Transactional
