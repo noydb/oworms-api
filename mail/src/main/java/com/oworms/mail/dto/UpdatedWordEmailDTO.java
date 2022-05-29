@@ -1,21 +1,20 @@
 package com.oworms.mail.dto;
 
-public class UpdatedWordEmailDTO {
+public class  UpdatedWordEmailDTO {
 
     public static final String TEMPLATE = "oworm-update";
     public static final String ACTION = "A word was recently updated";
     private String title;
-    private EmailWordDTO oldWord;
-    private EmailWordDTO updatedWord;
-    private String oldTags;
-    private String newTags;
     private String retrievalLink;
+    private String editLink;
+    private EmailWordDTO old;
+    private EmailWordDTO updated;
+    private String uuid;
 
-    public UpdatedWordEmailDTO(String title, EmailWordDTO oldWord, EmailWordDTO updatedWord, String retrievalLink) {
+    public UpdatedWordEmailDTO(String title, EmailWordDTO oldWord, EmailWordDTO updatedWord) {
         this.title = title;
-        this.oldWord = oldWord;
-        this.updatedWord = updatedWord;
-        this.retrievalLink = retrievalLink;
+        this.old = oldWord;
+        this.updated = updatedWord;
     }
 
     public String getTitle() {
@@ -26,43 +25,43 @@ public class UpdatedWordEmailDTO {
         this.title = title;
     }
 
-    public EmailWordDTO getOldWord() {
-        return oldWord;
-    }
-
-    public void setOldWord(EmailWordDTO oldWord) {
-        this.oldWord = oldWord;
-    }
-
-    public EmailWordDTO getUpdatedWord() {
-        return updatedWord;
-    }
-
-    public void setUpdatedWord(EmailWordDTO updatedWord) {
-        this.updatedWord = updatedWord;
-    }
-
-    public String getOldTags() {
-        return oldTags;
-    }
-
-    public void setOldTags(String oldTags) {
-        this.oldTags = oldTags;
-    }
-
-    public String getNewTags() {
-        return newTags;
-    }
-
-    public void setNewTags(String newTags) {
-        this.newTags = newTags;
-    }
-
     public String getRetrievalLink() {
         return retrievalLink;
     }
 
     public void setRetrievalLink(String retrievalLink) {
         this.retrievalLink = retrievalLink;
+    }
+
+    public String getEditLink() {
+        return editLink;
+    }
+
+    public void setEditLink(String editLink) {
+        this.editLink = editLink;
+    }
+
+    public EmailWordDTO getOld() {
+        return old;
+    }
+
+    public void setOld(EmailWordDTO old) {
+        this.old = old;
+    }
+
+    public EmailWordDTO getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(EmailWordDTO updated) {
+        this.updated = updated;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 }

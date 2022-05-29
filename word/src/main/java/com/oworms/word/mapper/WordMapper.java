@@ -1,6 +1,8 @@
 package com.oworms.word.mapper;
 
+import com.oworms.common.util.Utils;
 import com.oworms.mail.dto.EmailWordDTO;
+import com.oworms.mail.dto.UpdatedWordEmailDTO;
 import com.oworms.word.domain.PartOfSpeech;
 import com.oworms.word.domain.Word;
 import com.oworms.word.dto.WordDTO;
@@ -70,15 +72,24 @@ public class WordMapper {
 
         emailWord.setUuid(wordDTO.getUuid());
         emailWord.setTheWord(wordDTO.getTheWord());
-        emailWord.setPartOfSpeech(wordDTO.getPartOfSpeech());
         emailWord.setDefinition(wordDTO.getDefinition());
+        emailWord.setPartOfSpeech(wordDTO.getPartOfSpeech());
         emailWord.setOrigin(wordDTO.getOrigin());
         emailWord.setExampleUsage(wordDTO.getExampleUsage());
         emailWord.setPronunciation(wordDTO.getPronunciation());
         emailWord.setTags(TagMapper.getPretty(wordDTO.getTags()));
         emailWord.setNote(wordDTO.getNote());
-        emailWord.setCreatedBy(wordDTO.getCreatedBy());
 
         return emailWord;
+    }
+
+    public static UpdatedWordEmailDTO mapToUpdateEmailDTO(WordDTO old, WordDTO updated) {
+        UpdatedWordEmailDTO updatedWordEmailDTO = new UpdatedWordEmailDTO(
+                "oworms | a word has been updated",
+                WordMapper.mapToEmailDTO(old),
+                WordMapper.mapToEmailDTO(updated)
+        );
+
+        return updatedWordEmailDTO;
     }
 }

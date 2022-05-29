@@ -12,6 +12,7 @@ public class MailProperties {
     private String username;
     private String password;
     private String retrievalLink;
+    private String editLink;
     private String eatBananaLink;
     private String recipients;
     private String host;
@@ -51,6 +52,14 @@ public class MailProperties {
 
     public void setRetrievalLink(String retrievalLink) {
         this.retrievalLink = retrievalLink;
+    }
+
+    public String getEditLink() {
+        return editLink;
+    }
+
+    public void setEditLink(String editLink) {
+        this.editLink = editLink;
     }
 
     public String getEatBananaLink() {
