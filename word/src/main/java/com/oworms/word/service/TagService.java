@@ -1,5 +1,6 @@
 package com.oworms.word.service;
 
+import com.oworms.auth.service.SettingsService;
 import com.oworms.common.error.OWormException;
 import com.oworms.common.error.OWormExceptionType;
 import com.oworms.common.util.Utils;
@@ -30,14 +31,17 @@ public class TagService {
     private final WordRepository wordRepository;
     private final EmailService emailService;
     private final Bucket bucket;
+    private final SettingsService ss;
 
     public TagService(final TagRepository repository,
                       final WordRepository wordRepository,
-                      final EmailService emailService) {
+                      final EmailService emailService,
+                      final SettingsService ss) {
         this.repository = repository;
         this.wordRepository = wordRepository;
         this.emailService = emailService;
         this.bucket = Bucket.builder().addLimit(Bandwidth.classic(300, Refill.greedy(300, Duration.ofDays(1)))).build();
+        this.ss = ss;
     }
 
     @Transactional
@@ -64,8 +68,9 @@ public class TagService {
     }
 
     @Transactional
-    public TagDTO create(final TagDTO tagDTO) {
+    public TagDTO create(final TagDTO tagDTO, final String u, final String bna) {
         consumeToken("create");
+        ss.permit(u, bna);
 
         if (tagExists(tagDTO)) {
             throw new OWormException(OWormExceptionType.ALREADY_EXISTS, "That tag already exists");
