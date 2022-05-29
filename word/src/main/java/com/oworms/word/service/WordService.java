@@ -1,12 +1,5 @@
 package com.oworms.word.service;
 
-import com.oworms.word.domain.Tag;
-import com.oworms.word.dto.WordDTO;
-import com.oworms.word.mapper.WordMapper;
-import com.oworms.word.repository.TagRepository;
-import com.oworms.word.repository.WordRepository;
-import com.oworms.word.util.FilterUtil;
-import com.oworms.word.util.StatsUtil;
 import com.oworms.auth.service.SettingsService;
 import com.oworms.common.error.OWormException;
 import com.oworms.common.error.OWormExceptionType;
@@ -15,7 +8,12 @@ import com.oworms.mail.service.EmailService;
 import com.oworms.word.domain.PartOfSpeech;
 import com.oworms.word.domain.Word;
 import com.oworms.word.dto.StatisticsDTO;
+import com.oworms.word.dto.WordDTO;
 import com.oworms.word.dto.WordRequestDTO;
+import com.oworms.word.mapper.WordMapper;
+import com.oworms.word.repository.WordRepository;
+import com.oworms.word.util.FilterUtil;
+import com.oworms.word.util.StatsUtil;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Refill;
@@ -37,7 +35,6 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.UUID;
 
 @Service
 public class WordService {
@@ -58,13 +55,10 @@ public class WordService {
     @Value("${oxford.app.key}")
     private String oxfordAppKey;
 
-    private final TagRepository tagRepo;
-
     public WordService(final WordRepository repository,
                        final EmailService emailService,
                        final TagService tagService,
-                       final SettingsService ss,
-                       final TagRepository tagRepository) {
+                       final SettingsService ss) {
         this.repository = repository;
         this.emailService = emailService;
         this.tagService = tagService;
