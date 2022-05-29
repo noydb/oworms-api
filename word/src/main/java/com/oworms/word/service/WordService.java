@@ -192,7 +192,7 @@ public class WordService {
         ss.permit(u, banana);
 
         Word word = findByUuid(uuid);
-        WordDTO oldWordDTO = WordMapper.map(word);
+        final WordDTO oldWord = WordMapper.map(word);
 
         WordDTO uWordDTO = wordRequestDTO.getWord();
 
@@ -210,23 +210,13 @@ public class WordService {
         word.setNote(uWordDTO.getNote());
         // creationDate, createdBy, and timesViewed cannot be modified.
 
-        word = repository.saveAndFlush(word);
+        final Word updatedWord = repository.saveAndFlush(word);
 
         tagService.updateTagsForWord(word.getId(), wordRequestDTO.getTagIds());
 
-        emailService.sendUpdateWordEmail(
-                "oworms | word #" + word.getId() + " updated",
-                WordMapper.mapToEmailDTO(oldWordDTO),
-                WordMapper.mapToEmailDTO(WordMapper.map(word))
-        );
+        emailService.sendUpdateWordEmail(WordMapper.mapToUpdateEmailDTO(oldWord, WordMapper.map(updatedWord)));
 
         return uWordDTO;
-    }
-
-    private Word findByUuid(String uuid) {
-        return repository
-                .findByUuid(uuid)
-                .orElseThrow(() -> new OWormException(OWormExceptionType.NOT_FOUND, "Word with uuid: " + uuid + " does not exist"));
     }
 
     public StatisticsDTO getStatistics() {
@@ -248,6 +238,12 @@ public class WordService {
         StatsUtil.getFirstLetterStats(stats, words);
 
         return stats;
+    }
+
+    private Word findByUuid(String uuid) {
+        return repository
+                .findByUuid(uuid)
+                .orElseThrow(() -> new OWormException(OWormExceptionType.NOT_FOUND, "Word with uuid: " + uuid + " does not exist"));
     }
 
     private void consumeToken(String context) {

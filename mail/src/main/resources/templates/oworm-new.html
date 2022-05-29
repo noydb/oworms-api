@@ -7,8 +7,30 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
 
     <title th:text="${message.title}"></title>
+
+    <style>
+        h4 {
+            margin: 0;
+        }
+
+        a {
+            border-radius: 4px;
+            background-color: #8979F2;
+            color: #ffffff !important;
+            border: none;
+            padding: .5rem;
+            text-transform: uppercase;
+            transition: all .1s ease-in;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+        }
+    </style>
 </head>
-<body style="font-family: 'Courier New', sans-serif; font-size: 16px">
+<body style="font-family: 'Courier New', sans-serif; font-size: 16px; padding: 1rem">
+
+<!--<img src="https://raw.githubusercontent.com/noydb/oworms-ui/04005d245e2db0b979fb8cb6dcc392fa49009f0d/src/assets/image/logo.svg" alt="oworms"/>-->
+
 <h2 th:text="${message.word.theWord}"></h2>
 <h3 th:text="${message.word.partOfSpeech}"></h3>
 <h4 th:text="${message.word.definition}"></h4>
@@ -38,9 +60,11 @@
 </div>
 
 <div style="margin-bottom: 1.5rem">
-    <label>to learn more, click:</label>
     <a th:href="${message.retrievalLink}">
-        <label th:text="${message.retrievalLink}"></label>
+        <label th:text="${message.retrievalLink}">view</label>
+    </a>
+    <a th:href="${message.retrievalLink}">
+        <label th:text="${message.editLink}">edit</label>
     </a>
 </div>
 

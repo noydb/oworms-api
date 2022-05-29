@@ -23,19 +23,19 @@ public class WordDTO {
     @Size(max = 50, message = "Part of speech cannot be more than 50 characters long")
     private String partOfSpeech;
 
-    @Size(min = 1, max = 20, message = "Pronunciation cannot be more than 20 characters long")
-    private String pronunciation;
-
-    @Size(max = 3500, message = "Origin cannot be more than 2000 characters long")
+    @Size(max = 3500, message = "Origin cannot be more than 3500 characters long")
     private String origin;
 
     @Size(max = 2000, message = "Example usage cannot be more than 2000 characters long")
     private String exampleUsage;
 
-    @Size(max = 2000, message = "Note cannot be more than 2000 characters long")
-    private String note;
+    @Size(min = 1, max = 20, message = "Pronunciation cannot be more than 20 characters long")
+    private String pronunciation;
 
     private List<TagDTO> tags;
+
+    @Size(max = 2000, message = "Note cannot be more than 2000 characters long")
+    private String note;
 
     private OffsetDateTime creationDate;
 
@@ -76,14 +76,6 @@ public class WordDTO {
         this.partOfSpeech = partOfSpeech;
     }
 
-    public String getPronunciation() {
-        return pronunciation;
-    }
-
-    public void setPronunciation(String pronunciation) {
-        this.pronunciation = pronunciation;
-    }
-
     public String getOrigin() {
         return origin;
     }
@@ -100,12 +92,12 @@ public class WordDTO {
         this.exampleUsage = exampleUsage;
     }
 
-    public String getNote() {
-        return note;
+    public String getPronunciation() {
+        return pronunciation;
     }
 
-    public void setNote(String note) {
-        this.note = note;
+    public void setPronunciation(String pronunciation) {
+        this.pronunciation = pronunciation;
     }
 
     public List<TagDTO> getTags() {
@@ -114,6 +106,14 @@ public class WordDTO {
 
     public void setTags(List<TagDTO> tags) {
         this.tags = tags;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public OffsetDateTime getCreationDate() {

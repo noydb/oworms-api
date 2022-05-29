@@ -9,83 +9,83 @@
     <title th:text="${message.title}"></title>
 
     <style>
-        .old {
-            color: #b81515;
-            text-decoration: line-through;
+        h4, label {
+            margin: 0;
+        }
+
+        a {
+            border-radius: 4px;
+            background-color: #8979F2;
+            color: #ffffff !important;
+            border: none;
+            padding: .5rem;
+            text-transform: uppercase;
+            transition: all .1s ease-in;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .field {
+            margin-bottom: 1rem;
         }
     </style>
 </head>
-<body style="font-family: 'Courier New', sans-serif; font-size: 16px">
+<body style="font-family: 'Courier New', sans-serif; font-size: 16px;">
 
-<div>
-    <h2 class="old"
-           th:if="${message.oldWord.theWord != message.updatedWord.theWord}"
-           th:text="${message.oldWord.theWord}"></h2>
-    <span th:if="${message.oldWord.theWord != message.updatedWord.theWord}"> -> </span>
-    <h2 class="new" th:text="${message.updatedWord.theWord}"></h2>
+<!--<img th:src="@{img/logo.svg}" src="../static/img/logo.svg" alt="oworms"/>-->
+<!--<img src="https://raw.githubusercontent.com/noydb/oworms-ui/04005d245e2db0b979fb8cb6dcc392fa49009f0d/src/assets/image/logo.svg"-->
+<!--     alt="oworms"/>-->
+
+<h2 th:text="${message.old.theWord} + ' -> ' + ${message.updated.theWord}"></h2>
+
+<h4>Definition</h4>
+<div class="field">
+    <label>Old</label>
+    <p th:text="${message.old.definition}"></p>
+    <label>New</label>
+    <p th:text="${message.updated.definition}"></p>
 </div>
-<div>
-    <label>Part Of Speech: </label>
-    <label class="old"
-           th:if="${message.oldWord.partOfSpeech != message.updatedWord.partOfSpeech}"
-           th:text="${message.oldWord.partOfSpeech}"></label>
-    <span th:if="${message.oldWord.partOfSpeech != message.updatedWord.partOfSpeech}"> -> </span>
-    <label class="new" th:text="${message.updatedWord.partOfSpeech}"></label>
+
+<h4>Part of Speech</h4>
+<div class="field">
+    <label>Old</label><p th:text="${message.old.partOfSpeech}"></p>
+    <label>New</label><p th:text="${message.updated.partOfSpeech}"></p>
 </div>
-<div>
-    <label>Definition: </label>
-    <label class="old"
-           th:if="${message.oldWord.definition != message.updatedWord.definition}"
-           th:text="${message.oldWord.definition}"></label>
-    <span th:if="${message.oldWord.definition != message.updatedWord.definition}"> -> </span>
-    <label class="new" th:text="${message.updatedWord.definition}"></label>
+
+<h4>Origin</h4>
+<div class="field">
+    <label>Old</label><p th:text="${message.old.origin}"></p>
+    <label>New</label><p th:text="${message.updated.origin}"></p>
 </div>
-<div>
-    <label>Origin: </label>
-    <label class="old"
-           th:if="${message.oldWord.origin != message.updatedWord.origin}"
-           th:text="${message.oldWord.origin}"></label>
-    <span th:if="${message.oldWord.origin != message.updatedWord.origin}"> -> </span>
-    <label class="new" th:text="${message.updatedWord.origin}"></label>
+
+<h4>Example Usage</h4>
+<div class="field">
+    <label>Old</label><p th:text="${message.old.exampleUsage}"></p>
+    <label>New</label><p th:text="${message.updated.exampleUsage}"></p>
 </div>
-<div>
-    <label>Example Usage: </label>
-    <label class="old"
-           th:if="${message.oldWord.exampleUsage != message.updatedWord.exampleUsage}"
-           th:text="${message.oldWord.exampleUsage}"></label>
-    <span th:if="${message.oldWord.exampleUsage != message.updatedWord.exampleUsage}"> -> </span>
-    <label class="new" th:text="${message.updatedWord.exampleUsage}"></label>
+
+<h4>Pronunciation</h4>
+<div class="field">
+    <label>Old</label><p th:text="${message.old.pronunciation}"></p>
+    <label>New</label><p th:text="${message.updated.pronunciation}"></p>
 </div>
-<div>
-    <label>Pronunciation</label>
-    <label class="old"
-           th:if="${message.oldWord.pronunciation != message.updatedWord.pronunciation}"
-           th:text="${message.oldWord.pronunciation}"></label>
-    <span th:if="${message.oldWord.pronunciation != message.updatedWord.pronunciation}"> -> </span>
-    <label class="new" th:text="${message.updatedWord.pronunciation}"></label>
+
+<h4>Tags</h4>
+<div class="field">
+    <label>Old</label><p th:text="${message.old.tags}"></p>
+    <label>New</label><p th:text="${message.updated.tags}"></p>
 </div>
-<div>
-    <label>Tags: </label>
-    <label class="old"
-           th:if="${message.oldWord.tags != message.updatedWord.tags}"
-           th:text="${message.oldWord.tags}"></label>
-    <span th:if="${message.oldWord.tags != message.updatedWord.tags}"> -> </span>
-    <label class="new" th:text="${message.updatedWord.tags}"></label>
-</div>
-<div>
-    <label>Note:</label>
-    <label class="old"
-           th:if="${message.oldWord.note != message.oldWord.note}"
-           th:text="${message.oldWord.note}"></label>
-    <span th:if="${message.oldWord.note != message.oldWord.note}"> -> </span>
-    <label class="new" th:text="${message.updatedWord.note}"></label>
+
+<h4>Note</h4>
+<div class="field">
+    <label>Old</label><p th:text="${message.old.note}"></p>
+    <label>New</label><p th:text="${message.updated.note}"></p>
 </div>
 
 <div style="margin-top: 1.5rem; margin-bottom: 1.5rem">
-    <label>to learn more, click:</label>
-    <a th:href="${message.retrievalLink}">
-        <label th:text="${message.retrievalLink}"></label>
-    </a>
+    <a th:href="${message.retrievalLink}" style="margin-right: 1rem">view</a>
+    <a th:href="${message.editLink}">edit</a>
 </div>
 
 </body>

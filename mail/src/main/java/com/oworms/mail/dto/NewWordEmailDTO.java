@@ -7,6 +7,7 @@ public class NewWordEmailDTO {
     private String title;
     private EmailWordDTO word;
     private String retrievalLink;
+    private String editLink;
 
     public NewWordEmailDTO(String title, EmailWordDTO word, String retrievalLink) {
         this.title = title;
@@ -36,5 +37,13 @@ public class NewWordEmailDTO {
 
     public void setRetrievalLink(String retrievalLink) {
         this.retrievalLink = retrievalLink;
+    }
+
+    public String getEditLink() {
+        return editLink;
+    }
+
+    public void setEditLink(String editLink) {
+        this.editLink = editLink;
     }
 }
