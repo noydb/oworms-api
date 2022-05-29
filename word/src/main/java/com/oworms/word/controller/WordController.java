@@ -1,11 +1,11 @@
 package com.oworms.word.controller;
 
-import com.oworms.word.controller.api.WordAPI;
-import com.oworms.word.dto.WordDTO;
-import com.oworms.word.service.WordService;
 import com.oworms.common.util.LogUtil;
+import com.oworms.word.controller.api.WordAPI;
 import com.oworms.word.dto.StatisticsDTO;
+import com.oworms.word.dto.WordDTO;
 import com.oworms.word.dto.WordRequestDTO;
+import com.oworms.word.service.WordService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

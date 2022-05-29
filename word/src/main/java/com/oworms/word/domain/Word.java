@@ -20,7 +20,7 @@ public class Word {
     private Long id;
 
     @Column(length = 36, nullable = false, updatable = false)
-    private final String uuid = UUID.randomUUID().toString();
+    private String uuid;
 
     @Column(nullable = false, length = 50)
     private String theWord;
@@ -55,6 +55,10 @@ public class Word {
     @Column(nullable = false)
     private Integer timesViewed;
 
+    public Word() {
+        uuid = UUID.randomUUID().toString();
+    }
+
     public Long getId() {
         return id;
     }
@@ -65,6 +69,10 @@ public class Word {
 
     public String getUuid() {
         return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getTheWord() {
