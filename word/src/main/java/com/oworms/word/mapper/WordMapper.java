@@ -74,13 +74,21 @@ public class WordMapper {
         emailWord.setTheWord(wordDTO.getTheWord());
         emailWord.setDefinition(wordDTO.getDefinition());
         emailWord.setPartOfSpeech(wordDTO.getPartOfSpeech());
-        emailWord.setOrigin(wordDTO.getOrigin());
-        emailWord.setExampleUsage(wordDTO.getExampleUsage());
-        emailWord.setPronunciation(wordDTO.getPronunciation());
-        emailWord.setTags(TagMapper.getPretty(wordDTO.getTags()));
-        emailWord.setNote(wordDTO.getNote());
+        emailWord.setOrigin(valueElseNA(wordDTO.getOrigin()));
+        emailWord.setExampleUsage(valueElseNA(wordDTO.getExampleUsage()));
+        emailWord.setPronunciation(valueElseNA(wordDTO.getPronunciation()));
+        emailWord.setTags(valueElseNA(TagMapper.getPretty(wordDTO.getTags())));
+        emailWord.setNote(valueElseNA(wordDTO.getNote()));
 
         return emailWord;
+    }
+
+    private static String valueElseNA(String arg) {
+        if (Utils.isBlank(arg)) {
+            return "N/A";
+        }
+
+        return arg;
     }
 
     public static UpdatedWordEmailDTO mapToUpdateEmailDTO(WordDTO old, WordDTO updated) {

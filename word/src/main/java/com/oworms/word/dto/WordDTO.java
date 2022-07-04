@@ -1,7 +1,8 @@
 package com.oworms.word.dto;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -11,15 +12,18 @@ public class WordDTO {
 
     private String uuid;
 
-    @NotEmpty(message = "Word is required")
+    @NotNull(message = "Word cannot be null")
+    @NotBlank(message = "Word cannot be blank")
     @Size(max = 50, message = "Word cannot be more than 50 characters long")
     private String theWord;
 
-    @NotEmpty(message = "Definition is required")
+    @NotNull(message = "Definition cannot be null")
+    @NotBlank(message = "Definition cannot be blank")
     @Size(max = 2000, message = "Definition cannot be more than 2000 characters long")
     private String definition;
 
-    @NotEmpty(message = "Part of speech is required")
+    @NotNull(message = "Part of speech cannot be null")
+    @NotBlank(message = "Part of speech cannot be blank")
     @Size(max = 50, message = "Part of speech cannot be more than 50 characters long")
     private String partOfSpeech;
 
