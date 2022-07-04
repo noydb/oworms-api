@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+
+    <title th:text="${message.title}"></title>
+
+    <style>
+        h4, label {
+            margin: 0;
+        }
+
+        a {
+            border-radius: 4px;
+            background-color: #8979F2;
+            color: #ffffff !important;
+            border: none;
+            padding: .5rem;
+            text-transform: uppercase;
+            transition: all .1s ease-in;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .field {
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body style="font-family: 'Courier New', sans-serif; font-size: 16px;">
+
+<!--<img th:src="@{img/logo.svg}" src="../static/img/logo.svg" alt="oworms"/>-->
+<!--<img src="https://raw.githubusercontent.com/noydb/oworms-ui/04005d245e2db0b979fb8cb6dcc392fa49009f0d/src/assets/image/logo.svg"-->
+<!--     alt="oworms"/>-->
+
+<h2 th:text="${message.old.theWord} + ' -> ' + ${message.updated.theWord}"></h2>
+
+<h4>Definition</h4>
+<div class="field">
+    <p th:text="${message.old.definition}"></p>
+    <p>-></p>
+    <p th:text="${message.updated.definition}"></p>
+</div>
+
+<h4>Part of Speech</h4>
+<div class="field">
+    <p th:text="${message.old.partOfSpeech}"></p>
+    <p>-></p>
+    <p th:text="${message.updated.partOfSpeech}"></p>
+</div>
+
+<h4>Origin</h4>
+<div class="field">
+    <p th:text="${message.old.origin}"></p>
+    <p>-></p>
+    <p th:text="${message.updated.origin}"></p>
+</div>
+
+<h4>Example Usage</h4>
+<div class="field">
+    <p th:text="${message.old.exampleUsage}"></p>
+    <p>-></p>
+    <p th:text="${message.updated.exampleUsage}"></p>
+</div>
+
+<h4>Pronunciation</h4>
+<div class="field">
+    <p th:text="${message.old.pronunciation}"></p>
+    <p>-></p>
+    <p th:text="${message.updated.pronunciation}"></p>
+</div>
+
+<h4>Tags</h4>
+<div class="field">
+    <p th:text="${message.old.tags}"></p>
+    <p>-></p>
+    <p th:text="${message.updated.tags}"></p>
+</div>
+
+<h4>Note</h4>
+<div class="field">
+    <p th:text="${message.old.note}"></p>
+    <p>-></p>
+    <p th:text="${message.updated.note}"></p>
+</div>
+
+<div style="margin-top: 1.5rem; margin-bottom: 1.5rem">
+    <a th:href="${message.retrievalLink}" style="margin-right: 1rem">view</a>
+    <a th:href="${message.editLink}">edit</a>
+</div>
+
+</body>
+</html>

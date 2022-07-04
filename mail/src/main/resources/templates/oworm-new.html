@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
+
+    <title th:text="${message.title}"></title>
+
+    <style>
+        h4 {
+            margin: 0;
+        }
+
+        a {
+            border-radius: 4px;
+            background-color: #8979F2;
+            color: #ffffff !important;
+            border: none;
+            padding: .5rem;
+            text-transform: uppercase;
+            transition: all .1s ease-in;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body style="font-family: 'Courier New', sans-serif; font-size: 16px; padding: 1rem">
+
+<!--<img src="https://raw.githubusercontent.com/noydb/oworms-ui/04005d245e2db0b979fb8cb6dcc392fa49009f0d/src/assets/image/logo.svg" alt="oworms"/>-->
+
+<h2 th:text="${message.word.theWord}"></h2>
+<h3 th:text="${message.word.partOfSpeech}"></h3>
+<h4 th:text="${message.word.definition}"></h4>
+<div>
+    <label>Origin: </label>
+    <label th:text="${message.word.origin}"></label>
+</div>
+<div>
+    <label>Example: </label>
+    <label th:text="${message.word.exampleUsage}"></label>
+</div>
+<div>
+    <label>Pronunciation: </label>
+    <label th:text="${message.word.pronunciation}"></label>
+</div>
+<div>
+    <label>Tags: </label>
+    <label th:text="${message.word.tags}"></label>
+</div>
+<div>
+    <label>Note: </label>
+    <label th:text="${message.word.note}"></label>
+</div>
+<div style="margin-top: 1.5rem">
+    <label>Created By: </label>
+    <label th:text="${message.word.createdBy}"></label>
+</div>
+
+<div style="margin-bottom: 1.5rem">
+    <a th:href="${message.retrievalLink}">view</a>
+    <a th:href="${message.retrievalLink}">edit</a>
+</div>
+
+</body>
+</html>
