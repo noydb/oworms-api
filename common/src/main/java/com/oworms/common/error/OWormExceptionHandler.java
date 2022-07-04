@@ -22,7 +22,7 @@ public class OWormExceptionHandler {
         final APIError apiError = new APIError(status, errorMsg);
 
         if (status == HttpStatus.CONFLICT) {
-            int indexOfColon = errorMsg.indexOf("uuid:");
+            int indexOfColon = errorMsg.indexOf(":");
             String uuid = errorMsg.substring(indexOfColon + 1);
             apiError.setUuid(uuid);
         }
