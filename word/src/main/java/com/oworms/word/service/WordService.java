@@ -7,13 +7,11 @@ import com.oworms.mail.dto.BucketOverflowDTO;
 import com.oworms.mail.service.EmailService;
 import com.oworms.word.domain.PartOfSpeech;
 import com.oworms.word.domain.Word;
-import com.oworms.word.dto.StatisticsDTO;
 import com.oworms.word.dto.WordDTO;
 import com.oworms.word.dto.WordRequestDTO;
 import com.oworms.word.mapper.WordMapper;
 import com.oworms.word.repository.WordRepository;
 import com.oworms.word.util.FilterUtil;
-import com.oworms.word.util.StatsUtil;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Refill;
@@ -160,27 +158,6 @@ public class WordService {
         return WordMapper.map(words.get(randomIndex));
     }
 
-    public ResponseEntity<String> oxfordRetrieve(String theWord, String u, String banana) {
-        consumeToken(u);
-        ss.permit(u, banana);
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("app_id", oxfordAppId);
-        headers.set("app_key", oxfordAppKey);
-
-        HttpEntity<String> entity = new HttpEntity<>("body", headers);
-
-        String url = oxfordApiURL.replace("{theWord}", theWord);
-
-        try {
-            return restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-        } catch (RestClientException e) {
-            throw new OWormException(OWormExceptionType.FAILURE, "Error while searching Oxford API", e.getMessage());
-        }
-    }
-
     public WordDTO update(String uuid, WordRequestDTO wordRequestDTO, String u, String banana) {
         consumeToken(u);
         ss.permit(u, banana);
@@ -213,25 +190,25 @@ public class WordService {
         return uWordDTO;
     }
 
-    public StatisticsDTO getStatistics() {
-        consumeToken("statistics");
+    public ResponseEntity<String> oxfordRetrieve(String theWord, String u, String banana) {
+        consumeToken(u);
+        ss.permit(u, banana);
 
-        StatisticsDTO stats = new StatisticsDTO();
+        RestTemplate restTemplate = new RestTemplate();
 
-        List<Word> words = repository.findAll();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("app_id", oxfordAppId);
+        headers.set("app_key", oxfordAppKey);
 
-        int totalWords = (int) repository.count();
-        stats.setTotalWords(totalWords);
+        HttpEntity<String> entity = new HttpEntity<>("body", headers);
 
-        int totalViewsOnWords = words
-                .parallelStream()
-                .reduce(0, (acc, current) -> acc + current.getTimesViewed(), Integer::sum);
-        stats.setTotalViewsOnWords(totalViewsOnWords);
+        String url = oxfordApiURL.replace("{theWord}", theWord);
 
-        StatsUtil.getPartsOfSpeechStats(stats, words);
-        StatsUtil.getFirstLetterStats(stats, words);
-
-        return stats;
+        try {
+            return restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+        } catch (RestClientException e) {
+            throw new OWormException(OWormExceptionType.FAILURE, "Error while searching Oxford API", e.getMessage());
+        }
     }
 
     private Word findByUuid(String uuid) {

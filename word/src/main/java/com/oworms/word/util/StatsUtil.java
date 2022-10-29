@@ -3,7 +3,12 @@ package com.oworms.word.util;
 import com.oworms.word.domain.PartOfSpeech;
 import com.oworms.word.domain.Word;
 import com.oworms.word.dto.StatisticsDTO;
+import com.oworms.word.dto.WordDTO;
+import com.oworms.word.mapper.WordMapper;
+import org.springframework.validation.annotation.Validated;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -67,4 +72,39 @@ public class StatsUtil {
         return rounded + "%";
     }
 
+    public static void createDateWordMap(final StatisticsDTO stats, final List<Word> words) {
+        final Map<String, WordDTO> dateWordMap = new HashMap<>();
+
+        for (final Word word : words) {
+            OffsetDateTime offsetDateTime = word.getCreationDate();
+
+            String key = offsetDateTime.format(DateTimeFormatter.BASIC_ISO_DATE);
+
+            dateWordMap.put(key, WordMapper.map(word));
+
+//            switch (type) {
+//                case DAY:
+//                    int dayOfMonth = offsetDateTime.getDayOfMonth();
+//                    if (dayOfMonth == dateFilter) {
+//                        dateOrDateTimeMap.put(dayOfMonth, word.getId());
+//                    }
+//
+//                case MONTH:
+//                    int monthOfYear = offsetDateTime.getMonthValue();
+//                    if (monthOfYear == dateFilter) {
+//                        dateOrDateTimeMap.put(dayOfMonth, word.getId());
+//                    }
+//
+//            }
+        }
+
+        stats.setDateOrDateTimeMap(dateWordMap);
+    }
+
+    @Validated
+    class DateStatFilter {
+        int day;
+        int month;
+        int year;
+    }
 }

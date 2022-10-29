@@ -1,8 +1,7 @@
 package com.oworms.word.controller.api;
 
-import com.oworms.word.dto.WordDTO;
 import com.oworms.common.error.OWormException;
-import com.oworms.word.dto.StatisticsDTO;
+import com.oworms.word.dto.WordDTO;
 import com.oworms.word.dto.WordRequestDTO;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -146,19 +145,4 @@ public interface WordAPI {
     })
     ResponseEntity<WordDTO> update(String uuid, WordRequestDTO wordRequestDTO, String u, String banana) throws OWormException;
 
-    @ApiOperation(
-            value = "Retrieves the statistics of the application",
-            response = StatisticsDTO.class
-    )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 200,
-                    message = "Retrieved statistics"
-            ),
-            @ApiResponse(
-                    code = 500,
-                    message = "Internal server error while retrieving statistics"
-            )
-    })
-    ResponseEntity<StatisticsDTO> getStatistics();
 }

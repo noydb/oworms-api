@@ -22,6 +22,10 @@ public class UserDTO {
     @Size(max = 50)
     private String status;
 
+    private String wordsAdded;
+
+    private String wordsAddedPercentage;
+
     public String getUuid() {
         return uuid;
     }
@@ -52,6 +56,22 @@ public class UserDTO {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getWordsAdded() {
+        return wordsAdded;
+    }
+
+    public void setWordsAdded(String wordsAdded) {
+        this.wordsAdded = wordsAdded;
+    }
+
+    public String getWordsAddedPercentage() {
+        return wordsAddedPercentage;
+    }
+
+    public void setWordsAddedPercentage(String wordsAddedPercentage) {
+        this.wordsAddedPercentage = wordsAddedPercentage;
     }
 }
 
