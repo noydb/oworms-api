@@ -5,10 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LogUtil {
+public final class LogUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogUtil.class);
     private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    private LogUtil() {
+    }
 
     public static void log(String message) {
         LOGGER.info(message);

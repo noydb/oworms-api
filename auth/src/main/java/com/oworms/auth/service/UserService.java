@@ -30,6 +30,9 @@ public class UserService {
     private final EmailService emailService;
     private final Bucket bucket;
 
+    // TODO
+//    private final WordReporiswordRepo
+
     @Autowired
     public UserService(final UserRepository repository,
                        final SettingsService ss,
@@ -60,7 +63,9 @@ public class UserService {
                 .findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("no such user"));
 
-        return UserMapper.mapUser(user);
+        final UserDTO userDTO = UserMapper.mapUser(user);
+
+        return userDTO;
     }
 
     @Transactional

@@ -93,7 +93,7 @@ public class WordMapper {
 
     public static UpdatedWordEmailDTO mapToUpdateEmailDTO(WordDTO old, WordDTO updated) {
         UpdatedWordEmailDTO updatedWordEmailDTO = new UpdatedWordEmailDTO(
-                "oworms | a word has been updated",
+                "oworms | " + updated.getTheWord() + " updated",
                 WordMapper.mapToEmailDTO(old),
                 WordMapper.mapToEmailDTO(updated)
         );

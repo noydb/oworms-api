@@ -2,7 +2,6 @@ package com.oworms.word.controller;
 
 import com.oworms.common.util.LogUtil;
 import com.oworms.word.controller.api.WordAPI;
-import com.oworms.word.dto.StatisticsDTO;
 import com.oworms.word.dto.WordDTO;
 import com.oworms.word.dto.WordRequestDTO;
 import com.oworms.word.service.WordService;
@@ -97,15 +96,5 @@ public class WordController implements WordAPI {
         WordDTO updatedWordDTO = service.update(uuid, wordRequestDTO, u, banana);
 
         return ResponseEntity.ok().body(updatedWordDTO);
-    }
-
-    @GetMapping(
-            value = "/statistics",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<StatisticsDTO> getStatistics() {
-        LogUtil.log("Retrieving statistics");
-
-        return ResponseEntity.ok(service.getStatistics());
     }
 }

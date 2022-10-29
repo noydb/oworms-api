@@ -10,6 +10,7 @@ public class StatisticsDTO {
     private Map<String, String> partsOfSpeechPercentages;
     private Map<String, Integer> firstLetterTotals;
     private Map<String, String> firstLetterPercentages;
+    private Map<String, WordDTO> dateWordMap;
 
     public long getTotalWords() {
         return totalWords;
@@ -65,5 +66,9 @@ public class StatisticsDTO {
 
     public void setFirstLetterPercentages(Map<String, String> firstLetterPercentages) {
         this.firstLetterPercentages = firstLetterPercentages;
+    }
+
+    public void setDateOrDateTimeMap(Map<String, WordDTO> dateWordMap) {
+        this.dateWordMap = dateWordMap;
     }
 }
