@@ -17,4 +17,6 @@ public interface WordRepository extends JpaRepository<Word, Long> {
 
     long countByTagsIdEquals(Long tagId);
 
+    long countByCreatedByEquals(String username);
+
 }

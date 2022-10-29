@@ -1,10 +1,14 @@
 package com.oworms.common.error;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+
 public class OWormException extends RuntimeException {
 
     private final OWormExceptionType errorType;
     private final String message;
     private final String debugMessage;
+    private final OffsetDateTime timestamp = OffsetDateTime.now(ZoneId.of("Africa/Johannesburg"));
 
     public OWormException(OWormExceptionType errorType, String message, String debugMessage) {
         this.errorType = errorType;
