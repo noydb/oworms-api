@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/o/worms/stats")
+@RequestMapping(value = "/o/stats")
 public class StatsController implements StatsAPI {
 
     private final StatisticsService service;
