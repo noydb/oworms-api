@@ -23,14 +23,12 @@ public class FilterUtil {
                                     String creator) {
         List<Word> filteredWords = words
                 .parallelStream()
-                .filter(word -> isAMatch(word.getTheWord(), theWord))
-                .filter(word -> partOfSpeechMatch(word.getPartOfSpeech(), pos))
-                .filter(word -> isAMatch(word.getDefinition(), def))
-                .filter(word -> isAMatch(word.getOrigin(), origin))
-                .filter(word -> isAMatch(word.getExampleUsage(), example))
-                .filter(word -> tagsMatch(word.getTags(), tags))
-                .filter(word -> isAMatch(word.getNote(), note))
-                .filter(word -> isAMatch(word.getCreatedBy(), creator))
+                .filter(word ->
+                        isAMatch(word.getTheWord(), theWord) || partOfSpeechMatch(word.getPartOfSpeech(), pos)
+                                || isAMatch(word.getDefinition(), def) || isAMatch(word.getOrigin(), origin)
+                                || isAMatch(word.getExampleUsage(), example) || tagsMatch(word.getTags(), tags)
+                                || isAMatch(word.getNote(), note) || isAMatch(word.getCreatedBy(), creator)
+                )
                 .sorted(Comparator.comparing(Word::getTheWord))
                 .collect(toList());
 
