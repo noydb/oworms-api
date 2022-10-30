@@ -1,8 +1,6 @@
 <img src="https://github.com/noydb/oworms-ui/blob/develop/src/assets/image/logo.svg"></img> [![Maintainability](https://api.codeclimate.com/v1/badges/7bd7122324ce4551a180/maintainability)](https://codeclimate.com/github/noydb/oworms-api/maintainability)
 ---
 
-[Explanation of Name](https://memedocumentation.tumblr.com/post/163767097995/explained-oh-worm-meme)
-
 [Swagger Documentation](https://oworms-api.herokuapp.com/swagger-ui/)
 
 [Hosted Application](https://oworms.herokuapp.com)
@@ -46,7 +44,7 @@ created, updated, or a new bna is sent
 - linking tags to words
 - liking/favouriting words
 - receive an email everytime a word is created or updated
-- filtering by any of the available fields
+- filtering by any of the available fields, driven by query parameters (e.g. https://oworms.herokuapp.com/o/worms/all?pos=verb,adjective&tags=informal,politics)
 - retrieve a random word
 - view statistics on the application & the words
 - import spreadsheet of words
