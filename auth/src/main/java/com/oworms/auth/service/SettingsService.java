@@ -56,7 +56,7 @@ public class SettingsService {
         }
 
         userRepository
-                .findByUsername(username)
+                .findByUsernameOrEmail(username)
                 .orElseThrow(() -> new OWormException(OWormExceptionType.NOT_FOUND, "That user does not exist"));
     }
 
