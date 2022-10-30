@@ -40,7 +40,9 @@ public class TagService {
         this.repository = repository;
         this.wordRepository = wordRepository;
         this.emailService = emailService;
-        this.bucket = Bucket.builder().addLimit(Bandwidth.classic(300, Refill.greedy(300, Duration.ofDays(1)))).build();
+        this.bucket = Bucket
+                .builder()
+                .addLimit(Bandwidth.classic(300, Refill.greedy(300, Duration.ofDays(1)))).build();
         this.ss = ss;
     }
 

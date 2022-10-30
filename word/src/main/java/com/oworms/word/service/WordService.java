@@ -61,7 +61,9 @@ public class WordService {
         this.emailService = emailService;
         this.tagService = tagService;
         this.ss = ss;
-        this.bucket = Bucket.builder().addLimit(Bandwidth.classic(200, Refill.greedy(200, Duration.ofDays(1)))).build();
+        this.bucket = Bucket
+                .builder()
+                .addLimit(Bandwidth.classic(200, Refill.greedy(200, Duration.ofDays(1)))).build();
     }
 
     @Transactional

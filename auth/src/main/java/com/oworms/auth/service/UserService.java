@@ -41,7 +41,9 @@ public class UserService {
         this.repository = repository;
         this.ss = ss;
         this.emailService = emailService;
-        this.bucket = Bucket.builder().addLimit(Bandwidth.classic(300, Refill.greedy(300, Duration.ofDays(300)))).build();
+        this.bucket = Bucket
+                .builder()
+                .addLimit(Bandwidth.classic(300, Refill.greedy(300, Duration.ofDays(300)))).build();
     }
 
     @Transactional
