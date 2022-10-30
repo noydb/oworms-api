@@ -22,10 +22,9 @@ public class StatsController implements StatsAPI {
 
     @Override
     @GetMapping(
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE
+            produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<StatisticsDTO> get() {
+    public ResponseEntity<StatisticsDTO> getStats() {
         LogUtil.log("Retrieving statistics");
         return ResponseEntity.ok(service.getStatistics());
     }

@@ -4,6 +4,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Validated
 public class UserDTO {
@@ -22,9 +23,7 @@ public class UserDTO {
     @Size(max = 50)
     private String status;
 
-    private String wordsAdded;
-
-    private String wordsAddedPercentage;
+    private List<String> likedWordUUIDs;
 
     public String getUuid() {
         return uuid;
@@ -58,20 +57,11 @@ public class UserDTO {
         this.status = status;
     }
 
-    public String getWordsAdded() {
-        return wordsAdded;
+    public List<String> getLikedWordUUIDs() {
+        return likedWordUUIDs;
     }
 
-    public void setWordsAdded(String wordsAdded) {
-        this.wordsAdded = wordsAdded;
-    }
-
-    public String getWordsAddedPercentage() {
-        return wordsAddedPercentage;
-    }
-
-    public void setWordsAddedPercentage(String wordsAddedPercentage) {
-        this.wordsAddedPercentage = wordsAddedPercentage;
+    public void setLikedWordUUIDs(List<String> likedWordUUIDs) {
+        this.likedWordUUIDs = likedWordUUIDs;
     }
 }
-

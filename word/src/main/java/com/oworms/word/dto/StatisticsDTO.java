@@ -1,6 +1,7 @@
 package com.oworms.word.dto;
 
 import java.util.Map;
+import java.util.Set;
 
 public class StatisticsDTO {
     private long totalWords;
@@ -10,7 +11,7 @@ public class StatisticsDTO {
     private Map<String, String> partsOfSpeechPercentages;
     private Map<String, Integer> firstLetterTotals;
     private Map<String, String> firstLetterPercentages;
-    private Map<String, WordDTO> dateWordMap;
+    private Map<String, Set<WordDTO>> dateWordMap;
 
     public long getTotalWords() {
         return totalWords;
@@ -68,7 +69,11 @@ public class StatisticsDTO {
         this.firstLetterPercentages = firstLetterPercentages;
     }
 
-    public void setDateOrDateTimeMap(Map<String, WordDTO> dateWordMap) {
+    public Map<String, Set<WordDTO>> getDateWordMap() {
+        return dateWordMap;
+    }
+
+    public void setDateOrDateTimeMap(Map<String, Set<WordDTO>> dateWordMap) {
         this.dateWordMap = dateWordMap;
     }
 }

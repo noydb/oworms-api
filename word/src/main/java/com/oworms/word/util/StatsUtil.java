@@ -10,10 +10,13 @@ import org.springframework.validation.annotation.Validated;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 
@@ -73,14 +76,20 @@ public class StatsUtil {
     }
 
     public static void createDateWordMap(final StatisticsDTO stats, final List<Word> words) {
-        final Map<String, WordDTO> dateWordMap = new HashMap<>();
+        final Map<String, Set<WordDTO>> dateWordMap = new HashMap<>();
 
         for (final Word word : words) {
             OffsetDateTime offsetDateTime = word.getCreationDate();
 
-            String key = offsetDateTime.format(DateTimeFormatter.BASIC_ISO_DATE);
+            String key = offsetDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE);
 
-            dateWordMap.put(key, WordMapper.map(word));
+            Set<WordDTO> currentWordsForDate = dateWordMap.get(key);
+            if (currentWordsForDate == null) {
+                currentWordsForDate = new HashSet<>(Collections.singletonList(WordMapper.map(word)));
+            } else {
+                currentWordsForDate.add(WordMapper.map(word));
+            }
+            dateWordMap.put(key, currentWordsForDate);
 
 //            switch (type) {
 //                case DAY:

@@ -29,6 +29,6 @@ public enum PartOfSpeech {
             }
         }
 
-        throw new IllegalArgumentException("That part of speech does not exist");
+        throw new IllegalArgumentException("That part of speech does not exist: " + arg);
     }
 }
