@@ -46,7 +46,7 @@ public class SettingsService {
     }
 
     @Transactional
-    public void permit(String username, String bananaArg) {
+    public void permit(String usernameOrEmail, String bananaArg) {
         AppSettings settings = getSettings();
 
         if (!Utils.areEqual(bananaArg, settings.getBanana())) {
@@ -56,7 +56,7 @@ public class SettingsService {
         }
 
         userRepository
-                .findByUsernameOrEmail(username)
+                .findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
                 .orElseThrow(() -> new OWormException(OWormExceptionType.NOT_FOUND, "That user does not exist"));
     }
 
