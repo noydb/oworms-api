@@ -73,7 +73,8 @@ public interface WordAPI {
             String example,
             List<String> tags,
             String note,
-            String creator
+            String creator,
+            List<String> uuids
     );
 
     @ApiOperation(

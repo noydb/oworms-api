@@ -74,6 +74,14 @@ public class UserService {
         return userDTO;
     }
 
+    public List<UserDTO> retrieveAll() {
+        return repository
+                .findAll()
+                .stream()
+                .map(UserMapper::mapUser)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public void updateUser(String userUUID, UserDTO userDTO, String username, String banana) throws AccountExistsException {
         consumeToken("update");
@@ -88,8 +96,7 @@ public class UserService {
 
         User existingUser = repository
                 .findByUuid(userUUID)
-                .orElseThrow(() ->
-                new EntityNotFoundException("A user with that ID does not exist"));
+                .orElseThrow(() -> new EntityNotFoundException("A user with that ID does not exist"));
 
         existingUser.setUsername(userDTO.getUsername());
         existingUser.setEmail(userDTO.getEmail());
