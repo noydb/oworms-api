@@ -22,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
@@ -113,7 +115,7 @@ public class SettingsService {
 
     private String sendNewBanana() {
         String uuid = UUID.randomUUID().toString();
-        String timestamp = LocalDateTime.now().toString();
+        String timestamp = OffsetDateTime.now(ZoneId.of("Africa/Johannesburg")).toString();
         String banana = uuid + ":" + timestamp;
 
         String eatLink = eatBananaLink.replace("{bna}", banana);

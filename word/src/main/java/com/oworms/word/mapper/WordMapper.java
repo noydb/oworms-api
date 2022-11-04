@@ -87,6 +87,7 @@ public class WordMapper {
                 .map(UserDTO::getEmail)
                 .collect(Collectors.joining(","));
 
+        emailWord.setTo(recipients.get(0).getEmail());
         emailWord.setRecipients(recipientsCommaDelimited);
 
         return emailWord;

@@ -102,9 +102,9 @@ public class EmailService {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, ENCODING);
 
             messageHelper.setFrom(BOT);
-            messageHelper.setTo(wordDTO.getRecipients());
+            messageHelper.setTo(wordDTO.getTo());
             messageHelper.setSubject(title);
-            messageHelper.setBcc(wordDTO.getRecipients());
+            messageHelper.setBcc(wordDTO.getRecipients().split(","));
 
             String messageContent = mailContentBuilder.build(newWordEmailDTO, NewWordEmailDTO.TEMPLATE);
 
