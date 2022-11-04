@@ -3,6 +3,7 @@ package com.oworms.word.controller;
 import com.oworms.common.util.LogUtil;
 import com.oworms.word.controller.api.WordAPI;
 import com.oworms.word.dto.WordDTO;
+import com.oworms.word.dto.WordFilter;
 import com.oworms.word.dto.WordRequestDTO;
 import com.oworms.word.service.WordService;
 import org.springframework.http.MediaType;
@@ -46,19 +47,21 @@ public class WordController implements WordAPI {
 
     @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<WordDTO>> retrieveAll(@RequestParam(value = "word", required = false) String word,
-                                                     @RequestParam(value = "pos", required = false) List<String> pos,
-                                                     @RequestParam(value = "def", required = false) String def,
-                                                     @RequestParam(value = "ori", required = false) String origin,
-                                                     @RequestParam(value = "ex", required = false) String example,
-                                                     @RequestParam(value = "tags", required = false) List<String> tags,
-                                                     @RequestParam(value = "note", required = false) String note,
-                                                     @RequestParam(value = "creator", required = false) String creator) {
+    public ResponseEntity<List<WordDTO>> retrieveAll(
+            @RequestParam(value = "word", required = false) final String word,
+            @RequestParam(value = "pos", required = false) final List<String> pos,
+            @RequestParam(value = "def", required = false) final String def,
+            @RequestParam(value = "ori", required = false) final String origin,
+            @RequestParam(value = "ex", required = false) final String example,
+            @RequestParam(value = "tags", required = false) final List<String> tags,
+            @RequestParam(value = "note", required = false) final String note,
+            @RequestParam(value = "creator", required = false) final String creator,
+            @RequestParam(value = "uuids", required = false) final List<String> uuids) {
         LogUtil.log("Retrieving all words");
 
-        return ResponseEntity.ok(
-                service.retrieveAll(word, pos, def, origin, example, tags, note, creator)
-        );
+        final WordFilter wordFilter = new WordFilter(word, pos, def, origin, example, tags, note, creator, uuids);
+
+        return ResponseEntity.ok(service.retrieveAll(wordFilter));
     }
 
     @Override
