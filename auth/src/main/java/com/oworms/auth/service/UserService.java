@@ -2,7 +2,6 @@ package com.oworms.auth.service;
 
 import com.oworms.auth.domain.Status;
 import com.oworms.auth.domain.User;
-import com.oworms.auth.dto.NewUserDTO;
 import com.oworms.auth.dto.UserDTO;
 import com.oworms.auth.error.AccountExistsException;
 import com.oworms.auth.mapper.UserMapper;
@@ -44,21 +43,6 @@ public class UserService {
         this.bucket = Bucket
                 .builder()
                 .addLimit(Bandwidth.classic(300, Refill.greedy(300, Duration.ofDays(300)))).build();
-    }
-
-    @Transactional
-    public void create(NewUserDTO newUserDTO, String username, String banana) throws AccountExistsException {
-        consumeToken("create");
-        ss.permit(username, banana);
-
-        Optional<User> userOptional = repository.findByUsername(newUserDTO.getUsername());
-        if (userOptional.isPresent()) {
-            throw new AccountExistsException("An account already exists with the supplied username or email address");
-        }
-
-        User user = UserMapper.map(newUserDTO);
-
-        repository.save(user);
     }
 
     public UserDTO retrieve(final String username, final String bna) {

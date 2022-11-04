@@ -37,16 +37,16 @@ public class Word {
     @Column(length = 3500)
     private String origin;
 
-    @Column(length = 2000)
+    @Column(length = 3500)
     private String exampleUsage;
 
-    @Column(length = 2000)
+    @Column(length = 3500)
     private String note;
 
     @ManyToMany
     private List<Tag> tags;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private OffsetDateTime creationDate;
 
     @Column(nullable = false, length = 80)
