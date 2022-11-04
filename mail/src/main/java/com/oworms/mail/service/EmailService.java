@@ -91,22 +91,20 @@ public class EmailService {
         }
     }
 
-    public void sendNewWordEmail(String title, EmailWordDTO wordDTO) {
+    public void sendNewWordEmail(final String title, final EmailWordDTO wordDTO) {
         if (properties.isDisabled()) {
             return;
         }
 
-        NewWordEmailDTO newWordEmailDTO = getNewWordEmailDTO(title, wordDTO);
-
-        String[] recipients = properties.getRecipients().split(",");
+        final NewWordEmailDTO newWordEmailDTO = getNewWordEmailDTO(title, wordDTO);
 
         MimeMessagePreparator messagePrep = (MimeMessage mimeMessage) -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, ENCODING);
 
             messageHelper.setFrom(BOT);
-            messageHelper.setTo(recipients[0]);
+            messageHelper.setTo(wordDTO.getRecipients());
             messageHelper.setSubject(title);
-            messageHelper.setBcc(recipients);
+            messageHelper.setBcc(wordDTO.getRecipients());
 
             String messageContent = mailContentBuilder.build(newWordEmailDTO, NewWordEmailDTO.TEMPLATE);
 

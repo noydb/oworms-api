@@ -1,8 +1,11 @@
 package com.oworms.auth.service;
 
 import com.oworms.auth.domain.AppSettings;
+import com.oworms.auth.domain.User;
+import com.oworms.auth.mapper.UserMapper;
 import com.oworms.auth.repository.SettingsRepository;
 import com.oworms.auth.repository.UserRepository;
+import com.oworms.auth.dto.UserDTO;
 import com.oworms.common.error.OWormException;
 import com.oworms.common.error.OWormExceptionType;
 import com.oworms.common.util.LogUtil;
@@ -46,7 +49,7 @@ public class SettingsService {
     }
 
     @Transactional
-    public void permit(String usernameOrEmail, String bananaArg) {
+    public UserDTO permit(String usernameOrEmail, String bananaArg) {
         AppSettings settings = getSettings();
 
         if (!Utils.areEqual(bananaArg, settings.getBanana())) {
@@ -55,9 +58,11 @@ public class SettingsService {
             throw new OWormException(OWormExceptionType.INSUFFICIENT_RIGHTS, "You cannot do that");
         }
 
-        userRepository
+        final User loggedInUser = userRepository
                 .findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
                 .orElseThrow(() -> new OWormException(OWormExceptionType.NOT_FOUND, "That user does not exist"));
+
+        return UserMapper.mapUser(loggedInUser);
     }
 
     @Transactional
