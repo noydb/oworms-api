@@ -6,6 +6,8 @@ import java.util.Locale;
 
 public class Utils {
 
+    public static final String TIME_ZONE = "Africa/Johannesburg";
+
     private Utils() {
     }
 
@@ -25,12 +27,14 @@ public class Utils {
     }
 
     /**
-     * Some of the string fields on Word could have commas in them.
-     * This wraps the values that do in "" so the CSV does not split inadvertently
+     * Some string fields on a Word could have commas in them.
+     * This wraps the values that do in "" so the CSV does not
+     * split inadvertently
      *
      * @param input string will be checked for "," value(s)
-     * @return the argument wrapped in double quotes if commas are present or the argument if
-     * no commas are present or null if the argument is null.
+     * @return the argument wrapped in double quotes if commas
+     * are present or the argument if
+     * no commas are present or null if the argument is null
      */
     public static String wrapTextIfCommaPresent(String input) {
         if (Utils.isBlank(input)) {

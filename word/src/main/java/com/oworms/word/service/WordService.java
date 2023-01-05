@@ -1,8 +1,8 @@
 package com.oworms.word.service;
 
+import com.oworms.auth.dto.UserDTO;
 import com.oworms.auth.service.SettingsService;
 import com.oworms.auth.service.UserService;
-import com.oworms.auth.dto.UserDTO;
 import com.oworms.common.error.OWormException;
 import com.oworms.common.error.OWormExceptionType;
 import com.oworms.mail.dto.BucketOverflowDTO;
@@ -18,15 +18,8 @@ import com.oworms.word.util.FilterUtil;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Refill;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -48,15 +41,6 @@ public class WordService {
 
     private final Bucket bucket;
     private static final String JHB_ZONE = "Africa/Johannesburg";
-
-    @Value("${oxford.api.url}")
-    private String oxfordApiURL;
-
-    @Value("${oxford.app.id}")
-    private String oxfordAppId;
-
-    @Value("${oxford.app.key}")
-    private String oxfordAppKey;
 
     public WordService(final WordRepository repository,
                        final EmailService emailService,
@@ -97,7 +81,7 @@ public class WordService {
         emailService.sendNewWordEmail(
                 "oworms | word #" + numberOfWords + " added",
                 WordMapper.mapToEmailDTO(createdWord),
-                getRecipients()
+                userService.getRecipientsForEmail()
         );
 
         return createdWord;
@@ -175,7 +159,7 @@ public class WordService {
         word.setOrigin(uWordDTO.getOrigin());
         word.setExampleUsage(uWordDTO.getExampleUsage());
         word.setNote(uWordDTO.getNote());
-        // creationDate, createdBy, and timesViewed cannot be modified.
+        // creationDate, createdBy, and timesViewed cannot be modified
 
         final Word updatedWord = repository.saveAndFlush(word);
 
@@ -183,39 +167,10 @@ public class WordService {
 
         emailService.sendUpdateWordEmail(
                 WordMapper.mapToUpdateEmailDTO(oldWord, WordMapper.map(updatedWord)),
-                getRecipients()
+                userService.getRecipientsForEmail()
         );
 
         return uWordDTO;
-    }
-
-    private String[] getRecipients() {
-        return userService
-                .retrieveAll()
-                .stream()
-                .map(UserDTO::getEmail)
-                .toArray(String[]::new);
-    }
-
-    public ResponseEntity<String> oxfordRetrieve(String theWord, String u, String banana) {
-        consumeToken(u);
-        ss.permit(u, banana);
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("app_id", oxfordAppId);
-        headers.set("app_key", oxfordAppKey);
-
-        HttpEntity<String> entity = new HttpEntity<>("body", headers);
-
-        String url = oxfordApiURL.replace("{theWord}", theWord);
-
-        try {
-            return restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-        } catch (RestClientException e) {
-            throw new OWormException(OWormExceptionType.FAILURE, "Error while searching Oxford API", e.getMessage());
-        }
     }
 
     private Word findByUuid(String uuid) {

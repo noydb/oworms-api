@@ -23,7 +23,7 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
     private final MailContentBuilder mailContentBuilder;
-    private final MailProperties properties;
+    private final MailProperties mailProps;
     private static final String BOT = "bot@oworms.com";
     private static final String ENCODING = "UTF-8";
     private static final String UUID = "{uuid}";
@@ -34,52 +34,23 @@ public class EmailService {
                         final MailProperties properties) {
         this.mailSender = mailSender;
         this.mailContentBuilder = mailContentBuilder;
-        this.properties = properties;
+        this.mailProps = properties;
     }
 
-    public void sendNewBna(NewBnaDTO newBan) {
-        if (properties.isDisabled()) {
+    public void sendNewBna(final NewBnaDTO newBna, final String[] recipients) {
+        if (mailProps.isDisabled()) {
             return;
         }
-
-        String[] recipients = properties.getRecipients().split(",");
 
         MimeMessagePreparator messagePrep = (MimeMessage mimeMessage) -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, ENCODING);
 
             messageHelper.setFrom(BOT);
             messageHelper.setTo(recipients[0]);
-            messageHelper.setSubject(newBan.getTitle());
+            messageHelper.setSubject(newBna.getTitle());
             messageHelper.setBcc(recipients);
 
-            String messageContent = mailContentBuilder.build(newBan, NewBnaDTO.TEMPLATE);
-
-            messageHelper.setText(messageContent, true);
-        };
-
-        try {
-            mailSender.send(messagePrep);
-        } catch (MailException e) {
-            throw new OWormException(OWormExceptionType.EMAIL_SEND_FAILURE, "Failed to send report email");
-        }
-    }
-
-    public void sendBucketOverflow(BucketOverflowDTO bucketOverflowDTO) {
-        if (properties.isDisabled()) {
-            return;
-        }
-
-        String[] recipients = properties.getRecipients().split(",");
-
-        MimeMessagePreparator messagePrep = (MimeMessage mimeMessage) -> {
-            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, ENCODING);
-
-            messageHelper.setFrom(BOT);
-            messageHelper.setTo(recipients[0]);
-            messageHelper.setSubject(bucketOverflowDTO.getTitle());
-            messageHelper.setBcc(recipients);
-
-            String messageContent = mailContentBuilder.build(bucketOverflowDTO, BucketOverflowDTO.TEMPLATE);
+            String messageContent = mailContentBuilder.build(newBna, NewBnaDTO.TEMPLATE);
 
             messageHelper.setText(messageContent, true);
         };
@@ -92,7 +63,7 @@ public class EmailService {
     }
 
     public void sendNewWordEmail(final String title, final EmailWordDTO wordDTO, final String[] recipients) {
-        if (properties.isDisabled()) {
+        if (mailProps.isDisabled()) {
             return;
         }
 
@@ -118,25 +89,15 @@ public class EmailService {
         }
     }
 
-    private NewWordEmailDTO getNewWordEmailDTO(String title, EmailWordDTO wordDTO) {
-        String retrievalLink = properties.getRetrievalLink().replace(UUID, wordDTO.getUuid());
-        String editLink = properties.getEditLink().replace(UUID, wordDTO.getUuid());
-
-        NewWordEmailDTO newWordEmailDTO = new NewWordEmailDTO(title, wordDTO, retrievalLink);
-        newWordEmailDTO.setEditLink(editLink);
-
-        return newWordEmailDTO;
-    }
-
     public void sendUpdateWordEmail(final UpdatedWordEmailDTO updatedWordEmail, final String[] recipients) {
-        if (properties.isDisabled()) {
+        if (mailProps.isDisabled()) {
             return;
         }
 
-        final String retrievalLink = properties.getRetrievalLink().replace(UUID, updatedWordEmail.getOld().getUuid());
+        final String retrievalLink = mailProps.getRetrievalLink().replace(UUID, updatedWordEmail.getOld().getUuid());
         updatedWordEmail.setRetrievalLink(retrievalLink);
 
-        final String editLink = properties.getEditLink().replace(UUID, updatedWordEmail.getOld().getUuid());
+        final String editLink = mailProps.getEditLink().replace(UUID, updatedWordEmail.getOld().getUuid());
         updatedWordEmail.setEditLink(editLink);
 
         MimeMessagePreparator messagePrep = (MimeMessage mimeMessage) -> {
@@ -157,5 +118,42 @@ public class EmailService {
         } catch (MailException e) {
             throw new OWormException(OWormExceptionType.EMAIL_SEND_FAILURE, "Failed to send update word email");
         }
+    }
+
+    public void sendBucketOverflow(BucketOverflowDTO bucketOverflowDTO) {
+        if (mailProps.isDisabled()) {
+            return;
+        }
+
+        String[] recipients = mailProps.getRecipients().split(",");
+
+        MimeMessagePreparator messagePrep = (MimeMessage mimeMessage) -> {
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, ENCODING);
+
+            messageHelper.setFrom(BOT);
+            messageHelper.setTo(recipients[0]);
+            messageHelper.setSubject(bucketOverflowDTO.getTitle());
+            messageHelper.setBcc(recipients);
+
+            String messageContent = mailContentBuilder.build(bucketOverflowDTO, BucketOverflowDTO.TEMPLATE);
+
+            messageHelper.setText(messageContent, true);
+        };
+
+        try {
+            mailSender.send(messagePrep);
+        } catch (MailException e) {
+            throw new OWormException(OWormExceptionType.EMAIL_SEND_FAILURE, "Failed to send report email");
+        }
+    }
+
+    private NewWordEmailDTO getNewWordEmailDTO(String title, EmailWordDTO wordDTO) {
+        String retrievalLink = mailProps.getRetrievalLink().replace(UUID, wordDTO.getUuid());
+        String editLink = mailProps.getEditLink().replace(UUID, wordDTO.getUuid());
+
+        NewWordEmailDTO newWordEmailDTO = new NewWordEmailDTO(title, wordDTO, retrievalLink);
+        newWordEmailDTO.setEditLink(editLink);
+
+        return newWordEmailDTO;
     }
 }

@@ -12,7 +12,7 @@ public class NewBnaDTO {
     private String newBanana;
     private String eatBananaLink;
 
-    public NewBnaDTO(String newBanana, String eatBananaLink) {
+    public NewBnaDTO(final String newBanana, final String eatBananaLink) {
         this.title = "oworms | week #" + Utils.format(LocalDateTime.now(), "ww") + " | banana";
 
         this.newBanana = newBanana;
