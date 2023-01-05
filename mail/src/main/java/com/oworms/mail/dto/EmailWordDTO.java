@@ -12,8 +12,6 @@ public class EmailWordDTO {
     private String tags;
     private String note;
     private String createdBy;
-    private String to;
-    private String recipients;
 
     public String getUuid() {
         return uuid;
@@ -95,19 +93,4 @@ public class EmailWordDTO {
         this.createdBy = createdBy;
     }
 
-    public String getTo() {
-        return to;
-    }
-
-    public void setTo(String to) {
-        this.to = to;
-    }
-
-    public String getRecipients() {
-        return recipients;
-    }
-
-    public void setRecipients(String recipients) {
-        this.recipients = recipients;
-    }
 }

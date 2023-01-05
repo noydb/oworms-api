@@ -58,14 +58,6 @@ public class UserService {
         return userDTO;
     }
 
-    public List<UserDTO> retrieveAll() {
-        return repository
-                .findAll()
-                .stream()
-                .map(UserMapper::mapUser)
-                .collect(Collectors.toList());
-    }
-
     @Transactional
     public void updateUser(String userUUID, UserDTO userDTO, String username, String banana) throws AccountExistsException {
         consumeToken("update");
@@ -117,6 +109,14 @@ public class UserService {
         }
 
         repository.save(user);
+    }
+
+    public String[] getRecipientsForEmail() {
+        return repository
+                .findAll()
+                .stream()
+                .map(User::getEmail)
+                .toArray(String[]::new);
     }
 
     private void consumeToken(String context) {

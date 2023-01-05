@@ -12,8 +12,11 @@ public class NewBnaDTO {
     private String newBanana;
     private String eatBananaLink;
 
-    public NewBnaDTO(String newBanana, String eatBananaLink) {
-        this.title = "oworms | week #" + Utils.format(LocalDateTime.now(), "ww") + " | banana";
+    public NewBnaDTO(final String newBanana, final String eatBananaLink) {
+        final String week = Utils.format(LocalDateTime.now(), "ww");
+        final String year = Utils.format(LocalDateTime.now(), "yyyy");
+
+        this.title = "oworms | week " + week + " " + year + " | banana";
 
         this.newBanana = newBanana;
         this.eatBananaLink = eatBananaLink;

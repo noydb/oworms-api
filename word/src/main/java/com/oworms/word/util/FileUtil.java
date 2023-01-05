@@ -59,7 +59,7 @@ public class FileUtil {
 
         final String creationDate = row.getCell(8).getStringCellValue();
         if (creationDate == null) {
-            word.setCreationDate(OffsetDateTime.now(ZoneId.of("Africa/Johannesburg")));
+            word.setCreationDate(OffsetDateTime.now(ZoneId.of(Utils.TIME_ZONE)));
         } else {
             word.setCreationDate(OffsetDateTime.parse(creationDate));
         }
