@@ -96,7 +96,8 @@ public class WordService {
 
         emailService.sendNewWordEmail(
                 "oworms | word #" + numberOfWords + " added",
-                WordMapper.mapToEmailDTO(createdWord, userService.retrieveAll())
+                WordMapper.mapToEmailDTO(createdWord),
+                getRecipients()
         );
 
         return createdWord;
@@ -181,10 +182,19 @@ public class WordService {
         tagService.updateTagsForWord(word.getId(), wordRequestDTO.getTagIds());
 
         emailService.sendUpdateWordEmail(
-                WordMapper.mapToUpdateEmailDTO(oldWord, WordMapper.map(updatedWord), userService.retrieveAll())
+                WordMapper.mapToUpdateEmailDTO(oldWord, WordMapper.map(updatedWord)),
+                getRecipients()
         );
 
         return uWordDTO;
+    }
+
+    private String[] getRecipients() {
+        return userService
+                .retrieveAll()
+                .stream()
+                .map(UserDTO::getEmail)
+                .toArray(String[]::new);
     }
 
     public ResponseEntity<String> oxfordRetrieve(String theWord, String u, String banana) {

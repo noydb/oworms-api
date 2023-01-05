@@ -91,7 +91,7 @@ public class EmailService {
         }
     }
 
-    public void sendNewWordEmail(final String title, final EmailWordDTO wordDTO) {
+    public void sendNewWordEmail(final String title, final EmailWordDTO wordDTO, final String[] recipients) {
         if (properties.isDisabled()) {
             return;
         }
@@ -102,9 +102,9 @@ public class EmailService {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, ENCODING);
 
             messageHelper.setFrom(BOT);
-            messageHelper.setTo(wordDTO.getTo());
+            messageHelper.setTo(recipients[0]);
             messageHelper.setSubject(title);
-            messageHelper.setBcc(wordDTO.getRecipients().split(","));
+            messageHelper.setBcc(recipients);
 
             String messageContent = mailContentBuilder.build(newWordEmailDTO, NewWordEmailDTO.TEMPLATE);
 
@@ -128,7 +128,7 @@ public class EmailService {
         return newWordEmailDTO;
     }
 
-    public void sendUpdateWordEmail(UpdatedWordEmailDTO updatedWordEmail) {
+    public void sendUpdateWordEmail(final UpdatedWordEmailDTO updatedWordEmail, final String[] recipients) {
         if (properties.isDisabled()) {
             return;
         }
@@ -138,8 +138,6 @@ public class EmailService {
 
         final String editLink = properties.getEditLink().replace(UUID, updatedWordEmail.getOld().getUuid());
         updatedWordEmail.setEditLink(editLink);
-
-        String[] recipients = properties.getRecipients().split(",");
 
         MimeMessagePreparator messagePrep = (MimeMessage mimeMessage) -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, ENCODING);

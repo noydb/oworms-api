@@ -1,6 +1,5 @@
 package com.oworms.word.mapper;
 
-import com.oworms.auth.dto.UserDTO;
 import com.oworms.common.util.Utils;
 import com.oworms.mail.dto.EmailWordDTO;
 import com.oworms.mail.dto.UpdatedWordEmailDTO;
@@ -10,7 +9,6 @@ import com.oworms.word.dto.WordDTO;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -69,7 +67,7 @@ public class WordMapper {
                 .collect(toList());
     }
 
-    public static EmailWordDTO mapToEmailDTO(final WordDTO wordDTO, final List<UserDTO> recipients) {
+    public static EmailWordDTO mapToEmailDTO(final WordDTO wordDTO) {
         final EmailWordDTO emailWord = new EmailWordDTO();
 
         emailWord.setUuid(wordDTO.getUuid());
@@ -81,14 +79,7 @@ public class WordMapper {
         emailWord.setPronunciation(valueElseNA(wordDTO.getPronunciation()));
         emailWord.setTags(valueElseNA(TagMapper.getPretty(wordDTO.getTags())));
         emailWord.setNote(valueElseNA(wordDTO.getNote()));
-
-        final String recipientsCommaDelimited = recipients
-                .stream()
-                .map(UserDTO::getEmail)
-                .collect(Collectors.joining(","));
-
-        emailWord.setTo(recipients.get(0).getEmail());
-        emailWord.setRecipients(recipientsCommaDelimited);
+        emailWord.setCreatedBy(wordDTO.getCreatedBy());
 
         return emailWord;
     }
@@ -102,12 +93,11 @@ public class WordMapper {
     }
 
     public static UpdatedWordEmailDTO mapToUpdateEmailDTO(final WordDTO old,
-                                                          final WordDTO updated,
-                                                          final List<UserDTO> recipients) {
+                                                          final WordDTO updated) {
         UpdatedWordEmailDTO updatedWordEmailDTO = new UpdatedWordEmailDTO(
                 "oworms | " + updated.getTheWord() + " updated",
-                WordMapper.mapToEmailDTO(old, recipients),
-                WordMapper.mapToEmailDTO(updated, recipients)
+                WordMapper.mapToEmailDTO(old),
+                WordMapper.mapToEmailDTO(updated)
         );
 
         return updatedWordEmailDTO;
