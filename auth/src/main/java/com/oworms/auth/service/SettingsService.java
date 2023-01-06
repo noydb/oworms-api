@@ -115,7 +115,7 @@ public class SettingsService {
 
     private String sendNewBanana() {
         final String uuid = UUID.randomUUID().toString();
-        final String timestamp = OffsetDateTime.now(ZoneId.of(Utils.TIME_ZONE)).toString();
+        final String timestamp = OffsetDateTime.now(ZoneId.of(Utils.TIME_ZONE)).toLocalDateTime().toString();
         final String banana = uuid + ":" + timestamp;
         final String eatLink = eatBananaLink.replace("{bna}", banana);
         final NewBnaDTO newBna = new NewBnaDTO(banana, eatLink);

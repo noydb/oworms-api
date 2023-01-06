@@ -2,6 +2,7 @@ package com.oworms.word.controller;
 
 import com.oworms.common.util.LogUtil;
 import com.oworms.word.controller.api.WordAPI;
+import com.oworms.word.dto.UserProfileDTO;
 import com.oworms.word.dto.WordDTO;
 import com.oworms.word.dto.WordFilter;
 import com.oworms.word.dto.WordRequestDTO;
@@ -48,6 +49,7 @@ public class WordController implements WordAPI {
     @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<WordDTO>> retrieveAll(
+            @RequestParam(value = "numberOfWords") final int numberOfWords,
             @RequestParam(value = "word", required = false) final String word,
             @RequestParam(value = "pos", required = false) final List<String> pos,
             @RequestParam(value = "def", required = false) final String def,
@@ -59,7 +61,7 @@ public class WordController implements WordAPI {
             @RequestParam(value = "uuids", required = false) final List<String> uuids) {
         LogUtil.log("Retrieving all words");
 
-        final WordFilter wordFilter = new WordFilter(word, pos, def, origin, example, tags, note, creator, uuids);
+        final WordFilter wordFilter = new WordFilter(numberOfWords, word, pos, def, origin, example, tags, note, creator, uuids);
 
         return ResponseEntity.ok(service.retrieveAll(wordFilter));
     }
@@ -100,4 +102,17 @@ public class WordController implements WordAPI {
 
         return ResponseEntity.ok().body(updatedWordDTO);
     }
+
+    @Override
+    @GetMapping(
+            value = "/profile",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<UserProfileDTO> getUserProfile(@RequestParam("u") final String u,
+                                                         @RequestParam("bna") final String banana) {
+        LogUtil.log("Retrieving user profile for user: " + u);
+
+        return ResponseEntity.ok(service.getUserData(u, banana));
+    }
+
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 public class WordFilter {
 
+    private final int numberOfWords;
     private final String word;
     private final List<String> pos;
     private final String def;
@@ -14,15 +15,17 @@ public class WordFilter {
     private final String creator;
     private final List<String> uuids;
 
-    public WordFilter(final String word,
-                      List<String> pos,
-                      String def,
-                      String origin,
-                      String example,
-                      List<String> tags,
-                      String note,
-                      String creator,
-                      List<String> uuids) {
+    public WordFilter(final int numberOfWords,
+                      final String word,
+                      final List<String> pos,
+                      final String def,
+                      final String origin,
+                      final String example,
+                      final List<String> tags,
+                      final String note,
+                      final String creator,
+                      final List<String> uuids) {
+        this.numberOfWords = numberOfWords;
         this.word = word;
         this.pos = pos;
         this.def = def;
@@ -32,6 +35,10 @@ public class WordFilter {
         this.note = note;
         this.creator = creator;
         this.uuids = uuids;
+    }
+
+    public int getNumberOfWords() {
+        return numberOfWords;
     }
 
     public String getWord() {

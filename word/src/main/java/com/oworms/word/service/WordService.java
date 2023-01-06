@@ -9,6 +9,7 @@ import com.oworms.mail.dto.BucketOverflowDTO;
 import com.oworms.mail.service.EmailService;
 import com.oworms.word.domain.PartOfSpeech;
 import com.oworms.word.domain.Word;
+import com.oworms.word.dto.UserProfileDTO;
 import com.oworms.word.dto.WordDTO;
 import com.oworms.word.dto.WordFilter;
 import com.oworms.word.dto.WordRequestDTO;
@@ -26,6 +27,7 @@ import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -54,7 +56,7 @@ public class WordService {
         this.userService = userService;
         this.bucket = Bucket
                 .builder()
-                .addLimit(Bandwidth.classic(200, Refill.greedy(200, Duration.ofDays(1)))).build();
+                .addLimit(Bandwidth.classic(350, Refill.greedy(350, Duration.ofDays(1)))).build();
     }
 
     @Transactional
@@ -91,8 +93,12 @@ public class WordService {
         consumeToken("all words");
 
         final List<Word> words = repository.findAll();
+        final int totalWordCount = words.size();
+        final int noOfWordsToReturn = wordFilter.getNumberOfWords();
 
-        final List<Word> filteredWords = FilterUtil.filter(words, wordFilter);
+        final List<Word> filteredWords = FilterUtil
+                .filter(words, wordFilter)
+                .subList(0, Math.min(noOfWordsToReturn, totalWordCount));
 
         if (filteredWords.isEmpty()) {
             throw new OWormException(OWormExceptionType.NOT_FOUND, "No words were found");
@@ -138,7 +144,7 @@ public class WordService {
         return WordMapper.map(words.get(randomIndex));
     }
 
-    public WordDTO update(String uuid, WordRequestDTO wordRequestDTO, String u, String banana) {
+    public WordDTO update(final String uuid, final WordRequestDTO wordRequestDTO, final String u, final String banana) {
         consumeToken(u);
         ss.permit(u, banana);
 
@@ -173,13 +179,31 @@ public class WordService {
         return uWordDTO;
     }
 
-    private Word findByUuid(String uuid) {
+    public UserProfileDTO getUserData(final String u, final String banana) {
+        consumeToken(u);
+
+        final UserDTO user = userService.retrieve(u, banana);
+        final List<String> likedWords = user.getLikedWordUUIDs();
+
+        final long wordsCreated = repository.countByCreatedByEquals(u);
+        final List<WordDTO> likedWordDTOs = new ArrayList<>();
+
+        repository.findAll().forEach(word -> {
+            if (likedWords.contains(word.getUuid())) {
+                likedWordDTOs.add(WordMapper.map(word));
+            }
+        });
+
+        return new UserProfileDTO((int) wordsCreated, likedWordDTOs);
+    }
+
+    private Word findByUuid(final String uuid) {
         return repository
                 .findByUuid(uuid)
                 .orElseThrow(() -> new OWormException(OWormExceptionType.NOT_FOUND, "Word with uuid: " + uuid + " does not exist"));
     }
 
-    private void consumeToken(String context) {
+    private void consumeToken(final String context) {
         if (!bucket.tryConsume(1)) {
             emailService.sendBucketOverflow(new BucketOverflowDTO(this.getClass().getName(), context));
 
