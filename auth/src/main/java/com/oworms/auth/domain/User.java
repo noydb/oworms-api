@@ -1,13 +1,14 @@
 package com.oworms.auth.domain;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -24,10 +25,15 @@ public class User {
     @Column(length = 25)
     private String username;
 
-    @Column
+    @Column(length = 75)
+    private String email;
+
+    @Column(length = 50)
     @Enumerated(EnumType.STRING)
-    @Size(max = 50)
     private Status status;
+
+    @ElementCollection
+    private List<String> likedWordUUIDs;
 
     public Long getId() {
         return id;
@@ -49,11 +55,27 @@ public class User {
         this.username = username;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public Status getStatus() {
         return status;
     }
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public List<String> getLikedWordUUIDs() {
+        return likedWordUUIDs;
+    }
+
+    public void setLikedWordUUIDs(List<String> likedWordUUIDs) {
+        this.likedWordUUIDs = likedWordUUIDs;
     }
 }

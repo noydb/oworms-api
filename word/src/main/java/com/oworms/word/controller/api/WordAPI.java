@@ -1,8 +1,8 @@
 package com.oworms.word.controller.api;
 
-import com.oworms.word.dto.WordDTO;
 import com.oworms.common.error.OWormException;
-import com.oworms.word.dto.StatisticsDTO;
+import com.oworms.word.dto.UserProfileDTO;
+import com.oworms.word.dto.WordDTO;
 import com.oworms.word.dto.WordRequestDTO;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -67,14 +67,16 @@ public interface WordAPI {
             )
     })
     ResponseEntity<List<WordDTO>> retrieveAll(
-            String theWord,
-            List<String> parts,
-            String def,
-            String origin,
-            String example,
-            List<String> tags,
-            String note,
-            String creator
+            final int numberOfWords,
+            final String theWord,
+            final List<String> parts,
+            final String def,
+            final String origin,
+            final String example,
+            final List<String> tags,
+            final String note,
+            final String creator,
+            final List<String> uuids
     );
 
     @ApiOperation(
@@ -147,18 +149,24 @@ public interface WordAPI {
     ResponseEntity<WordDTO> update(String uuid, WordRequestDTO wordRequestDTO, String u, String banana) throws OWormException;
 
     @ApiOperation(
-            value = "Retrieves the statistics of the application",
-            response = StatisticsDTO.class
+            code = 200,
+            value = "Retrieves a user's profile data (which is number of words created and liked words)",
+            response = UserProfileDTO.class
     )
     @ApiResponses(value = {
             @ApiResponse(
                     code = 200,
-                    message = "Retrieved statistics"
+                    message = "Successfully retrieved the user's profile"
+            ),
+            @ApiResponse(
+                    code = 403,
+                    message = "You do not have permission to do that"
             ),
             @ApiResponse(
                     code = 500,
-                    message = "Internal server error while retrieving statistics"
+                    message = "Internal server error while retrieving the user's profile"
             )
     })
-    ResponseEntity<StatisticsDTO> getStatistics();
+    ResponseEntity<UserProfileDTO> getUserProfile(final String u, final String banana) throws OWormException;
+
 }

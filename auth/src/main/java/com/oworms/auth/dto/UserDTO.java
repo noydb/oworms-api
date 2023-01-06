@@ -4,6 +4,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Validated
 public class UserDTO {
@@ -21,6 +22,8 @@ public class UserDTO {
     @NotEmpty(message = "Status cannot be null")
     @Size(max = 50)
     private String status;
+
+    private List<String> likedWordUUIDs;
 
     public String getUuid() {
         return uuid;
@@ -53,5 +56,12 @@ public class UserDTO {
     public void setStatus(String status) {
         this.status = status;
     }
-}
 
+    public List<String> getLikedWordUUIDs() {
+        return likedWordUUIDs;
+    }
+
+    public void setLikedWordUUIDs(List<String> likedWordUUIDs) {
+        this.likedWordUUIDs = likedWordUUIDs;
+    }
+}

@@ -25,6 +25,18 @@
             text-align: center;
             text-decoration: none;
         }
+
+        .actions {
+            margin-top: 2rem;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: .8;
+        }
     </style>
 </head>
 <body style="font-family: 'Courier New', sans-serif; font-size: 16px; padding: 1rem">
@@ -59,10 +71,10 @@
     <label th:text="${message.word.createdBy}"></label>
 </div>
 
-<div style="margin-bottom: 1.5rem">
+<section class="actions">
     <a th:href="${message.retrievalLink}">view</a>
-    <a th:href="${message.retrievalLink}">edit</a>
-</div>
+    <a th:href="${message.editLink}">edit</a>
+</section>
 
 </body>
 </html>

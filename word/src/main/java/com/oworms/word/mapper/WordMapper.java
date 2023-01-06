@@ -67,8 +67,8 @@ public class WordMapper {
                 .collect(toList());
     }
 
-    public static EmailWordDTO mapToEmailDTO(WordDTO wordDTO) {
-        EmailWordDTO emailWord = new EmailWordDTO();
+    public static EmailWordDTO mapToEmailDTO(final WordDTO wordDTO) {
+        final EmailWordDTO emailWord = new EmailWordDTO();
 
         emailWord.setUuid(wordDTO.getUuid());
         emailWord.setTheWord(wordDTO.getTheWord());
@@ -79,6 +79,7 @@ public class WordMapper {
         emailWord.setPronunciation(valueElseNA(wordDTO.getPronunciation()));
         emailWord.setTags(valueElseNA(TagMapper.getPretty(wordDTO.getTags())));
         emailWord.setNote(valueElseNA(wordDTO.getNote()));
+        emailWord.setCreatedBy(wordDTO.getCreatedBy());
 
         return emailWord;
     }
@@ -91,9 +92,10 @@ public class WordMapper {
         return arg;
     }
 
-    public static UpdatedWordEmailDTO mapToUpdateEmailDTO(WordDTO old, WordDTO updated) {
+    public static UpdatedWordEmailDTO mapToUpdateEmailDTO(final WordDTO old,
+                                                          final WordDTO updated) {
         UpdatedWordEmailDTO updatedWordEmailDTO = new UpdatedWordEmailDTO(
-                "oworms | a word has been updated",
+                "oworms | " + updated.getTheWord() + " updated",
                 WordMapper.mapToEmailDTO(old),
                 WordMapper.mapToEmailDTO(updated)
         );

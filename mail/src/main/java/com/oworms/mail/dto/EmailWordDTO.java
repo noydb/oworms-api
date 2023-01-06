@@ -92,4 +92,5 @@ public class EmailWordDTO {
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
+
 }

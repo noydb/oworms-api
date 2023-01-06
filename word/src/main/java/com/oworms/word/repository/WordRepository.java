@@ -9,12 +9,14 @@ import java.util.Optional;
 @Repository
 public interface WordRepository extends JpaRepository<Word, Long> {
 
-    Optional<Word> findByTheWordIgnoreCase(String theWord);
+    Optional<Word> findByTheWordIgnoreCase(final String theWord);
 
-    Optional<Word> findByTheWordIgnoreCaseAndUuidNot(String theWord, String uuid);
+    Optional<Word> findByTheWordIgnoreCaseAndUuidNot(final String theWord, final String uuid);
 
-    Optional<Word> findByUuid(String uuid);
+    Optional<Word> findByUuid(final String uuid);
 
-    long countByTagsIdEquals(Long tagId);
+    long countByTagsIdEquals(final Long tagId);
+
+    long countByCreatedByEquals(final String username);
 
 }

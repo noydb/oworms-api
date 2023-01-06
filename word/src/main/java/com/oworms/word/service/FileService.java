@@ -46,7 +46,9 @@ public class FileService {
         this.tagRepo = tagRepo;
         this.ss = ss;
         this.emailService = emailService;
-        this.bucket = Bucket.builder().addLimit(Bandwidth.classic(5, Refill.greedy(5, Duration.ofDays(1)))).build();
+        this.bucket = Bucket
+                .builder()
+                .addLimit(Bandwidth.classic(50, Refill.greedy(50, Duration.ofDays(1)))).build();
     }
 
     public InputStreamResource getWordsInCSV() {

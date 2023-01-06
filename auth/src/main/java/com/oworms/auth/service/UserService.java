@@ -2,7 +2,6 @@ package com.oworms.auth.service;
 
 import com.oworms.auth.domain.Status;
 import com.oworms.auth.domain.User;
-import com.oworms.auth.dto.NewUserDTO;
 import com.oworms.auth.dto.UserDTO;
 import com.oworms.auth.error.AccountExistsException;
 import com.oworms.auth.mapper.UserMapper;
@@ -20,7 +19,11 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -37,51 +40,83 @@ public class UserService {
         this.repository = repository;
         this.ss = ss;
         this.emailService = emailService;
-        this.bucket = Bucket.builder().addLimit(Bandwidth.classic(5, Refill.greedy(5, Duration.ofDays(1)))).build();
+        this.bucket = Bucket
+                .builder()
+                .addLimit(Bandwidth.classic(300, Refill.greedy(300, Duration.ofDays(300)))).build();
     }
 
-    @Transactional
-    public void create(NewUserDTO newUserDTO, String username, String banana) throws AccountExistsException {
-        consumeToken("create");
-        ss.permit(username, banana);
+    public UserDTO retrieve(final String username, final String bna) {
+        consumeToken("retrieve");
+        ss.permit(username, bna);
 
-        Optional<User> userOptional = repository.findByUsername(newUserDTO.getUsername());
-        if (userOptional.isPresent()) {
-            throw new AccountExistsException("An account already exists with the supplied username or email address");
-        }
-
-        User user = UserMapper.map(newUserDTO);
-
-        repository.save(user);
-    }
-
-    public UserDTO retrieve(String username) {
-        User user = repository
+        final User user = repository
                 .findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("no such user"));
 
-        return UserMapper.mapUser(user);
+        final UserDTO userDTO = UserMapper.mapUser(user);
+
+        return userDTO;
     }
 
     @Transactional
-    public void updateUser(String userId, UserDTO userDTO, String username, String banana) throws AccountExistsException {
+    public void updateUser(String userUUID, UserDTO userDTO, String username, String banana) throws AccountExistsException {
         consumeToken("update");
         ss.permit(username, banana);
 
-        Optional<User> usernameOptional = repository.findByIdNotAndUsername(userId, userDTO.getUsername());
-        Optional<User> emailOptional = repository.findByIdNotAndUsername(userId, userDTO.getEmail());
+        Optional<User> usernameOptional = repository.findByUuidNotAndUsername(userUUID, userDTO.getUsername());
+        Optional<User> emailOptional = repository.findByUuidNotAndEmail(userUUID, userDTO.getEmail());
 
         if (usernameOptional.isPresent() || emailOptional.isPresent()) {
             throw new AccountExistsException("An account already exists with the supplied username or email address.");
         }
 
-        User existingUser = repository.findById(userId).orElseThrow(() ->
-                new EntityNotFoundException("A user with that ID does not exist"));
+        User existingUser = repository
+                .findByUuid(userUUID)
+                .orElseThrow(() -> new EntityNotFoundException("A user with that ID does not exist"));
 
         existingUser.setUsername(userDTO.getUsername());
+        existingUser.setEmail(userDTO.getEmail());
         existingUser.setStatus(Status.getStatus(userDTO.getStatus()));
 
         repository.save(existingUser);
+    }
+
+    @Transactional
+    public void likeWord(String wordUUID, String username, String banana) {
+        consumeToken("like word");
+        ss.permit(username, banana);
+
+        User user = repository
+                .findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("no such user"));
+
+        final List<String> existing = user.getLikedWordUUIDs();
+
+        if (existing == null || existing.isEmpty()) {
+            user.setLikedWordUUIDs(new ArrayList<>(Collections.singletonList(wordUUID)));
+        } else {
+            final List<String> filtered = existing
+                    .stream()
+                    .filter(existingId -> !existingId.equals(wordUUID))
+                    .collect(Collectors.toList());
+
+            if (filtered.size() == existing.size()) {
+                existing.add(wordUUID);
+            } else {
+                // the word has been unliked
+                user.setLikedWordUUIDs(filtered);
+            }
+        }
+
+        repository.save(user);
+    }
+
+    public String[] getRecipientsForEmail() {
+        return repository
+                .findAll()
+                .stream()
+                .map(User::getEmail)
+                .toArray(String[]::new);
     }
 
     private void consumeToken(String context) {

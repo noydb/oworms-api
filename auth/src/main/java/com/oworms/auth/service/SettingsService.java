@@ -1,6 +1,9 @@
 package com.oworms.auth.service;
 
 import com.oworms.auth.domain.AppSettings;
+import com.oworms.auth.domain.User;
+import com.oworms.auth.dto.UserDTO;
+import com.oworms.auth.mapper.UserMapper;
 import com.oworms.auth.repository.SettingsRepository;
 import com.oworms.auth.repository.UserRepository;
 import com.oworms.common.error.OWormException;
@@ -19,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
@@ -40,11 +45,13 @@ public class SettingsService {
         this.repository = repository;
         this.userRepository = userRepository;
         this.emailService = emailService;
-        this.bucket = Bucket.builder().addLimit(Bandwidth.classic(5, Refill.greedy(5, Duration.ofDays(1)))).build();
+        this.bucket = Bucket
+                .builder()
+                .addLimit(Bandwidth.classic(50, Refill.greedy(50, Duration.ofDays(1)))).build();
     }
 
     @Transactional
-    public void permit(String username, String bananaArg) {
+    public UserDTO permit(String usernameOrEmail, String bananaArg) {
         AppSettings settings = getSettings();
 
         if (!Utils.areEqual(bananaArg, settings.getBanana())) {
@@ -53,9 +60,11 @@ public class SettingsService {
             throw new OWormException(OWormExceptionType.INSUFFICIENT_RIGHTS, "You cannot do that");
         }
 
-        userRepository
-                .findByUsername(username)
+        final User loggedInUser = userRepository
+                .findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
                 .orElseThrow(() -> new OWormException(OWormExceptionType.NOT_FOUND, "That user does not exist"));
+
+        return UserMapper.mapUser(loggedInUser);
     }
 
     @Transactional
@@ -105,15 +114,13 @@ public class SettingsService {
     }
 
     private String sendNewBanana() {
-        String uuid = UUID.randomUUID().toString();
-        String timestamp = LocalDateTime.now().toString();
-        String banana = uuid + ":" + timestamp;
+        final String uuid = UUID.randomUUID().toString();
+        final String timestamp = OffsetDateTime.now(ZoneId.of(Utils.TIME_ZONE)).toLocalDateTime().toString();
+        final String banana = uuid + ":" + timestamp;
+        final String eatLink = eatBananaLink.replace("{bna}", banana);
+        final NewBnaDTO newBna = new NewBnaDTO(banana, eatLink);
 
-        String eatLink = eatBananaLink.replace("{bna}", banana);
-        NewBnaDTO newBan = new NewBnaDTO(banana, eatLink);
-        newBan.setEatBananaLink(eatLink);
-
-        emailService.sendNewBna(newBan);
+        emailService.sendNewBna(newBna, getRecipients());
 
         return banana;
     }
@@ -135,5 +142,13 @@ public class SettingsService {
         repository.saveAndFlush(newSettings);
 
         return newSettings;
+    }
+
+    private String[] getRecipients() {
+        return userRepository
+                .findAll()
+                .stream()
+                .map(User::getEmail)
+                .toArray(String[]::new);
     }
 }
