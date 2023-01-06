@@ -93,18 +93,16 @@ public class WordService {
         consumeToken("all words");
 
         final List<Word> words = repository.findAll();
-        final int totalWordCount = words.size();
         final int noOfWordsToReturn = wordFilter.getNumberOfWords();
 
-        final List<Word> filteredWords = FilterUtil
-                .filter(words, wordFilter)
-                .subList(0, Math.min(noOfWordsToReturn, totalWordCount));
+        final List<Word> filteredWords = FilterUtil.filter(words, wordFilter);
+        final int totalWordCount = filteredWords.size();
 
         if (filteredWords.isEmpty()) {
             throw new OWormException(OWormExceptionType.NOT_FOUND, "No words were found");
         }
 
-        return WordMapper.mapTo(filteredWords);
+        return WordMapper.mapTo(filteredWords.subList(0, Math.min(noOfWordsToReturn, totalWordCount)));
     }
 
     @Transactional
