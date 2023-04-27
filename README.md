@@ -14,29 +14,27 @@
 Follow these steps in order to start the server:
 
 1. Provide values for `oxford.api.url` `oxford.app.id` & `oxford.app.key` in `application.properties`
-2. Run `mvn clean install`
-3. There must be at least one row in `app_settings`
+2. Run `mvn clean install -Pdev`
+3. There must be at least one row in table `settings`
 4. There must be at least one valid user in `ow_user` table (whose username will be valid for 6)
 5. `cd boot`
-6. Run `mvn spring-boot:run`
+6. Run `mvn spring-boot:run -Pdev`
 7. u must be passed as a request parameter to all "secure" endpoints (param `u`)
 8. bna must be passed as a request parameter to all "secure" endpoints (param `bna`)
-9. Optionally, configure valid properties in `mail.dev.properties` to send emails. 
+9. Optionally, configure valid properties in `application.properties` to send emails 
 
-**Note: if you cannot send emails, you MUST get the bna value from the settings row in the DB. you will need to use this for**
-**"protected" endpoints. This is a flaw in the design, the app  cannot be used without email (because one won't receive the weekly bna).**
-**This will be addressed. For now, grab the value from the DB manually if email sending is not an option**
+**Note: if `mail.disabled=true`, the bna will be printed in the server logs on startup (You can then use it under the 
+profile section on the UI, along with a valid username to authenticate).**
 
 ---
 
 ### Environment Properties
 
 Emails are sent whenever a word is created or updated. If emails should be sent while working locally then please specify the necessary
-values in `mail.dev.properties`. Note that emails can be configured to send but turned on and off using `mail.disabled`
-in `mail.dev.properties` & `mail.prod.properties`.
-`mail.recipients` can be a comma separated list of email addresses. all those listed will receive communications whenever a word is 
-created, updated, or a new bna is sent
+values in `application.properties`. Note that emails can be configured to send but turned on and off using `mail.disabled`
+in `application.properties` & `application.dev.properties`.
 
+`mail.adminEmailAddress` will receive a mail when an endpoint is invoked more than its configured limit
 ---
 
 ### Features
