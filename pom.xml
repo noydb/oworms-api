@@ -12,21 +12,13 @@
     <groupId>com.oworms</groupId>
     <artifactId>api</artifactId>
     <name>oworms-api</name>
-    <version>2.3.0</version>
-    <packaging>pom</packaging>
+    <version>3.0.0</version>
+    <packaging>jar</packaging>
     <description>app for storing words</description>
 
     <properties>
         <java.version>1.8</java.version>
     </properties>
-
-    <modules>
-        <module>auth</module>
-        <module>boot</module>
-        <module>common</module>
-        <module>mail</module>
-        <module>word</module>
-    </modules>
 
     <dependencies>
 
@@ -48,6 +40,28 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
+        </dependency>
+
+        <!-- email -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
+        <!-- file parsing -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>5.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.0.0</version>
         </dependency>
 
         <!-- other -->
@@ -91,5 +105,14 @@
             </properties>
         </profile>
     </profiles>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
