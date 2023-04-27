@@ -20,7 +20,7 @@ public class MailServerConfig {
     @Value("${mail.username}")
     private String username;
 
-    @Value("${mail.username}")
+    @Value("${mail.password}")
     private String password;
 
     @Bean
