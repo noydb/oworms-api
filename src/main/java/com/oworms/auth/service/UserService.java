@@ -9,6 +9,8 @@ import com.oworms.common.error.OWormException;
 import com.oworms.common.error.OWormExceptionType;
 import com.oworms.mail.dto.BucketOverflowDTO;
 import com.oworms.mail.service.EmailService;
+import com.oworms.word.domain.Word;
+import com.oworms.word.dto.WordDTO;
 import com.oworms.word.mapper.WordMapper;
 import com.oworms.word.repository.WordRepository;
 import io.github.bucket4j.Bandwidth;
@@ -20,10 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,16 +56,24 @@ public class UserService {
         final User user = repository
                 .findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("no such user"));
-        final List<String> likedWords = user.getLikedWordUUIDs();
+        final List<String> likedWordUUIDs = user.getLikedWordUUIDs();
 
         final UserDTO userDTO = UserMapper.mapUser(user);
         userDTO.setCreatedWordCount((int) wordRepository.countByCreatedByEquals(user.getUsername()));
 
+        final List<WordDTO> likedWords = new ArrayList<>();
         wordRepository.findAll().forEach(word -> {
-            if (likedWords.contains(word.getUuid())) {
-                userDTO.getLikedWords().add(WordMapper.map(word));
+            if (likedWordUUIDs.contains(word.getUuid())) {
+                likedWords.add(WordMapper.map(word));
             }
         });
+
+        userDTO.setLikedWords(
+                likedWords
+                        .stream()
+                        .sorted(Comparator.comparing(WordDTO::getTheWord))
+                        .collect(Collectors.toList())
+        );
 
         return userDTO;
     }
