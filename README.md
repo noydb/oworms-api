@@ -32,9 +32,7 @@ profile section on the UI, along with a valid username to authenticate).**
 
 Emails are sent whenever a word is created or updated. If emails should be sent while working locally then please specify the necessary
 values in `application.properties`. Note that emails can be configured to send but turned on and off using `mail.disabled`
-in `application.properties` & `application.dev.properties`.
-
-`mail.adminEmailAddress` will receive a mail when an endpoint is invoked more than its configured limit
+in `application.properties` & `application.dev.properties`. `mail.adminEmailAddress` will receive a mail when an endpoint is invoked more than its configured limit
 ---
 
 ### Features
