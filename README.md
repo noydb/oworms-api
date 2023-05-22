@@ -13,15 +13,15 @@
 
 Follow these steps in order to start the server:
 
-1. Provide values for `oxford.api.url` `oxford.app.id` & `oxford.app.key` in `application.properties`
-2. Run `mvn clean install -Pdev`
-3. There must be at least one row in table `settings`
-4. There must be at least one valid user in `ow_user` table (whose username will be valid for 6)
-5. `cd boot`
-6. Run `mvn spring-boot:run -Pdev`
-7. u must be passed as a request parameter to all "secure" endpoints (param `u`)
-8. bna must be passed as a request parameter to all "secure" endpoints (param `bna`)
-9. Optionally, configure valid properties in `application.properties` to send emails 
+1. Run `mvn clean install -Pdev`
+2. There must be at least one row in table `settings`
+3. There must be at least one valid user in `ow_user` table (whose username will be valid for 6)
+4. `cd boot`
+5. Run `mvn spring-boot:run -Pdev`
+6. u must be passed as a request parameter to all "secure" endpoints (param `u`)
+7. bna must be passed as a request parameter to all "secure" endpoints (param `bna`)
+8. Optionally, configure valid properties in `application.properties` to send emails and
+9. Provide values for `oxford.api.url` `oxford.app.id` & `oxford.app.key` in to access the oxford API 
 
 **Note: if `mail.disabled=true`, the bna will be printed in the server logs on startup (You can then use it under the 
 profile section on the UI, along with a valid username to authenticate).**
