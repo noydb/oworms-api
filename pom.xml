@@ -12,7 +12,7 @@
     <groupId>com.oworms</groupId>
     <artifactId>api</artifactId>
     <name>oworms-api</name>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
     <packaging>jar</packaging>
     <description>app for storing words</description>
 
