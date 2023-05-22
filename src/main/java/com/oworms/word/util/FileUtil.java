@@ -58,9 +58,7 @@ public class FileUtil {
         word.setTags(FileUtil.getTags(tagString));
 
         final String creationDate = row.getCell(8).getStringCellValue();
-        if (creationDate == null) {
-            word.setCreationDate(OffsetDateTime.now(ZoneId.of(Utils.TIME_ZONE)));
-        } else {
+        if (creationDate != null) {
             word.setCreationDate(OffsetDateTime.parse(creationDate));
         }
 

@@ -1,5 +1,7 @@
 package com.oworms.word.domain;
 
+import com.oworms.common.util.Utils;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -60,6 +62,7 @@ public class Word {
 
     public Word() {
         uuid = UUID.randomUUID().toString();
+        creationDate = OffsetDateTime.now(Utils.TIME_ZONE);
     }
 
     public Long getId() {

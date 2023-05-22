@@ -1,12 +1,12 @@
 package com.oworms.common.error;
 
 public enum OWormExceptionType {
-    ALREADY_EXISTS,
-    NOT_FOUND,
-    INSUFFICIENT_RIGHTS,
+    CONFLICT,
     CSV_READ_FAILURE,
     CSV_WRITE_FAILURE,
-    FAILURE,
     EMAIL_SEND_FAILURE,
+    FAILURE,
+    INSUFFICIENT_RIGHTS,
+    NOT_FOUND,
     REQUEST_LIMIT_EXCEEDED
 }

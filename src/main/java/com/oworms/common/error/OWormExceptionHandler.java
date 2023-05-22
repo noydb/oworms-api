@@ -32,7 +32,7 @@ public class OWormExceptionHandler {
 
     private HttpStatus getStatusCode(OWormExceptionType exceptionType) {
         switch (exceptionType) {
-            case ALREADY_EXISTS:
+            case CONFLICT:
                 return HttpStatus.CONFLICT;
             case NOT_FOUND:
                 return HttpStatus.NOT_FOUND;

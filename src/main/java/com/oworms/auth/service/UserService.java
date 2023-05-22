@@ -83,16 +83,28 @@ public class UserService {
         consumeToken("update");
         ss.permit(username, banana);
 
-        Optional<User> usernameOptional = repository.findByUuidNotAndUsername(userUUID, userDTO.getUsername());
-        Optional<User> emailOptional = repository.findByUuidNotAndEmail(userUUID, userDTO.getEmail());
-
-        if (usernameOptional.isPresent() || emailOptional.isPresent()) {
-            throw new AccountExistsException("An account already exists with the supplied username or email address.");
-        }
-
-        User existingUser = repository
+        final User existingUser = repository
                 .findByUuid(userUUID)
-                .orElseThrow(() -> new EntityNotFoundException("A user with that ID does not exist"));
+                .orElseThrow(() -> new OWormException(OWormExceptionType.NOT_FOUND, "A user with that id does not exist"));
+        repository
+                .findByUuidNotAndUsername(userUUID, userDTO.getUsername())
+                .ifPresent(user -> {
+                    throw new OWormException(OWormExceptionType.CONFLICT, "That username is already in use");
+                });
+        repository
+                .findByUuidNotAndEmail(userUUID, userDTO.getUsername())
+                .ifPresent(user -> {
+                    throw new OWormException(OWormExceptionType.CONFLICT, "That email is already in use");
+                });
+
+        final String newUsername = userDTO.getUsername().trim();
+        if (!newUsername.equals(existingUser.getUsername())) {
+            final List<Word> words = wordRepository.findAllByCreatedBy(existingUser.getUsername());
+            for (final Word word : words) {
+                word.setCreatedBy(newUsername);
+            }
+            wordRepository.saveAllAndFlush(words);
+        }
 
         existingUser.setUsername(userDTO.getUsername());
         existingUser.setEmail(userDTO.getEmail());

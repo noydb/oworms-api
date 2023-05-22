@@ -5,6 +5,7 @@ import com.oworms.auth.service.SettingsService;
 import com.oworms.auth.service.UserService;
 import com.oworms.common.error.OWormException;
 import com.oworms.common.error.OWormExceptionType;
+import com.oworms.common.util.Utils;
 import com.oworms.mail.dto.BucketOverflowDTO;
 import com.oworms.mail.service.EmailService;
 import com.oworms.word.domain.PartOfSpeech;
@@ -25,10 +26,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 @Service
 public class WordService {
@@ -40,7 +41,6 @@ public class WordService {
     private final UserService userService;
 
     private final Bucket bucket;
-    private static final String JHB_ZONE = "Africa/Johannesburg";
 
     public WordService(final WordRepository repository,
                        final EmailService emailService,
@@ -60,22 +60,38 @@ public class WordService {
     @Transactional
     public WordDTO create(final WordRequestDTO wordRequestDTO, final String u, final String banana) {
         consumeToken("create");
-        final UserDTO loggedInUser = ss.permit(u, banana);
+        final UserDTO loggedInUser = permit(u, banana, "create");
 
-        final Optional<Word> existingOpt = repository.findByTheWordIgnoreCase(wordRequestDTO.getWord().getTheWord());
-        if (existingOpt.isPresent()) {
-            throw new OWormException(OWormExceptionType.ALREADY_EXISTS, "that word already exists uuid:" + existingOpt.get().getUuid());
+        final String theNewWord = wordRequestDTO.getWord().getTheWord();
+
+        final boolean isASingleWord = Pattern.compile("^[a-zA-Z0-9_]+$").matcher(theNewWord).matches();
+        if (isASingleWord) {
+            repository
+                    .findByTheWordIgnoreCase(theNewWord.trim())
+                    .ifPresent(word -> {
+                        throw new OWormException(
+                                OWormExceptionType.CONFLICT,
+                                "that word already exists uuid: " + word.getUuid()
+                        );
+                    });
+        } else {
+            final Optional<Word> existingOpt = repository.findByTheWordIgnoreCase(theNewWord);
+            if (existingOpt.isPresent()) {
+                throw new OWormException(OWormExceptionType.CONFLICT, "that word already exists uuid:" + existingOpt.get().getUuid());
+            }
         }
 
         final Word word = WordMapper.map(wordRequestDTO.getWord());
-
+        word.setCreationDate(OffsetDateTime.now(Utils.TIME_ZONE));
         word.setCreatedBy(loggedInUser.getUsername());
-        word.setCreationDate(OffsetDateTime.now(ZoneId.of(JHB_ZONE)));
-        repository.saveAndFlush(word);
+        if (isASingleWord) {
+            word.setTheWord(wordRequestDTO.getWord().getTheWord().trim());
+        }
 
+        repository.saveAndFlush(word);
         tagService.updateTagsForWord(word.getId(), wordRequestDTO.getTagIds());
 
-        final int numberOfWords = (int) repository.count();
+        final long numberOfWords = repository.count();
         WordDTO createdWord = WordMapper.map(word);
 
         emailService.sendNewWordEmail(
@@ -88,7 +104,7 @@ public class WordService {
     }
 
     public List<WordDTO> retrieveAll(final WordFilter wordFilter) {
-        consumeToken("all words");
+        consumeToken("retrieve all");
 
         final List<Word> words = repository.findAll();
         final int noOfWordsToReturn = wordFilter.getNumberOfWords();
@@ -105,7 +121,7 @@ public class WordService {
 
     @Transactional
     public WordDTO retrieve(final String uuid) {
-        consumeToken("word retrieve");
+        consumeToken("retrieve");
 
         final Word word = findByUuid(uuid);
 
@@ -141,17 +157,15 @@ public class WordService {
     }
 
     public WordDTO update(final String uuid, final WordRequestDTO wordRequestDTO, final String u, final String banana) {
-        consumeToken(u);
-        ss.permit(u, banana);
+        permit(u, banana, "update");
 
         final Word word = findByUuid(uuid);
         final WordDTO oldWord = WordMapper.map(word);
-
         WordDTO uWordDTO = wordRequestDTO.getWord();
 
         boolean alreadyExists = repository.findByTheWordIgnoreCaseAndUuidNot(uWordDTO.getTheWord(), uuid).isPresent();
         if (alreadyExists) {
-            throw new OWormException(OWormExceptionType.ALREADY_EXISTS, "That word already exists");
+            throw new OWormException(OWormExceptionType.CONFLICT, "That word already exists");
         }
 
         word.setTheWord(uWordDTO.getTheWord());
@@ -165,7 +179,6 @@ public class WordService {
         // creationDate, createdBy, and timesViewed cannot be modified
 
         final Word updatedWord = repository.saveAndFlush(word);
-
         tagService.updateTagsForWord(word.getId(), wordRequestDTO.getTagIds());
 
         emailService.sendUpdateWordEmail(
@@ -176,17 +189,27 @@ public class WordService {
         return uWordDTO;
     }
 
-    private Word findByUuid(final String uuid) {
-        return repository
-                .findByUuid(uuid)
-                .orElseThrow(() -> new OWormException(OWormExceptionType.NOT_FOUND, "Word with uuid: " + uuid + " does not exist"));
-    }
-
     private void consumeToken(final String context) {
         if (!bucket.tryConsume(1)) {
             emailService.sendBucketOverflow(new BucketOverflowDTO(this.getClass().getName(), context));
 
             throw new OWormException(OWormExceptionType.REQUEST_LIMIT_EXCEEDED, "You have made too many requests");
         }
+    }
+
+    private UserDTO permit(final String u, final String banana, final String context) {
+        consumeToken(context);
+
+        try {
+            return ss.permit(u, banana);
+        } catch (final OWormException e) {
+            throw new OWormException(OWormExceptionType.INSUFFICIENT_RIGHTS, "You cannot do that");
+        }
+    }
+
+    private Word findByUuid(final String uuid) {
+        return repository
+                .findByUuid(uuid)
+                .orElseThrow(() -> new OWormException(OWormExceptionType.NOT_FOUND, "Word with uuid: " + uuid + " does not exist"));
     }
 }

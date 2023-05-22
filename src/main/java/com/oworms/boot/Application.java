@@ -10,10 +10,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories("com.oworms")
 @ComponentScan("com.oworms")
 @EntityScan("com.oworms")
-public class OWormsSpringApiApplication {
+public class Application {
 
-    public static void main(String[] args) {
-        SpringApplication.run(OWormsSpringApiApplication.class, args);
+    public static void main(final String[] args) {
+        SpringApplication.run(Application.class, args);
     }
 
 }
