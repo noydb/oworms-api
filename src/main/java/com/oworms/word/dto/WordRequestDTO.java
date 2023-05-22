@@ -8,6 +8,7 @@ import java.util.List;
 public class WordRequestDTO {
 
     @NotNull
+    @Valid
     private WordDTO word;
 
     private List<Long> tagIds;

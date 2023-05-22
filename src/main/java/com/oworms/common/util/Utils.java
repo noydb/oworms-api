@@ -1,12 +1,13 @@
 package com.oworms.common.util;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class Utils {
 
-    public static final String TIME_ZONE = "Africa/Johannesburg";
+    public static final ZoneId TIME_ZONE = ZoneId.of("Africa/Johannesburg");
 
     private Utils() {
     }

@@ -75,7 +75,7 @@ public class TagService {
         ss.permit(u, bna);
 
         if (tagExists(tagDTO)) {
-            throw new OWormException(OWormExceptionType.ALREADY_EXISTS, "That tag already exists");
+            throw new OWormException(OWormExceptionType.CONFLICT, "That tag already exists");
         }
 
         Tag tag = TagMapper.map(tagDTO);
@@ -130,7 +130,7 @@ public class TagService {
 
         boolean alreadyExists = repository.findByNameIgnoreCaseAndIdNot(updatedTag.getName(), tagId).isPresent();
         if (alreadyExists) {
-            throw new OWormException(OWormExceptionType.ALREADY_EXISTS, "That tag already exists");
+            throw new OWormException(OWormExceptionType.CONFLICT, "That tag already exists");
         }
 
         tag.setName(updatedTag.getName());
