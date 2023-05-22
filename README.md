@@ -1,17 +1,12 @@
-<img src="https://github.com/noydb/oworms-ui/blob/develop/src/assets/image/logo.svg"></img> [![Maintainability](https://api.codeclimate.com/v1/badges/7bd7122324ce4551a180/maintainability)](https://codeclimate.com/github/noydb/oworms-api/maintainability)
+<img src="https://github.com/noydb/oworms-ui/blob/develop/src/assets/image/logo.svg"></img>
 ---
+[Hosted Application](https://oworms.herokuapp.com) || [Swagger Documentation](https://oworms-api.herokuapp.com/swagger-ui/) || [UI Source Code](https://github.com/benj-power/oworms-ui) 
 
-[Swagger Documentation](https://oworms-api.herokuapp.com/swagger-ui/)
-
-[Hosted Application](https://oworms.herokuapp.com)
-
-[UI Source Code](https://github.com/benj-power/oworms-ui)
+[![Maintainability](https://api.codeclimate.com/v1/badges/7bd7122324ce4551a180/maintainability)](https://codeclimate.com/github/noydb/oworms-api/maintainability)
 
 ---
 
-### Running
-
-Follow these steps in order to start the server:
+### Getting Started
 
 1. Run `mvn clean install -Pdev`
 2. There must be at least one row in table `settings`
@@ -21,19 +16,21 @@ Follow these steps in order to start the server:
 6. u must be passed as a request parameter to all "secure" endpoints (param `u`)
 7. bna must be passed as a request parameter to all "secure" endpoints (param `bna`)
 
-**Optionally**
-1. onfigure valid properties in `application.properties` to send emails and
-2. Provide values for `oxford.api.url` `oxford.app.id` & `oxford.app.key` in to access the oxford API 
+#### Optional Configurations
+1. Configure valid properties in `application.properties` to send emails
+2. Configure valid properties for `oxford.api.url` `oxford.app.id` & `oxford.app.key` ito access the Oxford Dictionaries API 
 
-**Note: if `mail.disabled=true`, the bna will be printed in the server logs on startup (You can then use it under the 
-profile section on the UI, along with a valid username to authenticate).**
+**Note: if `mail.disabled=true`, emails logic will be skipped. Also, the bna will be printed in the server logs on startup (You can then use it under the profile section on the UI, along with a valid username to authenticate).**
 
 ---
 
-### Environment Properties
+### Versioning
 
-Emails are sent whenever a word is created or updated. If emails should be sent while working locally then please specify the necessary
-values in `application.properties`. Note that emails can be configured to send but turned on and off using `mail.disabled` in `application.properties` & `application.dev.properties`. `mail.adminEmailAddress` will receive a mail when an endpoint is invoked more than its configured limit
+1. `git flow release start <version-number>`
+2. Bump version in `pom.xml`
+3. Bump version in `Procfile`
+4. `git flow release finish <version-number>`
+5. `git push develop; git push --tags; git co master; git push master`
 
 ---
 
