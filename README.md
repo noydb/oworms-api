@@ -1,4 +1,4 @@
-<img src="https://github.com/noydb/oworms-ui/blob/develop/src/assets/image/logo.svg"></img>
+<img src="https://github.com/noydb/oworms-ui/blob/develop/src/assets/image/logo.svg"></img> oworms-api
 ---
 [Hosted Application](https://oworms.herokuapp.com) || [Swagger](https://oworms-api.herokuapp.com/swagger-ui/) || [UI Source Code](https://github.com/benj-power/oworms-ui) 
 
@@ -53,3 +53,8 @@
 - ability to delete words
 - automated creation of words, adding word with assistance/wizard
 - more detailed statistics, daily, weekly stats, graphs, etc
+
+---
+
+### Why this App?
+A convenient way to store and find words. I was previously using a simple spreadsheet but as it grew, adding words proved to be inefficient and frankly annoying. Being able to store and find words my way. Sure, one can find any word in existence on the internet, but I wanted a more elegant way to view words. If I google a word and it happens to also be the name of a company, the company will appear first (thanks SEO) and not the word.
