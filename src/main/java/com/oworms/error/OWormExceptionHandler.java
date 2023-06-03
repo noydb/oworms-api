@@ -1,5 +1,6 @@
 package com.oworms.error;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -13,12 +14,15 @@ import javax.servlet.http.HttpServletRequest;
 @ControllerAdvice
 public class OWormExceptionHandler {
 
+    @Value("${app.version}")
+    private String appVersion;
+
     @ExceptionHandler(OWormException.class)
     public ResponseEntity<APIErrorResponse> handleOWormException(final HttpServletRequest httpServletRequest,
                                                                  final OWormException ex) {
         final String errorMsg = ex.getMessage();
         final HttpStatus status = getStatusCode(ex.getErrorType());
-        final APIErrorResponse error = new APIErrorResponse(status, errorMsg, httpServletRequest);
+        final APIErrorResponse error = new APIErrorResponse(appVersion, status, errorMsg, httpServletRequest);
 
         if (status == HttpStatus.CONFLICT) {
             int indexOfColon = errorMsg.indexOf(":");

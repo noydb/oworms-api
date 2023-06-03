@@ -1,6 +1,7 @@
 package com.oworms.auth.controller;
 
 import com.oworms.auth.service.SettingsService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,9 @@ public class SettingsController {
 
     private final SettingsService service;
 
+    @Value("${app.version}")
+    private String appVersion;
+
     public SettingsController(final SettingsService service) {
         this.service = service;
     }
@@ -23,5 +27,10 @@ public class SettingsController {
         service.doWeeklyAdmin(username, banana);
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(value = "/version", produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> getApiVersion() {
+        return ResponseEntity.ok(appVersion);
     }
 }
