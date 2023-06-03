@@ -67,7 +67,7 @@ public class WordService {
         if (existingOpt.isPresent()) {
             throw new OWormException(
                     OWormExceptionType.CONFLICT,
-                    "that word already exists uuid:" + existingOpt.get().getUuid()
+                    "that word already exists with ID: " + existingOpt.get().getUuid()
             );
         }
 
@@ -151,9 +151,12 @@ public class WordService {
         final WordDTO oldWord = WordMapper.map(word);
         WordDTO uWordDTO = wordRequestDTO.getWord();
 
-        boolean alreadyExists = repository.findByTheWordIgnoreCaseAndUuidNot(uWordDTO.getTheWord(), uuid).isPresent();
-        if (alreadyExists) {
-            throw new OWormException(OWormExceptionType.CONFLICT, "That word already exists");
+        final Optional<Word> existingOpt = repository.findByTheWordIgnoreCaseAndUuidNot(uWordDTO.getTheWord(), uuid);
+        if (existingOpt.isPresent()) {
+            throw new OWormException(
+                    OWormExceptionType.CONFLICT,
+                    "that word already exists with ID: " + existingOpt.get().getUuid()
+            );
         }
 
         word.setTheWord(uWordDTO.getTheWord());

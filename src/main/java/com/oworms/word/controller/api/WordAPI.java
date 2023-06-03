@@ -4,6 +4,7 @@ import com.oworms.error.OWormException;
 import com.oworms.word.dto.WordDTO;
 import com.oworms.word.dto.WordRequestDTO;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.http.ResponseEntity;
@@ -66,7 +67,7 @@ public interface WordAPI {
             )
     })
     ResponseEntity<List<WordDTO>> retrieveAll(
-            final int numberOfWords,
+            final @ApiParam( value = "hello")  int numberOfWords,
             final String theWord,
             final List<String> parts,
             final String def,
