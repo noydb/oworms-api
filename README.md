@@ -8,9 +8,10 @@
 
 ### Getting Started
 
-1. Run `mvn spring-boot:run -Pdev`
-2. `u` (username in `ow_user` table) must be passed as a request parameter to all "secure" endpoints
-3. `bna` (bna in `settings` table) must be passed as a request parameter to all "secure" endpoints
+1. Run `mvn clean install`
+2. Run `mvn spring-boot:run -Pdev`. This will start the app server on port 8080 (default).
+3. `u` (username in `ow_user` table) must be passed as a request parameter to all "secure" endpoints
+4. `bna` (bna in `settings` table) must be passed as a request parameter to all "secure" endpoints
 
 `admin` is the default username, you can get the password from `settings` table. Use them under the profile section on the UI to authenticate.
 
