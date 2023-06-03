@@ -1,7 +1,7 @@
 package com.oworms.word.controller;
 
 import com.oworms.word.controller.api.FileAPI;
-import com.oworms.common.util.LogUtil;
+import com.oworms.util.LogUtil;
 import com.oworms.word.service.FileService;
 import com.oworms.word.util.FileUtil;
 import org.springframework.core.io.InputStreamResource;

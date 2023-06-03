@@ -1,37 +1,35 @@
-<img src="https://github.com/noydb/oworms-ui/blob/develop/src/assets/image/logo.svg"></img> [![Maintainability](https://api.codeclimate.com/v1/badges/7bd7122324ce4551a180/maintainability)](https://codeclimate.com/github/noydb/oworms-api/maintainability)
+<img src="https://github.com/noydb/oworms-ui/blob/develop/src/assets/image/logo.svg"></img> oworms-api
 ---
+[Hosted Application](https://oworms.herokuapp.com) || [Swagger](https://oworms-api.herokuapp.com/swagger-ui/) || [UI Source Code](https://github.com/benj-power/oworms-ui) || [Prototype](https://jamieneslotech.invisionapp.com/console/share/KH37M1CTRA/839061901)
 
-[Swagger Documentation](https://oworms-api.herokuapp.com/swagger-ui/)
-
-[Hosted Application](https://oworms.herokuapp.com)
-
-[UI Source Code](https://github.com/benj-power/oworms-ui)
+[![Maintainability](https://api.codeclimate.com/v1/badges/7bd7122324ce4551a180/maintainability)](https://codeclimate.com/github/noydb/oworms-api/maintainability)
 
 ---
 
-### Running
+### Getting Started
 
-Follow these steps in order to start the server:
+1. Run `mvn spring-boot:run -Pdev`
+2. `u` (username in `ow_user` table) must be passed as a request parameter to all "secure" endpoints
+3. `bna` (bna in `settings` table) must be passed as a request parameter to all "secure" endpoints
 
-1. Run `mvn clean install -Pdev`
-2. There must be at least one row in table `settings`
-3. There must be at least one valid user in `ow_user` table (whose username will be valid for 6)
-4. `cd boot`
-5. Run `mvn spring-boot:run -Pdev`
-6. u must be passed as a request parameter to all "secure" endpoints (param `u`)
-7. bna must be passed as a request parameter to all "secure" endpoints (param `bna`)
-8. Optionally, configure valid properties in `application.properties` to send emails and
-9. Provide values for `oxford.api.url` `oxford.app.id` & `oxford.app.key` in to access the oxford API 
+`admin` is the default username, you can get the password from `settings` table. Use them under the profile section on the UI to authenticate.
 
-**Note: if `mail.disabled=true`, the bna will be printed in the server logs on startup (You can then use it under the 
-profile section on the UI, along with a valid username to authenticate).**
+#### Optional Configurations
+1. Configure valid properties in `application.properties` to send emails
+
+2. Configure valid properties for `oxford.api.url` `oxford.app.id` & `oxford.app.key` ito access the Oxford Dictionaries API 
+
+**Note**: if `mail.disabled=true`, email operations will be skipped/stubbed.
 
 ---
 
-### Environment Properties
+### Versioning
 
-Emails are sent whenever a word is created or updated. If emails should be sent while working locally then please specify the necessary
-values in `application.properties`. Note that emails can be configured to send but turned on and off using `mail.disabled` in `application.properties` & `application.dev.properties`. `mail.adminEmailAddress` will receive a mail when an endpoint is invoked more than its configured limit
+1. `git flow release start <version-number>`
+2. Bump version in `pom.xml`
+3. Bump version in `Procfile`
+4. `git flow release finish <version-number>`
+5. `git push develop; git push --tags; git co master; git push master`
 
 ---
 
@@ -54,3 +52,8 @@ values in `application.properties`. Note that emails can be configured to send b
 - ability to delete words
 - automated creation of words, adding word with assistance/wizard
 - more detailed statistics, daily, weekly stats, graphs, etc
+
+---
+
+### Why this App?
+A convenient way to store and find words. I was previously using a simple spreadsheet but as it grew, adding words proved to be inefficient and frankly annoying. Being able to store and find words my way. Sure, one can find any word in existence on the internet, but I wanted a more elegant way to view words. If I google a word and it happens to also be the name of a company, the company will appear first (thanks SEO) and not the word.

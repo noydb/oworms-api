@@ -1,6 +1,6 @@
 package com.oworms.word.mapper;
 
-import com.oworms.common.util.Utils;
+import com.oworms.util.Utils;
 import com.oworms.mail.dto.EmailWordDTO;
 import com.oworms.mail.dto.UpdatedWordEmailDTO;
 import com.oworms.word.domain.PartOfSpeech;

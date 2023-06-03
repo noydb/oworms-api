@@ -1,10 +1,12 @@
 package com.oworms.word.dto;
 
+import org.springframework.validation.annotation.Validated;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@Valid
+@Validated
 public class WordRequestDTO {
 
     @NotNull

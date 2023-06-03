@@ -1,4 +1,4 @@
-package com.oworms.common.error;
+package com.oworms.error;
 
 public enum OWormExceptionType {
     CONFLICT,

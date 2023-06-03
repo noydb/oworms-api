@@ -30,10 +30,18 @@ public class User {
 
     @Column(length = 50)
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private final Status status = Status.ACTIVE;
 
     @ElementCollection
     private List<String> likedWordUUIDs;
+
+    public User() {
+    }
+
+    public User(final String username, final String email) {
+        this.username = username;
+        this.email = email;
+    }
 
     public Long getId() {
         return id;
@@ -65,10 +73,6 @@ public class User {
 
     public Status getStatus() {
         return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
     }
 
     public List<String> getLikedWordUUIDs() {

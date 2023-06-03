@@ -1,6 +1,7 @@
-package com.oworms.common.util;
+package com.oworms.util;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -10,6 +11,10 @@ public class Utils {
     public static final ZoneId TIME_ZONE = ZoneId.of("Africa/Johannesburg");
 
     private Utils() {
+    }
+
+    public static OffsetDateTime now() {
+        return OffsetDateTime.now(Utils.TIME_ZONE);
     }
 
     public static boolean isBlank(String arg) {

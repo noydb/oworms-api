@@ -1,6 +1,6 @@
 package com.oworms.mail.dto;
 
-import com.oworms.common.util.Utils;
+import com.oworms.util.Utils;
 
 import java.time.LocalDateTime;
 

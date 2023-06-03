@@ -1,7 +1,7 @@
 package com.oworms.mail.service;
 
-import com.oworms.common.error.OWormException;
-import com.oworms.common.error.OWormExceptionType;
+import com.oworms.error.OWormException;
+import com.oworms.error.OWormExceptionType;
 import com.oworms.mail.config.MailContentBuilder;
 import com.oworms.mail.dto.BucketOverflowDTO;
 import com.oworms.mail.dto.EmailWordDTO;
