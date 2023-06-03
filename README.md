@@ -8,19 +8,18 @@
 
 ### Getting Started
 
-1. Run `mvn clean install -Pdev`
-2. There must be at least one row in table `settings`
-3. There must be at least one valid user in `ow_user` table (whose username will be valid for 6)
-4. `cd boot`
-5. Run `mvn spring-boot:run -Pdev`
-6. u must be passed as a request parameter to all "secure" endpoints (param `u`)
-7. bna must be passed as a request parameter to all "secure" endpoints (param `bna`)
+1. Run `mvn spring-boot:run -Pdev`
+2. `u` (username in `ow_user` table) must be passed as a request parameter to all "secure" endpoints
+3. `bna` (bna in `settings` table) must be passed as a request parameter to all "secure" endpoints
+
+`admin` is the default username, you can get the password from `settings` table. Use them under the profile section on the UI to authenticate.
 
 #### Optional Configurations
 1. Configure valid properties in `application.properties` to send emails
+
 2. Configure valid properties for `oxford.api.url` `oxford.app.id` & `oxford.app.key` ito access the Oxford Dictionaries API 
 
-**Note**: if `mail.disabled=true`, emails logic will be skipped. Also, the bna will be printed in the server logs on startup (You can then use it under the profile section on the UI, along with a valid username to authenticate).
+**Note**: if `mail.disabled=true`, email operations will be skipped/stubbed.
 
 ---
 

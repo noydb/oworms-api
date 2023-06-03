@@ -1,9 +1,9 @@
 package com.oworms.word.service;
 
 import com.oworms.auth.service.SettingsService;
-import com.oworms.common.error.OWormException;
-import com.oworms.common.error.OWormExceptionType;
-import com.oworms.common.util.Utils;
+import com.oworms.error.OWormException;
+import com.oworms.error.OWormExceptionType;
+import com.oworms.util.Utils;
 import com.oworms.mail.dto.BucketOverflowDTO;
 import com.oworms.mail.service.EmailService;
 import com.oworms.word.domain.Tag;

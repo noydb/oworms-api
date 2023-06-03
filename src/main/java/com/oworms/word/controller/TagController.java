@@ -1,6 +1,6 @@
 package com.oworms.word.controller;
 
-import com.oworms.common.util.LogUtil;
+import com.oworms.util.LogUtil;
 import com.oworms.word.dto.TagDTO;
 import com.oworms.word.service.TagService;
 import org.springframework.http.MediaType;

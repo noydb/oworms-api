@@ -1,6 +1,6 @@
 package com.oworms.word.controller.api;
 
-import com.oworms.common.error.OWormException;
+import com.oworms.error.OWormException;
 import com.oworms.word.dto.WordDTO;
 import com.oworms.word.dto.WordRequestDTO;
 import io.swagger.annotations.ApiOperation;
