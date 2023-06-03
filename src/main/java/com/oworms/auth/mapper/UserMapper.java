@@ -10,19 +10,6 @@ public class UserMapper {
     private UserMapper() {
     }
 
-    public static User map(NewUserDTO userDTO) {
-        if (userDTO == null) {
-            return null;
-        }
-
-        User user = new User();
-
-        user.setUsername(userDTO.getUsername());
-        user.setStatus(Status.INACTIVE);
-
-        return user;
-    }
-
     public static UserDTO mapUser(User user) {
         if (user == null) {
             return null;

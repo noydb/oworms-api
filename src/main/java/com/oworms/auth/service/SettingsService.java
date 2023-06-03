@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
@@ -50,14 +49,15 @@ public class SettingsService {
                 .addLimit(Bandwidth.classic(50, Refill.greedy(50, Duration.ofDays(1)))).build();
 
         if ("true".equals(mailDisabled)) {
-            final List<AppSettings> settings = repository.findAll();
+            List<AppSettings> settings = repository.findAll();
 
             if (settings.isEmpty()) {
-                throw new OWormException(OWormExceptionType.FAILURE, "A com.oworms.auth.domain.AppSettings row must exist in the DB!");
+                seedDB();
+                settings = repository.findAll();
             }
 
             LogUtil.log("==========================================");
-            LogUtil.log("==            banana is: " + settings.get(0).getBanana() + "           ==");
+            LogUtil.log("banana: " + settings.get(0).getBanana());
             LogUtil.log("==========================================");
         }
     }
@@ -125,16 +125,11 @@ public class SettingsService {
 //        return saveNewBna();
     }
 
-    private String sendNewBanana() {
+    private String generateBNA() {
         final String uuid = UUID.randomUUID().toString();
         final String timestamp = Utils.now().toLocalDateTime().toString();
-        final String banana = uuid + ":" + timestamp;
-        final String eatLink = eatBananaLink.replace("{bna}", banana);
-        final NewBnaDTO newBna = new NewBnaDTO(banana, eatLink);
 
-        emailService.sendNewBna(newBna, getRecipients());
-
-        return banana;
+        return uuid + ":" + timestamp;
     }
 
     private void consumeToken(String context) {
@@ -145,15 +140,16 @@ public class SettingsService {
         }
     }
 
-    @Transactional
-    public AppSettings saveNewBna() {
-        String banana = sendNewBanana();
+    private void saveNewBna() {
+        String banana = generateBNA();
         AppSettings newSettings = new AppSettings(banana);
 
         repository.deleteAll();
         repository.saveAndFlush(newSettings);
 
-        return newSettings;
+        final String eatLink = eatBananaLink.replace("{bna}", banana);
+        final NewBnaDTO newBna = new NewBnaDTO(banana, eatLink);
+        emailService.sendNewBna(newBna, getRecipients());
     }
 
     private String[] getRecipients() {
@@ -162,5 +158,13 @@ public class SettingsService {
                 .stream()
                 .map(User::getEmail)
                 .toArray(String[]::new);
+    }
+
+    private void seedDB() {
+        repository.save(new AppSettings(generateBNA()));
+
+        if (userRepository.findAll().isEmpty()) {
+            userRepository.save(new User("admin", "default@nothing.com"));
+        }
     }
 }

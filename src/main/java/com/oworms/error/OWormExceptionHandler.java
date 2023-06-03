@@ -49,5 +49,4 @@ public class OWormExceptionHandler {
         return HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
-
 }

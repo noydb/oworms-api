@@ -9,11 +9,10 @@
 ### Getting Started
 
 1. Run `mvn spring-boot:run -Pdev`
-2. Use a username in the `ow_user` table and the `bna` as query params to 
-3. `u` (username in `ow_user` table) must be passed as a request parameter to all "secure" endpoints
-4. `bna` (bna in `settings` table) must be passed as a request parameter to all "secure" endpoints
+2. `u` (username in `ow_user` table) must be passed as a request parameter to all "secure" endpoints
+3. `bna` (bna in `settings` table) must be passed as a request parameter to all "secure" endpoints
 
-`admin` is the default username and `test` is the password. Use them under the profile section on the UI to authenticate.
+`admin` is the default username, you can get the password from `settings` table. Use them under the profile section on the UI to authenticate.
 
 #### Optional Configurations
 1. Configure valid properties in `application.properties` to send emails
