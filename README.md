@@ -29,8 +29,10 @@
 1. `git flow release start <version-number>`
 2. Bump version in `pom.xml`
 3. Bump version in `Procfile`
-4. `git flow release finish <version-number>`
-5. `git push develop; git push --tags; git co master; git push master`
+4. `git commit -m "<version-number>: <short-description-of-changes>"`
+5. `git flow release finish <version-number>`
+6. Continue through steps in vim window, use same commit message from 4. on step 2/3.
+7. `git push develop; git push --tags; git co master; git push master`
 
 ---
 
