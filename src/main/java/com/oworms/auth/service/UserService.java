@@ -5,8 +5,8 @@ import com.oworms.auth.dto.UserDTO;
 import com.oworms.auth.error.AccountExistsException;
 import com.oworms.auth.mapper.UserMapper;
 import com.oworms.auth.repository.UserRepository;
-import com.oworms.common.error.OWormException;
-import com.oworms.common.error.OWormExceptionType;
+import com.oworms.error.OWormException;
+import com.oworms.error.OWormExceptionType;
 import com.oworms.mail.dto.BucketOverflowDTO;
 import com.oworms.mail.service.EmailService;
 import com.oworms.word.domain.Word;
@@ -50,8 +50,7 @@ public class UserService {
     }
 
     public UserDTO retrieve(final String username, final String bna) {
-        consumeToken("retrieve");
-        ss.permit(username, bna);
+        permit(username, bna, "retrieve");
 
         final User user = repository
                 .findByUsername(username)
@@ -79,13 +78,14 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUser(String userUUID, UserDTO userDTO, String username, String banana) throws AccountExistsException {
-        consumeToken("update");
-        ss.permit(username, banana);
+    public void updateUser(final String userUUID,
+                           final UserDTO userDTO,
+                           final String username,
+                           final String banana) throws AccountExistsException {
+        permit(username, banana, "update");
 
-        final User existingUser = repository
-                .findByUuid(userUUID)
-                .orElseThrow(() -> new OWormException(OWormExceptionType.NOT_FOUND, "A user with that id does not exist"));
+        final User existingUser = repository.findByUuid(userUUID).get();
+
         repository
                 .findByUuidNotAndUsername(userUUID, userDTO.getUsername())
                 .ifPresent(user -> {
@@ -113,14 +113,10 @@ public class UserService {
     }
 
     @Transactional
-    public void likeWord(String wordUUID, String username, String banana) {
-        consumeToken("like word");
-        ss.permit(username, banana);
+    public void likeWord(final String wordUUID, final String username, final String banana) {
+        permit(username, banana, "like word");
 
-        User user = repository
-                .findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("no such user"));
-
+        final User user = repository.findByUsername(username).get();
         final List<String> existing = user.getLikedWordUUIDs();
 
         if (existing == null || existing.isEmpty()) {
@@ -150,11 +146,17 @@ public class UserService {
                 .toArray(String[]::new);
     }
 
-    private void consumeToken(String context) {
+    private UserDTO permit(final String u, final String banana, final String context) {
         if (!bucket.tryConsume(1)) {
             emailService.sendBucketOverflow(new BucketOverflowDTO(this.getClass().getName(), context));
 
             throw new OWormException(OWormExceptionType.REQUEST_LIMIT_EXCEEDED, "You have made too many requests");
+        }
+
+        try {
+            return ss.permit(u, banana);
+        } catch (final OWormException e) {
+            throw new OWormException(OWormExceptionType.INSUFFICIENT_RIGHTS, "You cannot do that");
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.oworms.word.controller;
 
-import com.oworms.common.util.LogUtil;
+import com.oworms.util.LogUtil;
 import com.oworms.word.controller.api.StatsAPI;
 import com.oworms.word.dto.StatisticsDTO;
 import com.oworms.word.service.StatisticsService;

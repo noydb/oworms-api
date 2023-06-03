@@ -3,9 +3,9 @@ package com.oworms.word.service;
 import com.oworms.auth.dto.UserDTO;
 import com.oworms.auth.service.SettingsService;
 import com.oworms.auth.service.UserService;
-import com.oworms.common.error.OWormException;
-import com.oworms.common.error.OWormExceptionType;
-import com.oworms.common.util.Utils;
+import com.oworms.error.OWormException;
+import com.oworms.error.OWormExceptionType;
+import com.oworms.util.Utils;
 import com.oworms.mail.dto.BucketOverflowDTO;
 import com.oworms.mail.service.EmailService;
 import com.oworms.word.domain.PartOfSpeech;
@@ -29,7 +29,6 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.regex.Pattern;
 
 @Service
 public class WordService {
@@ -62,31 +61,20 @@ public class WordService {
         consumeToken("create");
         final UserDTO loggedInUser = permit(u, banana, "create");
 
-        final String theNewWord = wordRequestDTO.getWord().getTheWord();
+        final String theNewWord = wordRequestDTO.getWord().getTheWord().trim();
 
-        final boolean isASingleWord = Pattern.compile("^[a-zA-Z0-9_]+$").matcher(theNewWord).matches();
-        if (isASingleWord) {
-            repository
-                    .findByTheWordIgnoreCase(theNewWord.trim())
-                    .ifPresent(word -> {
-                        throw new OWormException(
-                                OWormExceptionType.CONFLICT,
-                                "that word already exists uuid: " + word.getUuid()
-                        );
-                    });
-        } else {
-            final Optional<Word> existingOpt = repository.findByTheWordIgnoreCase(theNewWord);
-            if (existingOpt.isPresent()) {
-                throw new OWormException(OWormExceptionType.CONFLICT, "that word already exists uuid:" + existingOpt.get().getUuid());
-            }
+        final Optional<Word> existingOpt = repository.findByTheWordIgnoreCase(theNewWord);
+        if (existingOpt.isPresent()) {
+            throw new OWormException(
+                    OWormExceptionType.CONFLICT,
+                    "that word already exists uuid:" + existingOpt.get().getUuid()
+            );
         }
 
         final Word word = WordMapper.map(wordRequestDTO.getWord());
-        word.setCreationDate(OffsetDateTime.now(Utils.TIME_ZONE));
+        word.setCreationDate(Utils.now());
         word.setCreatedBy(loggedInUser.getUsername());
-        if (isASingleWord) {
-            word.setTheWord(wordRequestDTO.getWord().getTheWord().trim());
-        }
+        word.setTheWord(theNewWord);
 
         repository.saveAndFlush(word);
         tagService.updateTagsForWord(word.getId(), wordRequestDTO.getTagIds());
@@ -189,12 +177,10 @@ public class WordService {
         return uWordDTO;
     }
 
-    private void consumeToken(final String context) {
-        if (!bucket.tryConsume(1)) {
-            emailService.sendBucketOverflow(new BucketOverflowDTO(this.getClass().getName(), context));
-
-            throw new OWormException(OWormExceptionType.REQUEST_LIMIT_EXCEEDED, "You have made too many requests");
-        }
+    private Word findByUuid(final String uuid) {
+        return repository
+                .findByUuid(uuid)
+                .orElseThrow(() -> new OWormException(OWormExceptionType.NOT_FOUND, "Word with uuid: " + uuid + " does not exist"));
     }
 
     private UserDTO permit(final String u, final String banana, final String context) {
@@ -207,9 +193,11 @@ public class WordService {
         }
     }
 
-    private Word findByUuid(final String uuid) {
-        return repository
-                .findByUuid(uuid)
-                .orElseThrow(() -> new OWormException(OWormExceptionType.NOT_FOUND, "Word with uuid: " + uuid + " does not exist"));
+    private void consumeToken(final String context) {
+        if (!bucket.tryConsume(1)) {
+            emailService.sendBucketOverflow(new BucketOverflowDTO(this.getClass().getName(), context));
+
+            throw new OWormException(OWormExceptionType.REQUEST_LIMIT_EXCEEDED, "You have made too many requests");
+        }
     }
 }

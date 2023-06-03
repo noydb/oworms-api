@@ -1,6 +1,6 @@
 package com.oworms.word.controller;
 
-import com.oworms.common.util.LogUtil;
+import com.oworms.util.LogUtil;
 import com.oworms.word.controller.api.WordAPI;
 import com.oworms.word.dto.WordDTO;
 import com.oworms.word.dto.WordFilter;
@@ -35,9 +35,9 @@ public class WordController implements WordAPI {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<WordDTO> create(final @Valid @RequestBody WordRequestDTO wordRequestDTO,
-                                          @RequestParam("u") String u,
-                                          @RequestParam("bna") String banana) {
+    public ResponseEntity<WordDTO> create(final @RequestBody @Valid WordRequestDTO wordRequestDTO,
+                                          final @RequestParam("u") String u,
+                                          final @RequestParam("bna") String banana) {
         LogUtil.log("Creating new word");
 
         WordDTO created = service.create(wordRequestDTO, u, banana);
@@ -48,16 +48,16 @@ public class WordController implements WordAPI {
     @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<WordDTO>> retrieveAll(
-            @RequestParam(value = "numberOfWords") final int numberOfWords,
-            @RequestParam(value = "word", required = false) final String word,
-            @RequestParam(value = "pos", required = false) final List<String> pos,
-            @RequestParam(value = "def", required = false) final String def,
-            @RequestParam(value = "ori", required = false) final String origin,
-            @RequestParam(value = "ex", required = false) final String example,
-            @RequestParam(value = "tags", required = false) final List<String> tags,
-            @RequestParam(value = "note", required = false) final String note,
-            @RequestParam(value = "creator", required = false) final String creator,
-            @RequestParam(value = "uuids", required = false) final List<String> uuids) {
+            final @RequestParam(value = "numberOfWords") int numberOfWords,
+            final @RequestParam(value = "word", required = false) String word,
+            final @RequestParam(value = "pos", required = false) List<String> pos,
+            final @RequestParam(value = "def", required = false) String def,
+            final @RequestParam(value = "ori", required = false) String origin,
+            final @RequestParam(value = "ex", required = false) String example,
+            final @RequestParam(value = "tags", required = false) List<String> tags,
+            final @RequestParam(value = "note", required = false) String note,
+            final @RequestParam(value = "creator", required = false) String creator,
+            final @RequestParam(value = "uuids", required = false) List<String> uuids) {
         LogUtil.log("Retrieving all words");
 
         final WordFilter wordFilter = new WordFilter(numberOfWords, word, pos, def, origin, example, tags, note, creator, uuids);
@@ -70,7 +70,7 @@ public class WordController implements WordAPI {
             value = "/{uuid}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<WordDTO> retrieve(@PathVariable("uuid") String uuid) {
+    public ResponseEntity<WordDTO> retrieve(final @PathVariable("uuid") String uuid) {
         LogUtil.log("Retrieving word with uuid: " + uuid);
 
         return ResponseEntity.ok(service.retrieve(uuid));
@@ -91,10 +91,10 @@ public class WordController implements WordAPI {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<WordDTO> update(@PathVariable("uuid") String uuid,
-                                          @RequestBody WordRequestDTO wordRequestDTO,
-                                          @RequestParam("u") String u,
-                                          @RequestParam("bna") String banana) {
+    public ResponseEntity<WordDTO> update(final @PathVariable("uuid") String uuid,
+                                          final @RequestBody @Valid WordRequestDTO wordRequestDTO,
+                                          final @RequestParam("u") String u,
+                                          final @RequestParam("bna") String banana) {
         LogUtil.log("Updating word with uuid: " + uuid);
 
         WordDTO updatedWordDTO = service.update(uuid, wordRequestDTO, u, banana);

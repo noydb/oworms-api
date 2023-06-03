@@ -1,6 +1,6 @@
-package com.oworms.common.error;
+package com.oworms.error;
 
-import com.oworms.common.util.Utils;
+import com.oworms.util.Utils;
 
 import java.time.OffsetDateTime;
 
@@ -9,7 +9,7 @@ public class OWormException extends RuntimeException {
     private final OWormExceptionType errorType;
     private final String message;
     private final String debugMessage;
-    private final OffsetDateTime timestamp = OffsetDateTime.now(Utils.TIME_ZONE);
+    private final OffsetDateTime timestamp = Utils.now();
 
     public OWormException(OWormExceptionType errorType, String message, String debugMessage) {
         this.errorType = errorType;

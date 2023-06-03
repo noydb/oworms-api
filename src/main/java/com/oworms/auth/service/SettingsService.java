@@ -6,10 +6,10 @@ import com.oworms.auth.dto.UserDTO;
 import com.oworms.auth.mapper.UserMapper;
 import com.oworms.auth.repository.SettingsRepository;
 import com.oworms.auth.repository.UserRepository;
-import com.oworms.common.error.OWormException;
-import com.oworms.common.error.OWormExceptionType;
-import com.oworms.common.util.LogUtil;
-import com.oworms.common.util.Utils;
+import com.oworms.error.OWormException;
+import com.oworms.error.OWormExceptionType;
+import com.oworms.util.LogUtil;
+import com.oworms.util.Utils;
 import com.oworms.mail.dto.BucketOverflowDTO;
 import com.oworms.mail.dto.NewBnaDTO;
 import com.oworms.mail.service.EmailService;
@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
@@ -57,7 +56,9 @@ public class SettingsService {
                 throw new OWormException(OWormExceptionType.FAILURE, "A com.oworms.auth.domain.AppSettings row must exist in the DB!");
             }
 
-            LogUtil.log("banana is: " + settings.get(0).getBanana());
+            LogUtil.log("==========================================");
+            LogUtil.log("==            banana is: " + settings.get(0).getBanana() + "           ==");
+            LogUtil.log("==========================================");
         }
     }
 
@@ -126,7 +127,7 @@ public class SettingsService {
 
     private String sendNewBanana() {
         final String uuid = UUID.randomUUID().toString();
-        final String timestamp = OffsetDateTime.now(Utils.TIME_ZONE).toLocalDateTime().toString();
+        final String timestamp = Utils.now().toLocalDateTime().toString();
         final String banana = uuid + ":" + timestamp;
         final String eatLink = eatBananaLink.replace("{bna}", banana);
         final NewBnaDTO newBna = new NewBnaDTO(banana, eatLink);
