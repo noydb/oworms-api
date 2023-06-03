@@ -4,27 +4,19 @@ import com.oworms.util.Utils;
 
 import java.time.LocalDateTime;
 
-public class BucketOverflowDTO {
+public class BucketOverflowDTO extends EmailDTO {
 
-    public static final String TEMPLATE = "bucket-overflow";
-    public static final String ACTION = "bucket token limit reached";
-    private String title;
     private String className;
     private String context;
 
     public BucketOverflowDTO(String className, String context) {
-        this.title = "oworms | " + Utils.format(LocalDateTime.now(), "yyyy-MM-dd") + " | bucket overflow";
+        super(
+                "bucket-overflow",
+                "oworms | " + Utils.format(LocalDateTime.now(), "yyyy-MM-dd") + " | bucket overflow"
+        );
 
         this.className = className;
         this.context = context;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getClassName() {

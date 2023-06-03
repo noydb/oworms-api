@@ -1,28 +1,17 @@
 package com.oworms.mail.dto;
 
-public class  UpdatedWordEmailDTO {
+public class UpdatedWordEmailDTO extends EmailDTO {
 
-    public static final String TEMPLATE = "oworm-update";
-    public static final String ACTION = "A word was recently updated";
-    private String title;
     private String retrievalLink;
     private String editLink;
     private EmailWordDTO old;
     private EmailWordDTO updated;
     private String uuid;
 
-    public UpdatedWordEmailDTO(String title, EmailWordDTO oldWord, EmailWordDTO updatedWord) {
-        this.title = title;
+    public UpdatedWordEmailDTO(final String title, EmailWordDTO oldWord, EmailWordDTO updatedWord) {
+        super("oworm-update", title);
         this.old = oldWord;
         this.updated = updatedWord;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getRetrievalLink() {

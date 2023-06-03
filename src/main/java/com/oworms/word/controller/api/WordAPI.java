@@ -47,8 +47,9 @@ public interface WordAPI {
     ResponseEntity<WordDTO> create(WordRequestDTO wordDTO, String u, String banana) throws OWormException;
 
     @ApiOperation(
-            value = "Retrieves all words meeting the criteria provided by the query parameters. " +
-                    "If no query parameters are specified, all words will be returned.",
+            value = "Retrieves all words meeting the criteria provided by the query parameters. Most query " +
+                    "params will be used in a contains search. If no query parameters are specified, all " +
+                    "words will be returned.",
             response = WordDTO.class,
             responseContainer = "List"
     )
