@@ -1,5 +1,6 @@
 package com.oworms.error;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,9 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class ValidationExceptionHandler {
 
+    @Value("${app.version}")
+    private String appVersion;
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<APIErrorResponse> handleValidationException(final HttpServletRequest httpServletRequest,
                                                                       final MethodArgumentNotValidException ex) {
@@ -30,8 +34,13 @@ public class ValidationExceptionHandler {
                 .map(APIFieldError::getField)
                 .collect(Collectors.joining(", "));
 
-        final APIErrorResponse errorResponse = new APIErrorResponse(HttpStatus.BAD_REQUEST, message, httpServletRequest);
-        errorResponse.setFieldErrors(fieldErrors);
+        final APIErrorResponse errorResponse = new APIErrorResponse(
+                appVersion,
+                HttpStatus.BAD_REQUEST,
+                message,
+                httpServletRequest,
+                fieldErrors
+        );
 
         return ResponseEntity.badRequest().body(errorResponse);
     }

@@ -13,6 +13,7 @@ public class APIErrorResponse {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private final OffsetDateTime timestamp = Utils.now();
+    private final String appVersion;
     private HttpStatus status;
     private int statusCode;
     private String message;
@@ -22,10 +23,11 @@ public class APIErrorResponse {
 
     private List<APIFieldError> fieldErrors;
 
-    private APIErrorResponse() {
-    }
-
-    public APIErrorResponse(final HttpStatus status, final String message, final HttpServletRequest httpServletRequest) {
+    public APIErrorResponse(final String appVersion,
+                            final HttpStatus status,
+                            final String message,
+                            final HttpServletRequest httpServletRequest) {
+        this.appVersion = appVersion;
         this.status = status;
         this.statusCode = status.value();
         this.message = message;
@@ -33,8 +35,27 @@ public class APIErrorResponse {
         this.httpMethod = httpServletRequest.getMethod();
     }
 
+    public APIErrorResponse(final String appVersion,
+                            final HttpStatus status,
+                            final String message,
+                            final HttpServletRequest httpServletRequest,
+                            final List<APIFieldError> fieldErrors) {
+        this.appVersion = appVersion;
+        this.status = status;
+        this.statusCode = status.value();
+        this.message = message;
+        this.path = httpServletRequest.getRequestURL().toString();
+        this.httpMethod = httpServletRequest.getMethod();
+        this.fieldErrors = fieldErrors;
+    }
+
+
     public OffsetDateTime getTimestamp() {
         return timestamp;
+    }
+
+    public String getAppVersion() {
+        return appVersion;
     }
 
     public HttpStatus getStatus() {
