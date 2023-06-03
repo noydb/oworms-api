@@ -67,16 +67,16 @@ public interface WordAPI {
             )
     })
     ResponseEntity<List<WordDTO>> retrieveAll(
-            final @ApiParam( value = "hello")  int numberOfWords,
-            final String theWord,
-            final List<String> parts,
-            final String def,
-            final String origin,
-            final String example,
-            final List<String> tags,
-            final String note,
-            final String creator,
-            final List<String> uuids
+            final @ApiParam(value = "Number of words to return") int numberOfWords,
+            final @ApiParam(value = "The actual word") String theWord,
+            final @ApiParam(value = "Any combination of parts of speech") List<String> pos,
+            final @ApiParam(value = "The definition") String def,
+            final @ApiParam(value = "The origin") String origin,
+            final @ApiParam(value = "Example usage of the word") String example,
+            final @ApiParam(value = "Any combination of tags") List<String> tags,
+            final @ApiParam(value = "The note") String note,
+            final @ApiParam(value = "The username of the person who created the word") String creator,
+            final @ApiParam(value = "A list of word IDs") List<String> uuids
     );
 
     @ApiOperation(
