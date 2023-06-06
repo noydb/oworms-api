@@ -41,7 +41,7 @@
 - linking tags to words
 - liking/favouriting words
 - receive an email everytime a word is created or updated
-- filtering by any of the available fields, driven by query parameters (e.g. https://oworms.herokuapp.com/o/worms/all?pos=verb,adjective&tags=informal,politics)
+- filtering by any of the available fields, driven by query parameters (e.g. https://oworms.herokuapp.com/o/all?pos=verb,adjective&tags=informal,politics)
 - retrieve a random word
 - view statistics on the application & the words
 - import spreadsheet of words
