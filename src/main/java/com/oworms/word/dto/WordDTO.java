@@ -37,7 +37,7 @@ public class WordDTO {
     @Size(max = 2000, message = "Example usage cannot be more than 2000 characters long")
     private String exampleUsage;
 
-    @Size(max = 20, message = "Pronunciation cannot be more than 20 characters long")
+    @Size(max = 60, message = "Pronunciation cannot be more than 60 characters long")
     private String pronunciation;
 
     private List<TagDTO> tags;

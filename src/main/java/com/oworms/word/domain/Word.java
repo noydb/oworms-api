@@ -33,7 +33,7 @@ public class Word {
     @Column(nullable = false, length = 50)
     private PartOfSpeech partOfSpeech;
 
-    @Column(length = 50)
+    @Column(length = 60)
     private String pronunciation;
 
     @Column(length = 3500)
